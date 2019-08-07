@@ -42,9 +42,9 @@ class AuthControllers {
         // roles: all
         app.get('/api/auth/github', passport.authenticate('github'));
         app.get(config.githubCallbackURL,
-            passport.authenticate('github', {failureRedirect: '/index.html#/koti?fail=1'}),
+            passport.authenticate('github', {failureRedirect: '/index.html#/kirjaudu?fail=1'}),
             (_req, res) => {
-                res.redirect('/index.html#/koti?kirjauduttu=1');
+                res.redirect('/index.html#/?kirjauduttu=1');
             }
         );
     }

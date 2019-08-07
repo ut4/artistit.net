@@ -1,5 +1,7 @@
 const {ensureIsLoggedIn} = require('./auth-route-filters.js');
 const {artistsRepository} = require('./artists-repository.js');
+const {isValidFireId} = require('./validation.js');
+const {apiCommons} = require('./api-commons.js');
 
 class ArtistsControllers {
     static registerRoutes(app) {
@@ -13,18 +15,39 @@ class ArtistsControllers {
         app.put('/api/artists', ensureIsLoggedIn(),
             (a, b) => makeCtrl().updateArtist(a, b));
     }
+    /**
+     * @param {ArtistRepository} repo
+     */
     constructor(repo) {
         this.repo = repo;
     }
+    /**
+     * Response:
+     * 200 {Artist}
+     * 400|500 {err: 'viesti'}
+     */
     getArtist(req, res) {
-        'findArtist(artisId and isPublic)';
+        if (!isValidFireId(req.params.artistId)) {
+            apiCommons.sendError(res, 'Invalid artistId');
+            return;
+        }
+        this.repo.getArtistById(req.params.artistId).then(artist => {
+            if (!artist) apiCommons.sendError(res, 'Didn\'t find anything.', 404);
+            else if (!artist.err) res.send(artist);
+            else apiCommons.sendError(res, artist.err, 500);
+        });
     }
-    // roles: authenticatedUsers
+    /**
+     * ...
+     */
     createArtist(req, res) {
-        'insert(name, headerImage, headerTagLine, widgets)';
+        res.send({todo: 'insert(name, headerImage, headerTagLine, widgets)'});
     }
+    /**
+     * ...
+     */
     updateArtist(req, res) {
-        'update(name, headerImage, headerTagLine, widgets)';
+        res.send({todo: 'update(name, headerImage, headerTagLine, widgets)'});
     }
 }
 

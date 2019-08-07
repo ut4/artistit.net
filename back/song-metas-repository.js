@@ -3,6 +3,9 @@ const {Db} = require('./db.js');
 // interface Song {id: string; name: string; genre: string; duration: string;}
 
 class SongMetasRepository {
+    /**
+     * @param {Db} db
+     */
     constructor(db) {
         this.db = db;
     }
@@ -15,7 +18,7 @@ class SongMetasRepository {
             .query(
                 'select s.`id`,s.`name`,g.`name` as `genre`,s.`duration` from songs s ' +
                 'join genres g on (g.`id` = s.`genreId`) ' +
-                'where exists ('+
+                'where exists (' +
                     'select sm.`songId` from songMakers sm ' +
                     'where sm.`songId` = s.`id` and sm.`artistId` = ?' +
                 ') limit 10',

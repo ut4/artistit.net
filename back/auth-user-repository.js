@@ -3,6 +3,9 @@ const {Db} = require('./db.js');
 // interface User {id: string; }
 
 class AuthUserRepository {
+    /**
+     * @param {Db} db
+     */
     constructor(db) {
         this.db = db;
     }

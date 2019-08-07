@@ -21,39 +21,59 @@ class SongMetasControllers {
         app.put('/api/song-metas/:songId', ensureIsLoggedIn(),
             (a, b) => makeCtrl().updateSong(a, b));
     }
-    constructor(songRepo) {
-        this.songRepo = songRepo;
+    /**
+     * @param {SongsRepository} repo
+     */
+    constructor(repo) {
+        this.repo = repo;
     }
+    /**
+     * ...
+     */
     getTrendingSongs(req, res) {
-        res.rend(JSON.stringify([
+        res.send(JSON.stringify([
             {id:1,name:'Song 1',artist:'Artist'},
             {id:2,name:'Song 2',artist:'Artist'},
         ]));
     }
+    /**
+     * ...
+     */
     getSongsByArtist(req, res) {
         if (!isValidFireId(req.params.artistId)) {
-            apiCommons.sendError(res, 'artistId is not valid');
+            apiCommons.sendError(res, 'Invalid artistId');
             return;
         }
-        this.songRepo.getSongsByArtist(req.params.artistId).then(songs => {
+        this.repo.getSongsByArtist(req.params.artistId).then(songs => {
             if (!songs.err) res.send(songs);
             else apiCommons.sendError(res, songs.err, 500);
         });
     }
+    /**
+     * ...
+     */
     getSongsByTags(req, res) {
-        res.send('findSongs(' + req.params.tags.split(',') + ')');
+        res.send({todo: 'findSongs(' + req.params.tags.split(',') + ')'});
     }
-    // roles: authenticatedUsers
+    /**
+     * ...
+     */
     updateSongLikes(req, res) {
-        'findSong(songId).likes += 1'
-        res.send('{"status":"ok"}');
+        'findSong(songId).likes += 1';
+        res.send({todo: 'ok'});
     }
+    /**
+     * ...
+     */
     createSong(req, res) {
-        res.send('insertSong(name, artistId, tags, annotations)');
+        res.send({todo: 'insertSong(name, artistId, tags, annotations)'});
     }
+    /**
+     * ...
+     */
     updateSong(req, res) {
-        let song = 'findSong(id = songId and artistId = loggedInArtistId)';
-        res.send('updateSong(name, artistId, tags, annotations)');
+        let _song = 'findSong(id = songId and artistId = loggedInArtistId)';
+        res.send({todo: 'updateSong(name, artistId, tags, annotations)'});
     }
 }
 
