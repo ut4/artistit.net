@@ -1,3 +1,9 @@
+/*
+ * Tässä tiedostossa:
+ *
+ * Repository / DAO käyttäjä-datalle.
+ */
+
 const {Db} = require('./db.js');
 
 // interface User {id: string; }

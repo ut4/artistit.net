@@ -1,0 +1,16 @@
+<%- include('layout-header', {title: artist.name}); %>
+<% if (artist) { %>
+    <header style="<%- `background-image:url('${staticBaseUrl}/user-images/${artist.coverPhoto}')` %>"
+            class="has-sub-nav">
+        <h1><%- artist.name %></h1>
+        <p><%- artist.tagLine %></p>
+    </header>
+    <nav class="sub-nav">
+        <a href="#/artisti/<%- artist.id %>/?näytä=seinä"
+            class="<%- tab == 'seinä' ? 'current' : '' %>">Seinä</a>
+    </nav>
+    <%- include('artist-view-tab-' + (tab || 'seinä'), {artist}); %>
+<% } else { %>
+    <p>Artistia ei löytynyt.</p>
+<% } %>
+<%- include('layout-footer'); %>

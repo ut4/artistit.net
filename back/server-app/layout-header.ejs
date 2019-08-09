@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fi">
+    <head>
+        <meta charset="utf-8">
+        <title><%- typeof title !== 'undefined' ? title + ' | ' : '' %>artistit.net</title>
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="">
+        <link rel="stylesheet" href="<%- staticBaseUrl %>style.css">
+    </head>
+    <body>
+        <div id="app">
+            <div>
+                <!-- /////////////////////////////////////////////////////// -->
+                <div class="top">
+                    <nav class="main-menu">
+                        <a href="<%- baseUrl %>">artistit.net</a>
+                    </nav>
+                    <% if (!user.id) { %>
+                        <nav class="user-menu">
+                            <a href="<%- baseUrl %>auth/kirjaudu">Tunnistaudu</a>
+                        </nav>
+                    <% } else { %>
+                        <nav class="user-menu">
+                            <a href="<%- baseUrl %>auth/ulos">Kirjaudu ulos</a>
+                        </nav>
+                    <% } %>
+                </div>
+                <!-- /////////////////////////////////////////////////////// -->

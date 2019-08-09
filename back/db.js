@@ -1,3 +1,9 @@
+/*
+ * Tässä tiedostossa:
+ *
+ * Tietokantayhteys.
+ */
+
 const mariadb = require('mariadb');
 const config = require('./config.js');
 

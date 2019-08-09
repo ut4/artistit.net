@@ -1,7 +1,13 @@
+/*
+ * Tässä tiedostossa:
+ *
+ * Handlerit /auth-alkuisille reiteille (/kirjaudu, /ulos, /github jne.).
+ */
+
 const passport = require('passport');
 const GitHubAuth = require('passport-github').Strategy;
-const config = require('./config.js');
-const {authUserRepository} = require('./auth-user-repository.js');
+const config = require('../config.js');
+const {authUserRepository} = require('../auth-user-repository.js');
 
 const AuthProviders = {
     GITHUB: 0
@@ -38,15 +44,40 @@ class AuthControllers {
         app.use(passport.initialize());
         app.use(passport.session());
     }
-    static registerRoutes(app) {
+    static registerRoutes(app, baseUrl) {
+        const makeCtrl = () => new AuthControllers(app);
         // roles: all
-        app.get('/api/auth/github', passport.authenticate('github'));
+        app.get(baseUrl + 'auth/github', passport.authenticate('github'));
         app.get(config.githubCallbackURL,
-            passport.authenticate('github', {failureRedirect: '/index.html#/kirjaudu?fail=1'}),
-            (_req, res) => {
-                res.redirect('/index.html#/?kirjauduttu=1');
+            passport.authenticate('github', {failureRedirect: baseUrl + 'auth/kirjaudu?fail=1'}),
+            (req, res) => {
+                app.locals.user = req.user;
+                res.redirect(baseUrl + '?kirjauduttu=1');
             }
         );
+        // roles: all
+        app.get(baseUrl + 'auth/kirjaudu', (a, b) => makeCtrl().loginView(a, b));
+        app.get(baseUrl + 'auth/ulos', (a, b) => makeCtrl().logout(a, b));
+    }
+    /**
+     * @param {App} app
+     */
+    constructor(app) {
+        this.app = app;
+    }
+    /**
+     * Renderöi kirjautumissivun.
+     */
+    loginView(_req, res) {
+        res.render('auth-login-view');
+    }
+    /**
+     * ...
+     */
+    logout(req, res) {
+        req.logout();
+        this.app.locals.user = {};
+        res.redirect(config.baseUrl + '?kirjauduttu=0');
     }
 }
 

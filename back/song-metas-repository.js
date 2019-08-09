@@ -1,3 +1,11 @@
+/*
+ * Tässä tiedostossa:
+ *
+ * Repository / DAO palveluun ladatuille biiseille. Sisältää vain biisien meta-
+ * tiedot, varsinaiset biisit tarjoillaan suoraan palvelimen kiintolevyltä (nginx)
+ * koska ne on aina julkisia.
+ */
+
 const {Db} = require('./db.js');
 
 // interface Song {id: string; name: string; genre: string; duration: string;}

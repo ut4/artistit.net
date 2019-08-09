@@ -1,4 +1,6 @@
 module.exports = {
+    baseUrl: '/',
+    staticBaseUrl: '/static/',
     dbHost: '127.0.0.1',
     dbDatabase: 'kannanNimi',
     dbUser: 'user',

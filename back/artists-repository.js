@@ -1,3 +1,9 @@
+/*
+ * Tässä tiedostossa:
+ *
+ * Repository / DAO artisti-datalle.
+ */
+
 const {Db} = require('./db.js');
 
 // interface Artist {id: string; name: string; tagLine: string; coverPhoto: string;
