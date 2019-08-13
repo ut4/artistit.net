@@ -4,6 +4,8 @@
  * artistit.net applikaation entry point i.e. `node main.js`.
  */
 
+process.env.TZ = 'Europe/Helsinki';
+
 const app = require('express')();
 const session = require('express-session');
 const bodyParser = require('body-parser');

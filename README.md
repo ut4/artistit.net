@@ -15,3 +15,30 @@ Kuvitteelinen sivusto musiikin tekijöille (mikseri.net, soundcloud.com).
 
 - Ei vaadi käyttäjätunnusta
     - Tunnistautuminen 3rd. palvelun (Face, Twitter, Github etc.) kautta
+- Handlaa robotit
+
+## Arkkitehtuuri
+
+```
+           |__Selain/fetch()__|
+                    |
+               HTTP-pyyntö
+                    |
+           |  Nginx-serveri   |
+           |_artistit.net:80__|
+                   / \
+                /       \
+             /             \
+          /                   \
+jos /static-alkuinen       kaikki muut           |__MariaDB-serveri__|
+        |                   proxy-pass         /
+        |                       |            /
+ tarjoilu suoraan               |       käyttää
+     levyltä                    |         /
+        .                       |       /
+                  | ServerAPP nodejs -serveri |
+                  |_127.0.0.1:3000____________|
+                                |
+                                |
+                    vastauksena html:ää/tekstiä
+```

@@ -1,0 +1,14 @@
+Asset: fira-sans-heavy.woff2, fira-sans-light.woff2
+License: SIL Open Font License v1.10
+Link: https://www.fontsquirrel.com/fonts/fira-sans
+
+Asset: feather-sprite.svg
+License: The MIT License (MIT)
+Link: https://github.com/feathericons/feather
+
+Asset: main-background.jpg
+License: https://unsplash.com/license
+Link: https://unsplash.com/photos/FMiczIq8orU
+
+Asset: user-images/-LkbhF4iOa032wUATTzV
+License: https://unsplash.com/license

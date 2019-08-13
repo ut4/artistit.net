@@ -1,0 +1,115 @@
+/* -- common.css ------------------------------------------------------------ */
+@font-face {
+    font-family: "Fira sans light";
+    src: url("fira-sans-light.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Fira sans heavy";
+    src: url("fira-sans-heavy.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+body {
+    font: normal 14px/14px "Fira sans light";
+}
+.feather {
+    width: 26px;
+    height: 26px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+
+/* -- layout.css ------------------------------------------------------------ */
+
+#app { max-width: 1200px; margin: 0 auto; }
+
+/* pad: >1200 -> 40, >1000 -> 20, >860 15, >400 -> 10 ?? */
+/* <näyttökoonMukaanMuuttuvat> */
+header {  padding: 40px 20px 0 20px; }
+.top { padding: 0 20px; }
+.sub-nav a:first-of-type { margin-left: 20px; }
+.main { margin: 0 20px; }
+footer > div { margin: 0 20px; }
+/* </näyttökoonMukaanMuuttuvat> */
+
+.top {
+    float: left;
+    min-height: 40px;
+    background-color: rgba(0,0,0,0.2);
+    width: 100%;
+}
+.top a {
+    color: #fff;
+    font: normal 12px/12px "Fira sans light";
+}
+.user-menu {
+    float: right;
+}
+
+
+header {
+    background-image: linear-gradient(to right, #262521, #4e4e4e);
+    background-size: cover;
+    color: #fff;
+}
+header.has-sub-nav {
+    padding-bottom: 60px;
+}
+header h1 {
+    font: normal 36px/80px "Fira sans heavy";
+    text-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+}
+
+footer {
+    background-color: #54cfff;
+    padding: 65px 0;
+    margin-top: 15px;
+}
+footer > div {
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+    max-width: 600px;
+    width: 100%;
+}
+footer section:last-of-type {
+    font-size: 12px;
+    margin-top: 14px;
+    color: #333;
+}
+footer a {
+    display: block;
+}
+
+.sub-nav {
+    position: relative;
+    width: 100%;
+    top: -24px;
+}
+.sub-nav a {
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 10px 20px;
+}
+.sub-nav a.current {
+    background-color: #ffffff;
+}
+
+/* -- app-main.css ---------------------------------------------------------- */
+header.default-background {
+    background-image: url('main-background.jpg');
+    border-top: 2px solid rgb(104, 207, 255);
+}
+header.home h1 {
+    font-size: 48px;
+    line-height: 180px;
+}
