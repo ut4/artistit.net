@@ -22,7 +22,7 @@
             </div>
         </form>
     </section>
-    <script>(function() {
+    <script>artistit.pageScripts.push(function() {
         var inputs = [document.getElementById('i-name'),
                       document.getElementById('i-tagLine'),
                       document.getElementById('i-sneakySneaky')];
@@ -61,5 +61,5 @@
             submitButton.disabled = !isValid;
             return isValid;
         }
-    }());</script>
+    });</script>
 <%- include('layout-footer'); %>

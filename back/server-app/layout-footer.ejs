@@ -8,5 +8,6 @@
             <span></span>
         </div>
         <script src="<%- staticBaseUrl %>artistit.js"></script>
+        <script>artistit.pageScripts.forEach(function(fn) { fn(); });</script>
     </body>
 </html>

@@ -43,5 +43,5 @@ esim. `<div>Hello <%= user.id %></div>`
 
 ## globaalit
 
-- artistit: {ID_LEN: number;};
+- artistit: {ID_LEN: number; pageScripts: Array<Function>};
 - toast: (message: string, level: string) => void;
