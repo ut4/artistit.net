@@ -1,5 +1,10 @@
+<%# lokaalit tässä tiedostossa: {
+    artist: Artist|{};
+    tabName: string;
+    tabData: Object;
+} %>
 <%- include('layout-header', {title: artist.name}); %>
-<% if (artist) { %>
+<% if (artist.id) { %>
     <header style="<%- artist.coverPhoto
         ? `background-image:url('${staticBaseUrl}user-images/${artist.coverPhoto}')`
         : '' %>" class="has-sub-nav">
@@ -8,9 +13,11 @@
     </header>
     <nav class="sub-nav">
         <a href="<%- `${baseUrl}artisti/${artist.id}?näytä=seinä` %>"
-            class="<%- tab == 'seinä' ? 'current' : '' %>">Seinä</a>
+            class="<%- tabName == 'seinä' ? 'current' : '' %>">Seinä</a>
+        <a href="<%- `${baseUrl}artisti/${artist.id}?näytä=biisit` %>"
+            class="<%- tabName == 'biisit' ? 'current' : '' %>">Biisit</a>
     </nav>
-    <%- include('artist-view-tab-' + (tab || 'seinä'), {artist}); %>
+    <%- include('artist-view-tab-' + tabName, {artist, tabData}); %>
 <% } else { %>
     <p>Artistia ei löytynyt.</p>
 <% } %>

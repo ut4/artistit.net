@@ -6,6 +6,7 @@ http {
     server {
         listen       80;
         server_name  domain.com;
+        client_max_body_size 20m;
         ...
         location / {
             proxy_pass http://127.0.0.1:3000;                # node-serverin url
@@ -39,9 +40,19 @@ esim. `<div>Hello <%= user.id %></div>`
 - staticBaseUrl: string;
 - featcherSvg: (iconId: string) => string;
 
+## Tietoturva
+
+- Ei self-rolled autentikointia, kirjautuminen ainoastaan kolmannen osapuolen palveluilla
+- Nginx rejektoi liian suuret uploadit
+
 # Selainympäristö
 
 ## globaalit
 
-- artistit: {ID_LEN: number; pageScripts: Array<Function>};
+- artistit: {ID_LEN: number; pageScripts: Array<Function>;};
 - toast: (message: string, level: string) => void;
+
+## Mahdollisesti polyfillattava
+
+- [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
+- [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)

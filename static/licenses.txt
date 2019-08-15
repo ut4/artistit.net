@@ -12,3 +12,6 @@ Link: https://unsplash.com/photos/FMiczIq8orU
 
 Asset: user-images/-LkbhF4iOa032wUATTzV
 License: https://unsplash.com/license
+
+Asset: songs/-abcdefghijklmnopqrs/-Lkbki8w-8PgWYRje-ta.mp3
+Link: https://sample-videos.com/audio/mp3/crowd-cheering.mp3

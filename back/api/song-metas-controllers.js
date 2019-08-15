@@ -1,11 +1,11 @@
-const {ensureIsLoggedIn} = require('./auth-route-filters.js');
-const {songMetasRepository} = require('../song-metas-repository.js');
+const {ensureIsLoggedIn} = require('./route-filters.js');
+const {songsRepository} = require('../songs-repository.js');
 const {isValidFireId} = require('../validation.js');
 const {apiCommons} = require('./api-commons.js');
 
 class SongMetasControllers {
     static registerRoutes(app) {
-        const makeCtrl = () => new SongMetasControllers(songMetasRepository);
+        const makeCtrl = () => new SongMetasControllers(songsRepository);
         // roles: all
         app.get('/api/song-metas/trending',
             (a, b) => makeCtrl().getTrendingSongs(a, b));
@@ -45,8 +45,9 @@ class SongMetasControllers {
             return;
         }
         this.repo.getSongsByArtist(req.params.artistId).then(songs => {
-            if (!songs.err) res.send(songs);
-            else apiCommons.sendError(res, songs.err, 500);
+            res.send(songs);
+        }).catch(err => {
+            apiCommons.sendError(res, err, 500); // ??
         });
     }
     /**

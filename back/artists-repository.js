@@ -6,8 +6,6 @@
 
 const {Db, generatePushID} = require('./db.js');
 
-// interface Artist {id: string; name: string; tagLine: string; coverPhoto: string;
-//                   widgets: string; createdAt: number;}
 
 class ArtistsRepository {
     /**
@@ -17,53 +15,47 @@ class ArtistsRepository {
         this.db = db;
     }
     /**
-     * @param {Object} artist
-     * @returns {Promise<number|{err: Object;}>}
+     * @param {Object} data
+     * @returns {Promise<{insertId: string;}>}
      */
-    insertArtist(artist) {
+    insertArtist(data) {
         const fireId = generatePushID();
         return this.db.getPool()
             .query(
-                'insert into artists values (?,?,?,\'\',\'\',?,?)',
+                'insert into artists values (?,?,?,\'\',\'[]\',?,?)',
                 [
                     fireId,
-                    artist.name,
-                    artist.tagLine,
+                    data.name,
+                    data.tagLine,
                     Math.floor(Date.now() / 1000),
-                    artist.userId
+                    data.userId
                 ]
             )
             .then(res => {
-                return res.affectedRows > 0
-                    ? {insertId: fireId}
-                    : {err: 'affectedRows < 1'};
-            })
-            .catch(err => {
-                return {err};
+                if (res.affectedRows > 0) return {insertId: fireId};
+                throw new Error('affectedRows < 1');
             });
     }
     /**
      * @param {string} artistId
-     * @returns {Promise<Array<Artist|null>|{err: Object;}>}
+     * @returns {Promise<Artist|{}>}
      */
     getArtistById(artistId) {
         return this.db.getPool()
             .query(
-                'select `id`,`name`,`tagLine`,`coverPhoto`,`widgets`,`createdAt`' +
+                'select `id`,`name`,`tagLine`,`coverPhoto`,`widgets`,' +
+                        '`createdAt`,`userId`' +
                 ' from artists where `id` = ?',
-                artistId
+                [artistId]
             )
             .then(rows => {
-                return rows.length ? parseArtist(rows[0]) : null;
-            })
-            .catch(err => {
-                return {err};
+                return rows.length ? parseArtist(rows[0]) : {};
             });
     }
 }
 
 /**
- * @param {{id: string; name: string; tagLine: string; coverPhoto: string; widgets: string; createdAt: number;}}
+ * @param {{id: string; name: string; tagLine: string; coverPhoto: string; widgets: string; createdAt: number; userId: string;}}
  * @returns {Artist}
  */
 function parseArtist(row) {
@@ -73,7 +65,8 @@ function parseArtist(row) {
         tagLine: row.tagLine,
         coverPhoto: row.coverPhoto,
         widgets: row.widgets,
-        createdAt: parseInt(row.createdAt)
+        createdAt: parseInt(row.createdAt),
+        userId: row.userId,
     };
 }
 

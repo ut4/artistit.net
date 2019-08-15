@@ -1,0 +1,22 @@
+<%# lokaalit tässä tiedostossa: {
+    artist: Artist;
+    songs: Array<Song>;
+} %>
+<section class="main artist-song-list">
+    <% if (user.id == artist.userId) { %>
+        <a href="<%- `${baseUrl}biisi/uusi/${artist.id}` %>">Lataa biisi</a>
+    <% } %>
+    <div class="artist-song-list">
+    <% tabData.songs.forEach(song => {
+        var url = `${staticBaseUrl}songs/${user.id}/${song.id}.mp3`;
+        %>
+        <div>
+            <h2><%= song.name %></h2>
+            <audio controls>
+                <source src="<%= url %>" type="audio/mpeg">
+                <p>Selaimesi ei tue HTML5 audiota. <a href="<%= url %>">Lataa</a> biisi sen sijaan?.</p>
+            </audio>
+        </div>
+    <% }) %>
+    <div>
+</section>

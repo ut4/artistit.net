@@ -6,8 +6,6 @@
 
 const {Db} = require('./db.js');
 
-// interface User {id: string; }
-
 class AuthUserRepository {
     /**
      * @param {Db} db
@@ -21,7 +19,7 @@ class AuthUserRepository {
      *
      * @param {number} authProvider katso AuthProviders @auth-controllers.js
      * @param {string} authProviderId esim. Github profile.id
-     * @returns {Promise<null|User|{err: Object;}>}
+     * @returns {Promise<User|null}>}
      */
     getUser(authProvider, authProviderId) {
         return this.db.getPool()
@@ -32,8 +30,6 @@ class AuthUserRepository {
                 [authProvider, authProviderId]
             ).then(rows => {
                 return rows.length ? {id: rows[0].id} : null;
-            }).catch(err => {
-                return {err};
             });
     }
     /**

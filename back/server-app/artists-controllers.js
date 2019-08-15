@@ -5,21 +5,23 @@
  */
 
 const log = require('loglevel');
-const {ensureIsLoggedIn} = require('./auth-route-filters.js');
+const {ensureIsLoggedIn, ensureHasContentType} = require('./route-filters.js');
 const {artistsRepository} = require('../artists-repository.js');
+const {artistViewTabLoaders} = require('./artist-view-tab-loaders.js');
 const {isValidFireId} = require('../validation.js');
 const {renderError} = require('./templating.js');
 const config = require('../config.js');
 
 class ArtistsControllers {
     static registerRoutes(app, baseUrl) {
-        const makeCtrl = () => new ArtistsControllers(artistsRepository);
+        const makeCtrl = () => new ArtistsControllers(artistsRepository,
+                                                      artistViewTabLoaders);
         // roles: authenticatedUsers
         app.get(baseUrl + 'artisti/uusi', ensureIsLoggedIn(),
             (a, b) => makeCtrl().newArtistView(a, b));
-        app.post(baseUrl + 'artisti', ensureIsLoggedIn(),
+        app.post(baseUrl + 'artisti', ensureIsLoggedIn(), ensureHasContentType(),
             (a, b) => makeCtrl().createArtist(a, b));
-        app.put(baseUrl + 'artisti', ensureIsLoggedIn(),
+        app.put(baseUrl + 'artisti', ensureIsLoggedIn(), ensureHasContentType(),
             (a, b) => makeCtrl().updateArtist(a, b));
         // roles: all
         app.get(baseUrl + 'artisti/:artistId',
@@ -27,9 +29,11 @@ class ArtistsControllers {
     }
     /**
      * @param {ArtistRepository} repo
+     * @param {ArtistViewTabLoaders} tabLoader
      */
-    constructor(repo) {
+    constructor(repo, tabLoader) {
         this.repo = repo;
+        this.tabLoader = tabLoader;
     }
     /**
      * Renderöi artistisivun.
@@ -40,12 +44,12 @@ class ArtistsControllers {
             return;
         }
         this.repo.getArtistById(req.params.artistId).then(artist => {
-            if (!artist || !artist.err)
-                res.render('artist-index-view', {artist, tab: req.query.tab});
-            else
-                renderError(artist.err, res, 500);
+            this.tabLoader.loadDataFor(req.query['näytä'], artist,
+                (tabData, tabName) => {
+                    res.render('artist-index-view', {artist, tabName, tabData});
+                });
         }).catch(err => {
-            log.error('Unexpected error', err.stack);
+            log.error('Failed to fetch artist from db', err.stack);
             res.redirect(config.baseUrl);
         });
     }
@@ -75,15 +79,10 @@ class ArtistsControllers {
             tagLine: req.body.tagLine || null,
             userId: req.body.userId
         }).then(result => {
-            if (!result.err) {
-                res.send(result.insertId);
-            } else {
-                log.error(result.err);
-                res.status(500).send(-2);
-            }
+            res.send(result.insertId);
         }).catch(err => {
-            log.error('Unexpected error', err.stack);
-            res.status(500).send(-1);
+            log.error('Failed to write artist to db', err.stack);
+            res.status(500).send('-1');
         });
     }
     /**

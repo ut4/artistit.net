@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS songLikes;
 DROP TABLE IF EXISTS songListens;
 DROP TABLE IF EXISTS songTags;
-DROP TABLE IF EXISTS songMakers;
+DROP TABLE IF EXISTS songFeaturers;
 DROP TABLE IF EXISTS songs;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS genres;
@@ -44,6 +44,7 @@ CREATE TABLE artists (
 CREATE TABLE genres (
     `id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
+    UNIQUE KEY(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
@@ -56,13 +57,15 @@ CREATE TABLE tags (
 CREATE TABLE songs (
     `id` CHAR(20) NOT NULL,
     `name` VARCHAR(128) NOT NULL,
-    `genreId` SMALLINT UNSIGNED NOT NULL,
     `duration` FLOAT NOT NULL,
+    `artistId` CHAR(20) NOT NULL,
+    `genreId` SMALLINT UNSIGNED NOT NULL,
+    FOREIGN KEY (`artistId`) REFERENCES artists(`id`),
     FOREIGN KEY (`genreId`) REFERENCES genres(`id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE songMakers (
+CREATE TABLE songFeaturers (
     `songId` CHAR(20) NOT NULL,
     `artistId` CHAR(20) NOT NULL,
     FOREIGN KEY (`songId`) REFERENCES songs(`id`),

@@ -4,6 +4,7 @@
  * Handlerit /auth-alkuisille reiteille (/kirjaudu, /ulos, /github jne.).
  */
 
+const log = require('loglevel');
 const passport = require('passport');
 const GitHubAuth = require('passport-github').Strategy;
 const config = require('../config.js');
@@ -30,8 +31,11 @@ class AuthControllers {
                         );
                     })
                     .then(user => {
-                        if (!user.err) cb(null, user);
-                        else cb(user.err, null);
+                        cb(null, user);
+                    })
+                    .catch(err => {
+                        log.error('Failed to fetch user from db', err.stack);
+                        cb(err, null);
                     });
             }
         ));

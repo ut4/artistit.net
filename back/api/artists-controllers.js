@@ -1,4 +1,4 @@
-const {ensureIsLoggedIn} = require('./auth-route-filters.js');
+const {ensureIsLoggedIn} = require('./route-filters.js');
 const {artistsRepository} = require('../artists-repository.js');
 const {isValidFireId} = require('../validation.js');
 const {apiCommons} = require('./api-commons.js');
@@ -31,11 +31,14 @@ class ArtistsControllers {
             apiCommons.sendError(res, 'Invalid artistId');
             return;
         }
-        this.repo.getArtistById(req.params.artistId).then(artist => {
-            if (!artist) apiCommons.sendError(res, 'Didn\'t find anything.', 404);
-            else if (!artist.err) res.send(artist);
-            else apiCommons.sendError(res, artist.err, 500);
-        });
+        this.repo.getArtistById(req.params.artistId)
+            .then(artist => {
+                if (artist.id) res.send(artist);
+                else apiCommons.sendError(res, 'Didn\'t find anything.', 404);
+            })
+            .catch(err => {
+                apiCommons.sendError(res, err, 500); // ??
+            });
     }
     /**
      * ...

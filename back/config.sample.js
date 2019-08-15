@@ -1,6 +1,7 @@
 module.exports = {
     baseUrl: '/',
     staticBaseUrl: '/static/',
+    staticDirPath: '/var/www/html/static/',
     dbHost: '127.0.0.1',
     dbDatabase: 'kannanNimi',
     dbUser: 'user',
@@ -8,5 +9,5 @@ module.exports = {
     sessionSecret: 'merkkijono',
     githubClientID: 'abc.cde...',
     githubClientSecret: '1234...',
-    githubCallbackURL: '/api/foo/'
+    githubCallbackURL: '/api/foo/',
 };
