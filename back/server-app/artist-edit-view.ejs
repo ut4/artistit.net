@@ -13,7 +13,7 @@
             <div class="error"></div>
         </div>
         <div>
-            <textarea id="i-tagLine" class="tagLine-input"><%= artist.tagLine %></textarea>
+            <textarea id="i-tagline" class="tagline-input"><%= artist.tagline %></textarea>
             <div class="error"></div>
         </div>
     </header>
@@ -30,7 +30,7 @@
 </form>
 <script>artistit.pageScripts.push(function() {
     var inputs = [document.getElementById('i-name'),
-                  document.getElementById('i-tagLine'),
+                  document.getElementById('i-tagline'),
                   document.getElementById('i-widgets')];
     //
     var validator = new artistit.FormValidation(inputs);
@@ -49,7 +49,7 @@
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: 'id=' + encodeURIComponent('<%- artist.id %>') +
                   '&name=' + encodeURIComponent(inputs[0].value) +
-                  '&tagLine=' + encodeURIComponent(inputs[1].value) +
+                  '&tagline=' + encodeURIComponent(inputs[1].value) +
                   '&widgets=' + encodeURIComponent(inputs[2].value) +
                   '&sneakySneaky=' + encodeURIComponent(
                         document.getElementById('i-sneakySneaky').value)

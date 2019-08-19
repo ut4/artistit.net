@@ -15,8 +15,8 @@
             <div class="error"></div>
         </div>
         <div>
-            <label for="i-tagLine">Tagline</label>
-            <textarea id="i-tagLine"></textarea>
+            <label for="i-tagline">Tagline</label>
+            <textarea id="i-tagline"></textarea>
             <div class="error"></div>
         </div>
         <%- include('form-buttons', {submitText: 'Luo artisti'}); %>
@@ -24,7 +24,7 @@
 </section>
 <script>artistit.pageScripts.push(function() {
     var inputs = [document.getElementById('i-name'),
-                  document.getElementById('i-tagLine')];
+                  document.getElementById('i-tagline')];
     //
     var validator = new artistit.FormValidation(inputs);
     validator.addCheckers(inputs[0], 'Nimi',
@@ -41,7 +41,7 @@
             credentials: 'same-origin',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: 'name=' + encodeURIComponent(inputs[0].value) +
-                  '&tagLine=' + encodeURIComponent(inputs[1].value) +
+                  '&tagline=' + encodeURIComponent(inputs[1].value) +
                   '&userId=' + encodeURIComponent('<%- user.id %>') +
                   '&sneakySneaky=' + encodeURIComponent(
                         document.getElementById('i-sneakySneaky').value)

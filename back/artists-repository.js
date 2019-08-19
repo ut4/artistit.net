@@ -15,7 +15,7 @@ class ArtistsRepository {
         this.db = db;
     }
     /**
-     * @param {{name: string; tagLine: string; userId: string;}} data
+     * @param {{name: string; tagline: string; userId: string;}} data
      * @returns {Promise<{insertId: string;}>}
      */
     insertArtist(data) {
@@ -26,7 +26,7 @@ class ArtistsRepository {
                 [
                     fireId,
                     data.name,
-                    data.tagLine,
+                    data.tagline,
                     Math.floor(Date.now() / 1000),
                     data.userId
                 ]
@@ -43,7 +43,7 @@ class ArtistsRepository {
     getArtistById(artistId) {
         return this.db.getPool()
             .query(
-                'select `id`,`name`,`tagLine`,`coverPhoto`,`widgets`,' +
+                'select `id`,`name`,`tagline`,`coverPhoto`,`widgets`,' +
                         '`createdAt`,`userId`' +
                 ' from artists where `id` = ?',
                 [artistId]
@@ -55,17 +55,17 @@ class ArtistsRepository {
     /**
      * @param {string} artistId
      * @param {string} loggedInUserId
-     * @param {{name: string; tagLine: string; widgets: string;}} data
+     * @param {{name: string; tagline: string; widgets: string;}} data
      * @returns {Promise<{affectedRows: number;}>}
      */
     updateArtist(artistId, loggedInUserId, data) {
         return this.db.getPool()
             .query(
-                'update artists set `name`=?,`tagLine`=?,`widgets`=? ' +
+                'update artists set `name`=?,`tagline`=?,`widgets`=? ' +
                 'where `id`=? and `userId`=?',
                 [
                     data.name,
-                    data.tagLine,
+                    data.tagline,
                     data.widgets,
                     artistId,
                     loggedInUserId
@@ -79,14 +79,14 @@ class ArtistsRepository {
 }
 
 /**
- * @param {{id: string; name: string; tagLine: string; coverPhoto: string; widgets: string; createdAt: number; userId: string;}}
+ * @param {{id: string; name: string; tagline: string; coverPhoto: string; widgets: string; createdAt: number; userId: string;}}
  * @returns {Artist}
  */
 function parseArtist(row) {
     return {
         id: row.id,
         name: row.name,
-        tagLine: row.tagLine,
+        tagline: row.tagline,
         coverPhoto: row.coverPhoto,
         widgets: row.widgets,
         createdAt: parseInt(row.createdAt),

@@ -6,7 +6,7 @@
 interface Artist {
     id: string;
     name: string;
-    tagLine: string;
+    tagline: string;
     coverPhoto: string;
     widgets: string;
     createdAt: number;

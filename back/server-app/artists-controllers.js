@@ -79,7 +79,7 @@ class ArtistsControllers {
         //
         this.repo.insertArtist({
             name: req.body.name,
-            tagLine: req.body.tagLine || null,
+            tagline: req.body.tagline || null,
             userId: req.body.userId
         }).then(result => {
             res.send(result.insertId);
@@ -113,7 +113,7 @@ class ArtistsControllers {
         if (!req.body.name) errors.push('name on pakollinen');
         if (!req.body.id) errors.push('id on pakollinen');
         else if (!isValidFireId(req.body.id)) errors.push('id ei kelpaa');
-        if (!req.body.hasOwnProperty('tagLine')) errors.push('tagLine on pakollinen');
+        if (!req.body.hasOwnProperty('tagline')) errors.push('tagline on pakollinen');
         if (!req.body.widgets) errors.push('widgets on pakollinen');
         if (req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
@@ -123,7 +123,7 @@ class ArtistsControllers {
         //
         this.repo.updateArtist(req.body.id, req.user.id, {
             name: req.body.name,
-            tagLine: req.body.tagLine,
+            tagline: req.body.tagline,
             widgets: req.body.widgets,
         }).then(result => {
             res.send(result.affectedRows.toString());

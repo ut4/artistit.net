@@ -44,13 +44,13 @@ class ArtistsControllers {
      * ...
      */
     createArtist(req, res) {
-        res.send({todo: 'insert(name, headerImage, headerTagLine, widgets)'});
+        res.send({todo: 'insert(name, headerImage, headerTagline, widgets)'});
     }
     /**
      * ...
      */
     updateArtist(req, res) {
-        res.send({todo: 'update(name, headerImage, headerTagLine, widgets)'});
+        res.send({todo: 'update(name, headerImage, headerTagline, widgets)'});
     }
 }
 

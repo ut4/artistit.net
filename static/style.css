@@ -101,7 +101,7 @@ header h1, header .head-input {
     text-shadow: 2px 2px 2px rgba(0,0,0,0.3);
     margin: 24px 0;
 }
-header p, header .tagLine-input {
+header p, header .tagline-input {
     margin: 14px 0;
 }
 
@@ -156,13 +156,13 @@ h1 .feather {
     color: #fff;
     margin: 0 0 -3px 10px;
 }
-.head-input, .tagLine-input {
+.head-input, .tagline-input {
     border: none;
     border-bottom: 1px dashed #fff;
     background: transparent;
     color: #fff;
 }
-.tagLine-input {
+.tagline-input {
     font: normal 14px/14px "Fira sans light";
     margin-bottom: 24px;
 }

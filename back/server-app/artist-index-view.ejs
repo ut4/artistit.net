@@ -11,7 +11,7 @@
         <h1><%= artist.name %><%- artist.userId == user.id
             ? `<a href="${baseUrl}artisti/muokkaa/${artist.id}">${featherSvg('edit-3')}</a>`
             : '' %></h1>
-        <p><%= artist.tagLine %></p>
+        <p><%= artist.tagline %></p>
     </header>
     <nav class="sub-nav">
         <a href="<%- `${baseUrl}artisti/${artist.id}?näytä=seinä` %>"
