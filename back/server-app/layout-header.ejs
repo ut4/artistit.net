@@ -10,21 +10,24 @@
     </head>
     <body>
         <div id="app">
-            <div>
-                <!-- /////////////////////////////////////////////////////// -->
-                <div class="top">
-                    <nav class="main-menu">
-                        <a href="<%- baseUrl %>">artistit.net</a>
+            <!-- /////////////////////////////////////////////////////// -->
+            <section class="top">
+                <nav class="main-menu">
+                    <a href="<%- baseUrl %>">artistit.net</a>
+                </nav>
+                <% if (!user.id) { %>
+                    <nav class="user-menu">
+                        <a href="<%- baseUrl %>auth/kirjaudu">Tunnistaudu</a>
                     </nav>
-                    <% if (!user.id) { %>
-                        <nav class="user-menu">
-                            <a href="<%- baseUrl %>auth/kirjaudu">Tunnistaudu</a>
-                        </nav>
-                    <% } else { %>
-                        <nav class="user-menu">
+                <% } else { %>
+                    <nav class="user-menu collapsed">
+                        <button class="icon-button"><%-
+                            featherSvg('more-vertical') %></button>
+                        <div class="links">
                             <a href="<%- baseUrl %>artisti/uusi">Luo artistisivu</a>
                             <a href="<%- baseUrl %>auth/ulos">Kirjaudu ulos</a>
-                        </nav>
-                    <% } %>
-                </div>
-                <!-- /////////////////////////////////////////////////////// -->
+                        </div>
+                    </nav>
+                <% } %>
+            </section>
+            <!-- /////////////////////////////////////////////////////// -->

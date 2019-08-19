@@ -11,6 +11,10 @@ const {artistViewTabLoaders} = require('./artist-view-tab-loaders.js');
 const {isValidFireId} = require('../validation.js');
 const {renderError} = require('./templating.js');
 const config = require('../config.js');
+const validationConstants = {
+    maxArtistNameLen: 128,
+    maxTaglineLen: 512,
+};
 
 class ArtistsControllers {
     static registerRoutes(app, baseUrl) {
@@ -21,6 +25,8 @@ class ArtistsControllers {
             (a, b) => makeCtrl().newArtistView(a, b));
         app.post(baseUrl + 'artisti', ensureIsLoggedIn(), ensureHasContentType(),
             (a, b) => makeCtrl().createArtist(a, b));
+        app.get(baseUrl + 'artisti/muokkaa/:artistId', ensureIsLoggedIn(),
+            (a, b) => makeCtrl().editArtistView(a, b));
         app.put(baseUrl + 'artisti', ensureIsLoggedIn(), ensureHasContentType(),
             (a, b) => makeCtrl().updateArtist(a, b));
         // roles: all
@@ -43,21 +49,18 @@ class ArtistsControllers {
             renderError('Virheellinen id', res, 500);
             return;
         }
-        this.repo.getArtistById(req.params.artistId).then(artist => {
+        this.fetchArtist(req, res, artist => {
             this.tabLoader.loadDataFor(req.query['näytä'], artist,
                 (tabData, tabName) => {
                     res.render('artist-index-view', {artist, tabName, tabData});
                 });
-        }).catch(err => {
-            log.error('Failed to fetch artist from db', err.stack);
-            res.redirect(config.baseUrl);
         });
     }
     /**
      * Renderöi artistin luonti -lomakkeen.
      */
     newArtistView(req, res) {
-        res.render('artist-create-view');
+        res.render('artist-create-view', validationConstants);
     }
     /**
      * Vastaanottaa /artisti/uusi -sivun lomakedatan, validoi sen, ja insertoi
@@ -65,10 +68,10 @@ class ArtistsControllers {
      */
     createArtist(req, res) {
         const errors = [];
-        if (!req.body.name) errors.push('name is required');
-        if (!req.body.userId) errors.push('userId is required');
-        else if (req.body.userId != req.user.id) errors.push('userId is not valid');
-        if (req.body.sneakySneaky.length) errors.push('absolutely no robots');
+        if (!req.body.name) errors.push('name on pakollinen');
+        if (!req.body.userId) errors.push('userId on pakollinen');
+        else if (req.body.userId != req.user.id) errors.push('userId ei kelpaa');
+        if (req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;
@@ -81,15 +84,64 @@ class ArtistsControllers {
         }).then(result => {
             res.send(result.insertId);
         }).catch(err => {
-            log.error('Failed to write artist to db', err.stack);
+            log.error('Artistin lisäys tietokantaan epäonnistui', err.stack);
             res.status(500).send('-1');
         });
     }
     /**
-     * ...
+     * Renderöi artistin muokkaus -lomakkeen.
+     */
+    editArtistView(req, res) {
+        this.fetchArtist(req, res, artist => {
+            if (artist.userId == req.user.id) {
+                res.render('artist-edit-view',
+                           Object.assign({artist}, validationConstants));
+            } else {
+                log.warn('Muokattava artisti (' + req.body.artistId +
+                         ') ei kuulunut kirjaantuneelle käyttäjälle (' +
+                         req.user.id + ')!!');
+                req.redirect(config.baseUrl);
+            }
+        });
+    }
+    /**
+     * Vastaanottaa /artisti/muokkaa -sivun lomakedatan, validoi sen, ja päivit-
+     * tää tietokantaan.
      */
     updateArtist(req, res) {
-        res.send({todo: 'update(name, headerImage, headerTagLine, widgets)'});
+        const errors = [];
+        if (!req.body.name) errors.push('name on pakollinen');
+        if (!req.body.id) errors.push('id on pakollinen');
+        else if (!isValidFireId(req.body.id)) errors.push('id ei kelpaa');
+        if (!req.body.hasOwnProperty('tagLine')) errors.push('tagLine on pakollinen');
+        if (!req.body.widgets) errors.push('widgets on pakollinen');
+        if (req.body.sneakySneaky.length) errors.push('oletko robotti?');
+        if (errors.length) {
+            res.status(400).send(errors.join('\n'));
+            return;
+        }
+        //
+        this.repo.updateArtist(req.body.id, req.user.id, {
+            name: req.body.name,
+            tagLine: req.body.tagLine,
+            widgets: req.body.widgets,
+        }).then(result => {
+            res.send(result.affectedRows.toString());
+        }).catch(err => {
+            log.error('Artistin päivittäminen tietokantaan epäonnistui', err.stack);
+            res.status(500).send('-1');
+        });
+    }
+    /**
+     * @access private
+     */
+    fetchArtist(req, res, then) {
+        this.repo.getArtistById(req.params.artistId)
+            .then(then)
+            .catch(err => {
+                log.error('Artistin haku tietokannasta epäonnistui', err.stack);
+                res.redirect(config.baseUrl);
+            });
     }
 }
 

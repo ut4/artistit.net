@@ -1,0 +1,9 @@
+<%# lokaalit tässä tiedostossa: {
+    submitText: string;
+    gotoOnCancel?: string;
+} %>
+<input id="i-sneakySneaky" type="hidden" value=""/>
+<div class="form-buttons">
+    <button id="i-submit" class="primary" disabled><%- submitText %></button>
+    <a href="<%- baseUrl + (typeof gotoOnCancel != 'undefined' ? gotoOnCancel : '') %>">Peruuta</a>
+</div>

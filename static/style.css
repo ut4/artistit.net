@@ -28,6 +28,11 @@ body {
     stroke-linejoin: round;
     fill: none;
 }
+.icon-button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+}
 
 /* -- layout.css ------------------------------------------------------------ */
 
@@ -35,7 +40,7 @@ body {
 
 /* pad: >1200 -> 40, >1000 -> 20, >860 15, >400 -> 10 ?? */
 /* <näyttökoonMukaanMuuttuvat> */
-header {  padding: 40px 20px 0 20px; }
+header { padding: 40px 20px 10px 20px; }
 .top { padding: 0 20px; }
 .sub-nav a:first-of-type { margin-left: 20px; }
 .main { margin: 0 20px; }
@@ -47,6 +52,7 @@ footer > div { margin: 0 20px; }
     min-height: 40px;
     background-color: rgba(0,0,0,0.2);
     width: 100%;
+    box-sizing: border-box;
 }
 .top a {
     color: #fff;
@@ -54,6 +60,31 @@ footer > div { margin: 0 20px; }
 }
 .user-menu {
     float: right;
+    position: relative;
+    margin: -7px -12px 0 0;
+}
+.user-menu > button {
+    width: 100%;
+}
+.user-menu > button .feather {
+    float: right;
+}
+.user-menu .links {
+    position: absolute;
+    right: -7px;
+    padding: 10px;
+    min-width: 102px;
+    background-color: rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.6);
+    top: 33px;
+}
+.user-menu.collapsed .links {
+    display: none;
+}
+.user-menu a {
+    display: block;
+    font-size: 14px;
+    line-height: 20px;
 }
 
 
@@ -65,9 +96,13 @@ header {
 header.has-sub-nav {
     padding-bottom: 60px;
 }
-header h1 {
+header h1, header .head-input {
     font: normal 36px/80px "Fira sans heavy";
     text-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+    margin: 24px 0;
+}
+header p, header .tagLine-input {
+    margin: 14px 0;
 }
 
 footer {
@@ -111,5 +146,23 @@ header.default-background {
 }
 header.home h1 {
     font-size: 48px;
-    line-height: 180px;
+    margin: 50px 0 0;
+}
+header.home p {
+    margin: 15px 0 40px;
+}
+
+h1 .feather {
+    color: #fff;
+    margin: 0 0 -3px 10px;
+}
+.head-input, .tagLine-input {
+    border: none;
+    border-bottom: 1px dashed #fff;
+    background: transparent;
+    color: #fff;
+}
+.tagLine-input {
+    font: normal 14px/14px "Fira sans light";
+    margin-bottom: 24px;
 }

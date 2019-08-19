@@ -1,84 +1,76 @@
 <%# lokaalit tässä tiedostossa: {
     artistId: string;
+    maxSongNameLen: number;
 } %>
 <%- include('layout-header', {title: 'Uusi biisi'}); %>
-    <header class="default-background">
-        <h1>Uusi biisin</h1>
-        <p>Lataa uusi kappale artistit.netiin.</p>
-    </header>
-    <section class="main">
-        <form onSubmit="handleFormSubmit(event)">
-            <div>
-                <label for="i-name">Nimi<span>*</span></label>
-                <input id="i-name"/>
-                <div class="error"></div>
-            </div>
-            <div>
-                <label for="i-file">Tiedosto<span>*</span></label>
-                <input id="i-file" type="file" accept=".mp3,.wav,.ogg"/>
-                <div class="info">.mp3, max (20Mb)</div>
-                <div class="error"></div>
-            </div>
-            <div>
-                <label for="i-genre">Genre</label>
-                <input id="i-genre" value="Ambient" disabled/>
-                <div class="error"></div>
-            </div>
-            <div>
-                <label for="i-tags">Tagit</label>
-                <input id="i-tags"/>
-                <div class="error"></div>
-            </div>
-            <input id="i-sneakySneaky" type="hidden" value=""/>
-            <div class="form-buttons">
-                <button id="i-submit" class="primary" disabled>Lataa</button>
-                <a href="<%- baseUrl %>">Peruuta</a>
-            </div>
-        </form>
-    </section>
-    <script>artistit.pageScripts.push(function() {
-        //
-        var inputs = [document.getElementById('i-name'),
-                      document.getElementById('i-file'),
-                      document.getElementById('i-genre'),
-                      document.getElementById('i-tags')];
-        var validator = new artistit.FormValidation(inputs);
-        validator.addChecker(inputs[0], function (input) {
-            return input.value != ''
-        }, 'Nimi vaaditaan');
-        validator.addChecker(inputs[1], function (input) {
-            console.log('file',inputs[1].files[0]);
-            return true;
-        }, 'Nimi vaaditaan');
-        validator.addChecker(inputs[2], function (input) {
-            return input.value != ''
-        }, 'Genre vaaditaan');
-        //
-        window.handleFormSubmit = function(e) {
-            e.preventDefault();
-            var status = 0;
-            var body = new FormData();
-            body.append('name', inputs[0].value);
-            body.append('fileData', inputs[1].files[0]);
-            body.append('genre', inputs[2].value);
-            body.append('tags', inputs[3].value);
-            body.append('artistId', '<%- artistId %>');
-            body.append('sneakySneaky', document.getElementById('i-sneakySneaky').value);
-            fetch('<%- baseUrl %>biisi', {
-                method: 'POST',
-                credentials: 'same-origin',
-                body
-            })
-            .then(function(res) {
-                status = res.status;
-                return res.text();
-            })
-            .then(function(result) {
-                if (status == 200 && result.length == artistit.ID_LEN)
-                    window.location.href = '<%- `${baseUrl}artisti/${artistId}?näytä=biisit` %>';
-                else
-                    toast('Biisin lataus epäonnistui.');
-            });
-        };
-    });</script>
+<header class="default-background">
+    <h1>Uusi biisi</h1>
+    <p>Lataa uusi kappale artistit.netiin.</p>
+</header>
+<section class="main">
+    <form onSubmit="handleFormSubmit(event)">
+        <div>
+            <label for="i-name">Nimi<span>*</span></label>
+            <input id="i-name"/>
+            <div class="error"></div>
+        </div>
+        <div>
+            <label for="i-file">Tiedosto<span>*</span></label>
+            <input id="i-file" type="file" accept=".mp3,.wav,.ogg"/>
+            <div class="info">.mp3, max (20Mb)</div>
+            <div class="error"></div>
+        </div>
+        <div>
+            <label for="i-genre">Genre</label>
+            <input id="i-genre" value="Ambient" disabled/>
+            <div class="error"></div>
+        </div>
+        <div>
+            <label for="i-tags">Tagit</label>
+            <input id="i-tags"/>
+            <div class="error"></div>
+        </div>
+        <%- include('form-buttons', {submitText: 'Lataa'}); %>
+    </form>
+</section>
+<script>artistit.pageScripts.push(function() {
+    //
+    var inputs = [document.getElementById('i-name'),
+                  document.getElementById('i-file'),
+                  document.getElementById('i-genre'),
+                  document.getElementById('i-tags')];
+    var validator = new artistit.FormValidation(inputs);
+    validator.addCheckers(inputs[0], 'Nimi',
+        validator.notEmpty(),
+        validator.maxLen(<%- maxSongNameLen -%>));
+    validator.addCheckers(inputs[2], 'Genre',
+        validator.notEmpty());
+    //
+    window.handleFormSubmit = function(e) {
+        e.preventDefault();
+        var status = 0;
+        var body = new FormData();
+        body.append('name', inputs[0].value);
+        body.append('fileData', inputs[1].files[0]);
+        body.append('genre', inputs[2].value);
+        body.append('tags', inputs[3].value);
+        body.append('artistId', '<%- artistId %>');
+        body.append('sneakySneaky', document.getElementById('i-sneakySneaky').value);
+        fetch('<%- baseUrl %>biisi', {
+            method: 'POST',
+            credentials: 'same-origin',
+            body
+        })
+        .then(function(res) {
+            status = res.status;
+            return res.text();
+        })
+        .then(function(result) {
+            if (status == 200 && result.length == artistit.ID_LEN)
+                window.location.href = '<%- `${baseUrl}artisti/${artistId}?näytä=biisit` %>';
+            else
+                toast('Biisin lataus epäonnistui.');
+        });
+    };
+});</script>
 <%- include('layout-footer'); %>

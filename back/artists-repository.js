@@ -15,7 +15,7 @@ class ArtistsRepository {
         this.db = db;
     }
     /**
-     * @param {Object} data
+     * @param {{name: string; tagLine: string; userId: string;}} data
      * @returns {Promise<{insertId: string;}>}
      */
     insertArtist(data) {
@@ -50,6 +50,30 @@ class ArtistsRepository {
             )
             .then(rows => {
                 return rows.length ? parseArtist(rows[0]) : {};
+            });
+    }
+    /**
+     * @param {string} artistId
+     * @param {string} loggedInUserId
+     * @param {{name: string; tagLine: string; widgets: string;}} data
+     * @returns {Promise<{affectedRows: number;}>}
+     */
+    updateArtist(artistId, loggedInUserId, data) {
+        return this.db.getPool()
+            .query(
+                'update artists set `name`=?,`tagLine`=?,`widgets`=? ' +
+                'where `id`=? and `userId`=?',
+                [
+                    data.name,
+                    data.tagLine,
+                    data.widgets,
+                    artistId,
+                    loggedInUserId
+                ]
+            )
+            .then(res => {
+                if (res.affectedRows > 0) return res;
+                throw new Error('affectedRows < 1');
             });
     }
 }

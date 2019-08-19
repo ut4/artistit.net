@@ -30,8 +30,8 @@ if (useDemoMode) app.use((req, res, next) => {
 
 app.locals.baseUrl = config.baseUrl;
 app.locals.staticBaseUrl = config.staticBaseUrl;
-app.locals.featherSvg = iconId => '<svg className="feather">' +
-    '<use xlink:href="' + config.staticBaseUrl + '/feather-sprite.svg#' + iconId + '"/>' +
+app.locals.featherSvg = iconId => '<svg class="feather">' +
+    '<use xlink:href="' + config.staticBaseUrl + 'feather-sprite.svg#' + iconId + '"/>' +
 '</svg>';
 app.locals.user = !useDemoMode ? {} : {id: '-abcdefghijklmnopqrs'};
 

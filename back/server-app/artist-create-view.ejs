@@ -1,59 +1,61 @@
+<%# lokaalit tässä tiedostossa: {
+    maxArtistNameLen: number;
+    maxTaglineLen: number;
+} %>
 <%- include('layout-header', {title: 'Uusi artisti'}); %>
-    <header class="default-background">
-        <h1>Uusi artisti</h1>
-        <p>...</p>
-    </header>
-    <section class="main">
-        <form onSubmit="handleFormSubmit(event)">
-            <div>
-                <label for="i-name">Nimi<span>*</span></label>
-                <input id="i-name"/>
-                <div class="error"></div>
-            </div>
-            <div>
-                <label for="i-tagLine">Tagline</label>
-                <textarea id="i-tagLine"></textarea>
-                <div class="error"></div>
-            </div>
-            <input id="i-sneakySneaky" type="hidden" value=""/>
-            <div class="form-buttons">
-                <button id="i-submit" class="primary" disabled>Luo artisti</button>
-                <a href="<%- baseUrl %>">Peruuta</a>
-            </div>
-        </form>
-    </section>
-    <script>artistit.pageScripts.push(function() {
-        var inputs = [document.getElementById('i-name'),
-                      document.getElementById('i-tagLine')];
-        //
-        var validator = new artistit.FormValidation(inputs);
-        validator.addChecker(inputs[0], function (input) {
-            return input.value != ''
-        }, 'Nimi vaaditaan');
-        //
-        window.handleFormSubmit = function(e) {
-            e.preventDefault();
-            var status = 0;
-            fetch('<%- baseUrl %>artisti', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'name=' + encodeURIComponent(inputs[0].value) +
-                      '&tagLine=' + encodeURIComponent(inputs[1].value) +
-                      '&userId=' + encodeURIComponent('<%- user.id %>') +
-                      '&sneakySneaky=' + encodeURIComponent(
-                          document.getElementById('i-sneakySneaky').value)
-            })
-            .then(function(res) {
-                status = res.status;
-                return res.text();
-            })
-            .then(function(result) {
-                if (status == 200 && result.length == artistit.ID_LEN)
-                    window.location.href = '<%- baseUrl %>artisti/' + result;
-                else
-                    toast('Artistin luonti epäonnistui.');
-            });
-        };
-    });</script>
+<header class="default-background">
+    <h1>Uusi artisti</h1>
+    <p>...</p>
+</header>
+<section class="main">
+    <form onSubmit="handleFormSubmit(event)">
+        <div>
+            <label for="i-name">Nimi<span>*</span></label>
+            <input id="i-name"/>
+            <div class="error"></div>
+        </div>
+        <div>
+            <label for="i-tagLine">Tagline</label>
+            <textarea id="i-tagLine"></textarea>
+            <div class="error"></div>
+        </div>
+        <%- include('form-buttons', {submitText: 'Luo artisti'}); %>
+    </form>
+</section>
+<script>artistit.pageScripts.push(function() {
+    var inputs = [document.getElementById('i-name'),
+                  document.getElementById('i-tagLine')];
+    //
+    var validator = new artistit.FormValidation(inputs);
+    validator.addCheckers(inputs[0], 'Nimi',
+        validator.notEmpty(),
+        validator.maxLen(<%- maxArtistNameLen -%>));
+    validator.addCheckers(inputs[1], 'Tagline',
+        validator.maxLen(<%- maxTaglineLen -%>));
+    //
+    window.handleFormSubmit = function(e) {
+        e.preventDefault();
+        var status = 0;
+        fetch('<%- baseUrl %>artisti', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'name=' + encodeURIComponent(inputs[0].value) +
+                  '&tagLine=' + encodeURIComponent(inputs[1].value) +
+                  '&userId=' + encodeURIComponent('<%- user.id %>') +
+                  '&sneakySneaky=' + encodeURIComponent(
+                        document.getElementById('i-sneakySneaky').value)
+        })
+        .then(function(res) {
+            status = res.status;
+            return res.text();
+        })
+        .then(function(insertId) {
+            if (status == 200 && insertId.length == artistit.ID_LEN)
+                window.location.href = '<%- baseUrl %>artisti/' + insertId;
+            else
+                toast('Artistin luonti epäonnistui.');
+        });
+    };
+});</script>
 <%- include('layout-footer'); %>

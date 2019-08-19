@@ -32,7 +32,7 @@ CREATE TABLE connectedAuthAccounts (
 CREATE TABLE artists (
     `id` CHAR(20) NOT NULL,
     `name` VARCHAR(128) NOT NULL,
-    `tagline` VARCHAR(256) DEFAULT NULL,
+    `tagline` VARCHAR(512) DEFAULT NULL,
     `coverPhoto` CHAR(20) DEFAULT NULL,
     `widgets` TEXT NOT NULL,
     `createdAt` INT UNSIGNED NOT NULL,

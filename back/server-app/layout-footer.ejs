@@ -1,13 +1,22 @@
-                <!-- /////////////////////////////////////////////////////// -->
-                <footer><div>
-                    <section>© 2019 - 2019 artistit.net</section>
-                </div></footer>
-            </div><%# div %>
+            <!-- /////////////////////////////////////////////////////// -->
+            <footer><div>
+                <section>© 2019 - 2019 artistit.net</section>
+            </div></footer>
         </div><%# div#app %>
         <div class="toast hidden">
             <span></span>
         </div>
         <script src="<%- staticBaseUrl %>artistit.js"></script>
+        <script>(function() {
+            var userMenuEl = document.querySelector('.user-menu');
+            userMenuEl.querySelector('button').addEventListener('click', function(e) {
+                e.stopPropagation();
+                userMenuEl.classList.toggle('collapsed');
+            });
+            document.body.addEventListener('click', function() {
+                userMenuEl.classList.add('collapsed');
+            });
+        }())</script>
         <script>artistit.pageScripts.forEach(function(fn) { fn(); });</script>
     </body>
 </html>

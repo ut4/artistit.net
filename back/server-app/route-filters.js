@@ -18,8 +18,9 @@ function ensureIsLoggedIn() {
 
 function ensureHasContentType(contentType = 'application/x-www-form-urlencoded') {
     return (req, res, next) => {
-        if (!req.headers['content-type'].startsWith(contentType + ';')) {
-            renderError('expected ' + contentType + ' content-type', res, 406);
+        if (req.headers['content-type'] != contentType &&
+            !req.headers['content-type'].startsWith(contentType + ';')) {
+            renderError('Expected ' + contentType + ' content-type', res, 406);
             return;
         }
         next();
