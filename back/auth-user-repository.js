@@ -4,7 +4,7 @@
  * Repository / DAO käyttäjä-datalle.
  */
 
-const {Db} = require('./db.js');
+const {makeDb} = require('./db.js');
 
 class AuthUserRepository {
     /**
@@ -46,4 +46,4 @@ class AuthUserRepository {
     }
 }
 
-exports.authUserRepository = new AuthUserRepository(new Db());
+exports.authUserRepository = new AuthUserRepository(makeDb());

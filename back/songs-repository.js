@@ -6,7 +6,7 @@
  */
 
 const fs = require('fs');
-const {Db, generatePushID} = require('./db.js');
+const {makeDb, generatePushID} = require('./db.js');
 const config = require('./config.js');
 
 class SongsRepository {
@@ -110,4 +110,4 @@ function parseSong(row) {
     };
 }
 
-exports.songsRepository = new SongsRepository(new Db(), fs);
+exports.songsRepository = new SongsRepository(makeDb(), fs);

@@ -40,3 +40,15 @@ interface User {
     id: string;
 }
 ```
+
+## Db
+
+```typescript
+interface Db {
+    getPool(): Pool;
+}
+```
+
+## Pool
+
+[mariadb-connector-nodejs docs](https://github.com/MariaDB/mariadb-connector-nodejs/blob/master/documentation/promise-api.md#poolgetconnection--promise)

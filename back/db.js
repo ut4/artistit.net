@@ -1,20 +1,13 @@
 /*
  * Tässä tiedostossa:
  *
- * Tietokantayhteys.
+ * Tietokantayhteys. Käyttö factoryn kautta `const db = makeDb()`.
  */
 
 const mariadb = require('mariadb');
 const config = require('./config.js');
 
-let pool = mariadb.createPool({
-    host: config.dbHost,
-    database: config.dbDatabase,
-    user: config.dbUser,
-    password: config.dbPassword,
-});
-
-class Db {
+class DefaultDb {
     /**
      * @returns {Pool}
      * @access public
@@ -22,6 +15,25 @@ class Db {
     getPool() {
         return pool;
     }
+}
+
+
+let pool;
+
+/**
+ * @returns {Db}
+ */
+function makeDb() {
+    if (!pool) {
+        pool = mariadb.createPool({
+            host: config.dbHost,
+            database: config.dbDatabase,
+            user: config.dbUser,
+            password: config.dbPassword,
+        });
+    }
+    return new exports.Db(); // exportsin kautta, koska voidaan yliajaa/mockata
+                             // testeissä
 }
 
 /**
@@ -75,5 +87,6 @@ const generatePushID = (function() {
   };
 })();
 
-exports.Db = Db;
+exports.Db = DefaultDb;
+exports.makeDb = makeDb;
 exports.generatePushID = generatePushID;

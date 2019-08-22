@@ -4,8 +4,7 @@
  * Repository / DAO artisti-datalle.
  */
 
-const {Db, generatePushID} = require('./db.js');
-
+const {makeDb, generatePushID} = require('./db.js');
 
 class ArtistsRepository {
     /**
@@ -95,4 +94,4 @@ function parseArtist(row) {
 }
 
 exports.ArtistsRepository = ArtistsRepository;
-exports.artistsRepository = new ArtistsRepository(new Db());
+exports.artistsRepository = new ArtistsRepository(makeDb());
