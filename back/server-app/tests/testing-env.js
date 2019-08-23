@@ -23,7 +23,8 @@ Module.prototype.require = function (moduleId) {
 const config = require('../../config.js');
 const {makeApp} = require('../app.js');
 const {makeDb} = require('../../db.js');
-const testData = require('./test-data.js');QUnit.config.notrycatch = true;
+const testData = require('./test-data.js');
+QUnit.config.notrycatch = true;
 
 /*
  * Wräpperi testeille; jokainen testi luo uuden instanssin tästä luokasta, ja
@@ -32,6 +33,7 @@ const testData = require('./test-data.js');QUnit.config.notrycatch = true;
 class HttpTestCtx {
     constructor() {
         HttpTestCtx.callCount += 1;
+        if (HttpTestCtx.timer) clearTimeout(HttpTestCtx.timer);
         if (!HttpTestCtx.dbSingleton) {
             HttpTestCtx.dbSingleton = makeDb();
         }
@@ -41,28 +43,30 @@ class HttpTestCtx {
         }
     }
     tearDown() {
-        if (--HttpTestCtx.callCount == 0) {
-            return HttpTestCtx.dbSingleton.cleanTestData()
-                .then(() => {
-                    HttpTestCtx.serverSingleton.close();
-                    setTimeout(() => {
-                        process.exit();
-                    }, 200);
-                })
+        if (--HttpTestCtx.callCount <= 0) HttpTestCtx.timer = setTimeout(() => {
+            HttpTestCtx.dbSingleton.cleanTestData()
                 .catch((err) => {
-                    console.error(err);
+                    console.error('at tearDown', err);
+                })
+                .finally(() => {
+                    HttpTestCtx.serverSingleton.close();
+                    process.exit();
                 });
-        }
+        }, 200);
         return Promise.resolve(null);
     }
     getApp() {
         return HttpTestCtx.appSingleton;
+    }
+    getDb() {
+        return HttpTestCtx.dbSingleton;
     }
 }
 HttpTestCtx.appSingleton = null;
 HttpTestCtx.serverSingleton = null;
 HttpTestCtx.dbSingleton = null;
 HttpTestCtx.callCount = 0;
+HttpTestCtx.timer = null;
 
 function insertTestData() {
     const a = testData.artist;
@@ -74,12 +78,13 @@ function insertTestData() {
 }
 
 function makeHttpTestCtx() {
+    const isFirstCall = HttpTestCtx.dbSingleton == null;
     const out = new HttpTestCtx(); // avaa kantayhteyden ja luo express-appin
                                    // automaattisesti
-    return insertTestData()
+    return (!isFirstCall ? Promise.resolve() : insertTestData())
         .then(() => out)
         .catch(err => {
-            console.error(err);
+            console.error('at makeHttpTestCtx', err);
             out.tearDown();
         });
 }

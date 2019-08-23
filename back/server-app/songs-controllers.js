@@ -43,11 +43,12 @@ class SongsControllers {
     createSong(req, res) {
         const errors = [];
         if (!req.body.name) errors.push('name on pakollinen');
-        if (!Object.keys(req.files).length) errors.push('file on pakollinen');
+        if (!req.files || !Object.keys(req.files).length) errors.push('file on pakollinen');
         if (!req.body.genre) errors.push('genre on pakollinen');
         if (!req.body.artistId) errors.push('artistId on pakollinen');
         else if (!isValidFireId(req.body.artistId)) errors.push('artistId ei kelpaa');
-        if (req.body.sneakySneaky.length) errors.push('oletko robotti?');
+        if (!req.body.hasOwnProperty('sneakySneaky') ||
+            req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;

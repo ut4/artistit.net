@@ -36,7 +36,7 @@ class SongsRepository {
                 resolve(err);
             });
         })
-        // Step 3: insertoi genre
+        // Step 3: insertoi genre (mikäli ei ole jo kannassa)
         .then(err => {
             if (err) throw err;
             return this.db.getPool().query(

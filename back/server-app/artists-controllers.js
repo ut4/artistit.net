@@ -71,7 +71,8 @@ class ArtistsControllers {
         if (!req.body.name) errors.push('name on pakollinen');
         if (!req.body.userId) errors.push('userId on pakollinen');
         else if (req.body.userId != req.user.id) errors.push('userId ei kelpaa');
-        if (req.body.sneakySneaky.length) errors.push('oletko robotti?');
+        if (!req.body.hasOwnProperty('sneakySneaky') ||
+            req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;
@@ -115,7 +116,8 @@ class ArtistsControllers {
         else if (!isValidFireId(req.body.id)) errors.push('id ei kelpaa');
         if (!req.body.hasOwnProperty('tagline')) errors.push('tagline on pakollinen');
         if (!req.body.widgets) errors.push('widgets on pakollinen');
-        if (req.body.sneakySneaky.length) errors.push('oletko robotti?');
+        if (!req.body.hasOwnProperty('sneakySneaky') ||
+            req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;

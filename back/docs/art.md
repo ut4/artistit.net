@@ -1,3 +1,8 @@
+# Testien ajaminen
+
+- Kaikki: `npm test`
+- Vain yksi: `npm test -- -f "testin nimi"`
+
 # Nginx-config
 
 ```conf
