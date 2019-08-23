@@ -1,6 +1,6 @@
 const {ensureIsLoggedIn} = require('./route-filters.js');
-const {songsRepository} = require('../songs-repository.js');
-const {isValidFireId} = require('../validation.js');
+const {songsRepository} = require('../server-app/songs-repository.js');
+const {isValidFireId} = require('../server-app/validation.js');
 const {apiCommons} = require('./api-commons.js');
 
 class SongMetasControllers {

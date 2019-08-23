@@ -9,5 +9,5 @@ module.exports = {
     sessionSecret: 'merkkijono',
     githubClientID: 'abc.cde...',
     githubClientSecret: '1234...',
-    githubCallbackURL: '/api/foo/',
+    githubCallbackURL: '/url/foo/',
 };

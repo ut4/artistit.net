@@ -1,5 +1,8 @@
 # Testien ajaminen
 
+Testit ei tarvitse erillistä main-tiedostoa, vaan qunit osaa ajaa ne suoraan
+(katso komento back/package.jsonista).
+
 - Kaikki: `npm test`
 - Vain yksi: `npm test -- -f "testin nimi"`
 
@@ -40,10 +43,10 @@ http {
 
 esim. `<div>Hello <%= user.id %></div>`
 
-- user: {id: string;};
+- user: {id: string;} || {};
 - baseUrl: string;
 - staticBaseUrl: string;
-- featcherSvg: (iconId: string) => string;
+- featherSvg: (iconId: string) => string;
 
 ## Tietoturva
 

@@ -8,7 +8,7 @@ const log = require('loglevel');
 const passport = require('passport');
 const GitHubAuth = require('passport-github').Strategy;
 const config = require('../config.js');
-const {authUserRepository} = require('../auth-user-repository.js');
+const {authUserRepository} = require('./auth-user-repository.js');
 
 const AuthProviders = {
     GITHUB: 0

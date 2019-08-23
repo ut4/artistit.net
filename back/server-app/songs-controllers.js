@@ -6,8 +6,8 @@
 
 const log = require('loglevel');
 const {ensureIsLoggedIn, ensureHasContentType} = require('./route-filters.js');
-const {songsRepository} = require('../songs-repository.js');
-const {isValidFireId} = require('../validation.js');
+const {songsRepository} = require('./songs-repository.js');
+const {isValidFireId} = require('./validation.js');
 const validationConstants = {
     maxSongNameLen: 128,
 };

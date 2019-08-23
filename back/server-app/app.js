@@ -44,12 +44,12 @@ exports.makeApp = (mode, config) => {
     '</svg>';
     app.locals.user = mode == 'prod' ? {} : {id: config.testUserId};
     //
-    AuthControllers.registerMiddleware(app/*, services*/);
+    AuthControllers.registerMiddleware(app);
     //
-    AppControllers.registerRoutes(app/*, services*/, config.baseUrl);
-    AuthControllers.registerRoutes(app/*, services*/, config.baseUrl);
-    ArtistsControllers.registerRoutes(app/*, services*/, config.baseUrl);
-    SongsControllers.registerRoutes(app/*, services*/, config.baseUrl);
+    AppControllers.registerRoutes(app, config.baseUrl);
+    AuthControllers.registerRoutes(app, config.baseUrl);
+    ArtistsControllers.registerRoutes(app, config.baseUrl);
+    SongsControllers.registerRoutes(app, config.baseUrl);
     //
     return app;
 };

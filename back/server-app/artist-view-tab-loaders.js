@@ -6,7 +6,7 @@
  */
 
 const log = require('loglevel');
-const {songsRepository} = require('../songs-repository.js');
+const {songsRepository} = require('./songs-repository.js');
 
 class ArtistViewTabLoaders {
     constructor(songsRepo) {

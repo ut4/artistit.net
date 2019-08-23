@@ -7,7 +7,7 @@ Kuvitteelinen sivusto musiikin tekijöille (mikseri.net, soundcloud.com).
 - Hakukoneystävällinen
     - Renderöinti kokonaan backendissä
 - Kustomoitava artistisivu
-    - rakennettavissa widgeteistä (Twitter/Face-feed, Youtube-embed, info-laatikko etc.)
+    - Rakennettavissa widgeteistä (Twitter/Face-feed, Youtube-embed, info-laatikko jne.)
 - Kokonaan suomenkielinen
 - Biisien starraus ei vaadi kirjautumista
 

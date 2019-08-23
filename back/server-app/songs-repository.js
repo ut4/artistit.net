@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const {makeDb, generatePushID} = require('./db.js');
-const config = require('./config.js');
+const config = require('../config.js');
 
 class SongsRepository {
     /**

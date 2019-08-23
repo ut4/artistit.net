@@ -1,6 +1,6 @@
 const {ensureIsLoggedIn} = require('./route-filters.js');
-const {artistsRepository} = require('../artists-repository.js');
-const {isValidFireId} = require('../validation.js');
+const {artistsRepository} = require('../server-app/artists-repository.js');
+const {isValidFireId} = require('../server-app/validation.js');
 const {apiCommons} = require('./api-commons.js');
 
 class ArtistsControllers {

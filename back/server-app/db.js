@@ -5,7 +5,7 @@
  */
 
 const mariadb = require('mariadb');
-const config = require('./config.js');
+const config = require('../config.js');
 
 class DefaultDb {
     /**

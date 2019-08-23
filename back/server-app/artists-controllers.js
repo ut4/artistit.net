@@ -6,9 +6,9 @@
 
 const log = require('loglevel');
 const {ensureIsLoggedIn, ensureHasContentType} = require('./route-filters.js');
-const {artistsRepository} = require('../artists-repository.js');
+const {artistsRepository} = require('./artists-repository.js');
 const {artistViewTabLoaders} = require('./artist-view-tab-loaders.js');
-const {isValidFireId} = require('../validation.js');
+const {isValidFireId} = require('./validation.js');
 const {renderError} = require('./templating.js');
 const config = require('../config.js');
 const validationConstants = {
