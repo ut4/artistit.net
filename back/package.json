@@ -7,7 +7,7 @@
     "test": "node node_modules/qunit/bin/qunit.js server-app/tests/*-tests.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "ejs": "^2.6.2",
     "express": "^4.17.1",

@@ -42,3 +42,7 @@ jos /static-alkuinen       kaikki muut           |__MariaDB-serveri__|
                                 |
                     vastauksena html:ää/tekstiä
 ```
+
+Lisenssi
+
+MIT
