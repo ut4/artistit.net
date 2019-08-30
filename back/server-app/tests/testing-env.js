@@ -39,7 +39,7 @@ class HttpTestCtx {
         }
         if (!HttpTestCtx.appSingleton) {
             HttpTestCtx.appSingleton = makeApp('test', config);
-            HttpTestCtx.serverSingleton = HttpTestCtx.appSingleton.listen(3000);
+            HttpTestCtx.serverSingleton = HttpTestCtx.appSingleton.listen(4000);
         }
     }
     tearDown() {

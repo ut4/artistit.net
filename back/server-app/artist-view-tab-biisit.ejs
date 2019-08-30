@@ -8,15 +8,67 @@
     <% } %>
     <div class="artist-song-list">
     <% tabData.songs.forEach(song => {
-        var url = `${staticBaseUrl}songs/${user.id}/${song.id}.mp3`;
+        var url = `${staticBaseUrl}songs/${artist.userId}/${song.id}.mp3`;
         %>
-        <div>
+        <div class="song" <%- 'data-song-id="' + song.id + '" ' +
+                              'data-song-duration="' + song.duration + '"' %>>
             <h2><%= song.name %></h2>
-            <audio controls>
+            <span class="progress"></span>
+            <button class="play"><%- featherSvg('play') %></button>
+            <div>Klikit: <span class="clicks"><%- song.amountOfPlayClicks %></span></div>
+            <audio>
                 <source src="<%= url %>" type="audio/mpeg">
                 <p>Selaimesi ei tue HTML5 audiota. <a href="<%= url %>">Lataa</a> biisi sen sijaan?.</p>
             </audio>
         </div>
     <% }) %>
-    <div>
+    </div>
 </section>
+<script src="<%- staticBaseUrl %>artistit.player.js"></script>
+<script>window.artistit.pageScripts.push(function() {
+    var rootSongEls = document.querySelectorAll('.song');
+    var latestPlays = window.artistit.sessionStorage.artistitSongPlays
+        ? JSON.parse(window.artistit.sessionStorage.artistitSongPlays)
+        : {};
+    var httpScheduler = new window.artistit.AsyncQueue();
+    for (var i = 0; i < rootSongEls.length; ++i) {
+        new window.artistit.Player(rootSongEls[i], {
+            onStart: function(song, player) {
+                if (registerPlay(song))
+                    player.increasePlayClickCount();
+            },
+            onEnd: function(_song) {
+                // todo updatePlay(song.id);
+            },
+            onPause: function(_song) {
+                // todo updatePlay(song.id);
+            },
+            onTimeUpdate: function(_song) {
+                // todo if (throttle(song.audioEl.currentTime-last>1000)) updatePlay(song.id);
+            },
+        });
+    }
+    function registerPlay(song) {
+        var latestPlay = latestPlays[song.id] || 0;
+        var unixTimeNow = Math.floor(Date.now() / 1000);
+        // Skippaa, jos edellisestä soittokerrasta on biisin kestoa vähemmän aikaa
+        if (latestPlay && unixTimeNow < latestPlay + song.duration) {
+            return false;
+        }
+        // Tallenna soittokerran ajankohta sessioon ...
+        latestPlays[song.id] = unixTimeNow;
+        window.artistit.sessionStorage.artistitSongPlays = JSON.stringify(latestPlays);
+        // ja lähetä backendiin tallennettavaksi
+        httpScheduler.addTask(function(callNextTaskFn) {
+            fetch(window.artistit.baseUrl + 'biisi/kuuntelu', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'id=' + encodeURIComponent(song.id) + '&sneakySneaky='
+            }).then(() => {
+                callNextTaskFn();
+            });
+        });
+        return true;
+    }
+})</script>

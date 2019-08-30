@@ -30,6 +30,7 @@ interface Song {
     name: string;
     genre: string;
     duration: string;
+    amountOfPlayClicks: number;
 }
 ```
 
@@ -52,3 +53,35 @@ interface Db {
 ## Pool
 
 [mariadb-connector-nodejs docs](https://github.com/MariaDB/mariadb-connector-nodejs/blob/master/documentation/promise-api.md#poolgetconnection--promise)
+
+# Selainympäristö
+
+## Player
+
+```typescript
+interface Player {
+    new (rootEl: HTMLElement, events: PlayerEvents);
+    increasePlayClickCount(): void;
+}
+```
+
+## Song
+
+```typescript
+interface Song {
+    id: string;,
+    duration: number;
+    audioEl: HTMLAudioElement;
+}
+```
+
+## PlayerEvents
+
+```typescript
+interface PlayerEvents {
+    onStart: (song: Song, player: Player): void;
+    onEnd: (song: Song): void;
+    onPause: (song: Song): void;
+    onTimeUpdate: (song: Song): void;
+}
+```

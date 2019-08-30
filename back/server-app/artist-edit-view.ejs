@@ -28,12 +28,12 @@
             gotoOnCancel: 'artisti/' + artist.id}); %>
     </section>
 </form>
-<script>artistit.pageScripts.push(function() {
+<script>window.artistit.pageScripts.push(function() {
     var inputs = [document.getElementById('i-name'),
                   document.getElementById('i-tagline'),
                   document.getElementById('i-widgets')];
     //
-    var validator = new artistit.FormValidation(inputs);
+    var validator = new window.artistit.FormValidation(inputs);
     validator.addCheckers(inputs[0], 'Nimi',
         validator.notEmpty(),
         validator.maxLen(<%- maxArtistNameLen -%>));

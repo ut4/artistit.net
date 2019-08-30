@@ -86,8 +86,11 @@ class SongsRepository {
     getSongsByArtist(artistId) {
         return this.db.getPool()
             .query(
-                'select s.`id`,s.`name`,g.`name` as `genre`,s.`duration` from songs s ' +
+                'select s.`id`,s.`name`,g.`name` as `genre`,s.`duration`,' +
+                        'count(sl.`id`) as amountOfPlayClicks ' +
+                'from songs s ' +
                 'join genres g on (g.`id` = s.`genreId`) ' +
+                'left join songListens sl on (sl.`songId` = s.`id`) ' +
                 'where s.`artistId` = ? limit 10',
                 [artistId]
             )
@@ -95,10 +98,49 @@ class SongsRepository {
                 return rows.map(song => parseSong(song));
             });
     }
+    /**
+     * Insertoi $data.id:lle uuden kuuntelukerran.
+     *
+     * @param {{id: string; ipAddress: string; userId?: string;}} data
+     * @returns {Promise<{insertId: number;}>}
+     */
+    insertListen(data) {
+        const unixTimeNow = Math.floor(Date.now() / 1000);
+        let identityFieldName, identityValue, ipAddressInsertValue;
+        if (data.userId) {
+            ipAddressInsertValue = null;
+            identityFieldName = 'userId';
+            identityValue = data.userId;
+        } else {
+            ipAddressInsertValue = data.ipAddress;
+            identityFieldName = 'ipAddress';
+            identityValue = data.ipAddress;
+        }
+        return this.db.getPool().query(
+            // Insertoi arvot vain jos ...
+            'insert into songListens (`songId`,`userId`,`ipAddress`,`registeredAt`) ' +
+            'select ?, ?, ?, ? ' +
+            // edellisestä rekisteröintikerrasta on vähemmän aikaa kuin biisin pituus
+            'where ifnull('+
+                '(select sl.`registeredAt` + s.`duration` ' +
+                    'from songListens sl ' +
+                    'left join songs s on (s.`id` = sl.`songId`) ' +
+                    'where sl.`songId` = ? and sl.`'+identityFieldName+'` = ? ' +
+                    'order by sl.`registeredAt` desc limit 1), '+
+                '0'+
+            ') < ?;',
+            [data.id, data.userId || null, ipAddressInsertValue, unixTimeNow,
+             data.id, identityValue, unixTimeNow]
+        )
+        .then(res => {
+            if (res.affectedRows > 0) return res;
+            else throw new Error('res.affectedRows < 1');
+        });
+    }
 }
 
 /**
- * @param {{id: string; name: string; genre: string; duration: string;}}
+ * @param {{id: string; name: string; genre: string; duration: string; amountOfPlayClicks: number;}}
  * @returns {Song}
  */
 function parseSong(row) {
@@ -107,6 +149,7 @@ function parseSong(row) {
         name: row.name,
         genre: row.genre,
         duration: parseFloat(row.duration).toFixed(2),
+        amountOfPlayClicks: parseInt(row.amountOfPlayClicks),
     };
 }
 

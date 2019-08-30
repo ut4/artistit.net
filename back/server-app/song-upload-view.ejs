@@ -33,13 +33,13 @@
         <%- include('form-buttons', {submitText: 'Lataa'}); %>
     </form>
 </section>
-<script>artistit.pageScripts.push(function() {
+<script>window.artistit.pageScripts.push(function() {
     //
     var inputs = [document.getElementById('i-name'),
                   document.getElementById('i-file'),
                   document.getElementById('i-genre'),
                   document.getElementById('i-tags')];
-    var validator = new artistit.FormValidation(inputs);
+    var validator = new window.artistit.FormValidation(inputs);
     validator.addCheckers(inputs[0], 'Nimi',
         validator.notEmpty(),
         validator.maxLen(<%- maxSongNameLen -%>));
@@ -66,7 +66,7 @@
             return res.text();
         })
         .then(function(result) {
-            if (status == 200 && result.length == artistit.ID_LEN)
+            if (status == 200 && result.length == window.artistit.ID_LEN)
                 window.location.href = '<%- `${baseUrl}artisti/${artistId}?näytä=biisit` %>';
             else
                 toast('Biisin lataus epäonnistui.');

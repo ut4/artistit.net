@@ -6,7 +6,11 @@
         <meta name="viewport" content="width=device-width">
         <meta name="description" content="">
         <link rel="stylesheet" href="<%- staticBaseUrl %>style.css">
-        <script>window.artistit = {pageScripts: []};</script>
+        <script>window.artistit = {
+            pageScripts: [],
+            baseUrl: '<%- baseUrl %>',
+            sessionStorage: window.sessionStorage
+        };</script>
     </head>
     <body>
         <div id="app">

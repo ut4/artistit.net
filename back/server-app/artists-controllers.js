@@ -83,7 +83,7 @@ class ArtistsControllers {
             tagline: req.body.tagline || null,
             userId: req.body.userId
         }).then(result => {
-            res.send(result.insertId);
+            res.send(result.insertId.toString());
         }).catch(err => {
             log.error('Artistin lisäys tietokantaan epäonnistui', err.stack);
             res.status(500).send('-1');

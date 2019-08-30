@@ -21,6 +21,9 @@ class SongsControllers {
         app.post(baseUrl + 'biisi', ensureIsLoggedIn(),
             ensureHasContentType('multipart/form-data'),
             (a, b) => makeCtrl().createSong(a, b));
+        // roles: all
+        app.post(baseUrl + 'biisi/kuuntelu', ensureHasContentType(),
+            (a, b) => makeCtrl().registerListen(a, b));
     }
     /**
      * @param {SongsRepository} repo
@@ -70,12 +73,42 @@ class SongsControllers {
                                 req.user.id + ')!!');
             })
             .then(result => {
-                res.send(result.insertId);
+                res.send(result.insertId.toString());
             })
             .catch(err => {
                 log.error('Failed to upload song', err.stack);
                 res.status(500).send('-1');
             });
+    }
+    /**
+     * Lisää $req.body.songId:lle kuuntelukerran (0 min 0 sek) ja linkkaa sen
+     * $req.user.id:lle, tai pyynnön ip-osoitteeseen mikäli kyseessä vierailija.
+     */
+    registerListen(req, res) {
+        const errors = [];
+        if (!req.body.id) errors.push('id on pakollinen');
+        else if (!isValidFireId(req.body.id)) errors.push('id ei kelpaa');
+        if (!req.body.hasOwnProperty('sneakySneaky') ||
+            req.body.sneakySneaky.length) errors.push('oletko robotti?');
+        if (errors.length) {
+            res.status(400).send(errors.join('\n'));
+            return;
+        }
+        //
+        this.repo.insertListen({
+            id: req.body.id,
+            userId: req.user.id,
+            ipAddress: req.ip,
+        }).then(result => {
+            res.send(result.insertId.toString());
+        }).catch(err => {
+            // Note to self: tämä voi palauttaa errorin (res.affectedRows < 1),
+            // jos kuuntelukerta insertoidaan liian aikaisin. Tätä ei kuitenkaan
+            // normaalissa käytössä tapahdu, koska kuuntelukertojen väliset ajat
+            // tsekataan frontendissä
+            log.error('Biisikuuntelun lisäys tietokantaan epäonnistui', err.stack);
+            res.status(500).send('-1');
+        });
     }
 }
 

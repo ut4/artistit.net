@@ -57,7 +57,7 @@ CREATE TABLE tags (
 CREATE TABLE songs (
     `id` CHAR(20) NOT NULL,
     `name` VARCHAR(128) NOT NULL,
-    `duration` FLOAT NOT NULL,
+    `duration` FLOAT NOT NULL, -- sekuntia
     `artistId` CHAR(20) NOT NULL,
     `genreId` SMALLINT UNSIGNED NOT NULL,
     FOREIGN KEY (`artistId`) REFERENCES artists(`id`),
@@ -82,11 +82,15 @@ CREATE TABLE songTags (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE songListens (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `songId` CHAR(20) NOT NULL,
-    `userId` CHAR(20) NOT NULL,
+    `userId` CHAR(20) NULL, -- null = anonyymi/vierailija
+    `ipAddress` VARCHAR(15) NULL,
+    `registeredAt` INT UNSIGNED NOT NULL,
+    `timeListened` FLOAT DEFAULT 0.0,
     FOREIGN KEY (`songId`) REFERENCES songs(`id`),
     FOREIGN KEY (`userId`) REFERENCES users(`id`),
-    PRIMARY KEY (`songId`, `userId`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE songLikes (

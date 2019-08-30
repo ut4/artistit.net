@@ -57,8 +57,20 @@ esim. `<div>Hello <%= user.id %></div>`
 
 ## globaalit
 
-- artistit: {ID_LEN: number; pageScripts: Array<Function>;};
-- toast: (message: string, level: string) => void;
+```typescript
+interface artistit {
+    ID_LEN: number;
+    pageScripts: Array<Function>;
+    baseUrl: string;
+    sessionStorage: Storage;
+}
+```
+
+```typescript
+interface toast {
+    (message: string, level: string): void;
+}
+```
 
 ## Mahdollisesti polyfillattava
 

@@ -9,7 +9,7 @@ insert into genres values
 insert into artists values
 ("-LkbhE8-_8AZFR1rPgtc", "Artistin nimi", "...", "-LkbhF4iOa032wUATTzV", "[]", "1564035762", "-abcdefghijklmnopqrs");
 insert into songs values
-("-Lkbki8w-8PgWYRje-ta", "Biisin nimi", 3.456, "-LkbhE8-_8AZFR1rPgtc", 1);
+("-Lkbki8w-8PgWYRje-ta", "Biisin nimi", 0.270, "-LkbhE8-_8AZFR1rPgtc", 1);
 insert into tags values
 (1, "Rauhallinen"),
 (2, "Keskittyminen");

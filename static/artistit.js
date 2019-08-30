@@ -1,8 +1,17 @@
-(function() {
-////////////////////////////////////////////////////////////////////////////////
-window.artistit.ID_LEN = 20;
+/*
+ * Tässä tiedostossa: window.artistit.FormValidation, window.artistit.AsyncQueue,
+ * window.toast.
+ */
 
-////////////////////////////////////////////////////////////////////////////////
+/* eslint-disable strict */
+(function() {
+'use strict';
+window.artistit.ID_LEN = 20;
+}());
+
+// artistit.FormValidation /////////////////////////////////////////////////////
+(function() {
+'use strict';
 /**
  * @param {Array<HTMLElement>} inputEls
  * @param {HTMLElement?} submitButton
@@ -65,7 +74,42 @@ FormValidation.prototype.maxLen = function(len) {
 window.artistit.FormValidation = FormValidation;
 }());
 
+// artistit.AsyncQueue /////////////////////////////////////////////////////////
 (function() {
+    'use strict';
+    function AsyncQueue() {
+        this.queue = [];
+        this.queueIsProcessing = false;
+    }
+    /**
+     * Lisää $fn:n taskijonoon, ja aloittaa jonon ajon mikäli se ei jo käynnissä.
+     */
+    AsyncQueue.prototype.addTask = function(fn) {
+        var self = this;
+        self.queue.push(fn);
+        if (!self.queueIsProcessing) {
+            self.queueIsProcessing = true;
+            self.doOldestTask();
+        }
+    };
+    /**
+     * Käynnistää taskijonofunktioiden ajon yksi kerrallaan vanhimmasta uusim-
+     * paan niin kauan, kunnes jono on tyhjä.
+     */
+    AsyncQueue.prototype.doOldestTask = function() {
+        var self = this;
+        self.queue[0](function() {
+            self.queue.shift();
+            self.queueIsProcessing = self.queue.length > 0;
+            if (self.queueIsProcessing) self.doOldestTask();
+        });
+    };
+    window.artistit.AsyncQueue = AsyncQueue;
+}());
+
+// window.toast ////////////////////////////////////////////////////////////////
+(function() {
+'use strict';
 var el = document.querySelector('.toast');
 /**
  * @param {string} message
