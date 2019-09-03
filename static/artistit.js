@@ -4,10 +4,6 @@
  */
 
 /* eslint-disable strict */
-(function() {
-'use strict';
-window.artistit.ID_LEN = 20;
-}());
 
 // artistit.FormValidation /////////////////////////////////////////////////////
 (function() {

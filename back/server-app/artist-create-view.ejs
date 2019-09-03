@@ -22,40 +22,12 @@
         <%- include('form-buttons', {submitText: 'Luo artisti'}); %>
     </form>
 </section>
-<script>window.artistit.pageScripts.push(function() {
-    var inputs = [document.getElementById('i-name'),
-                  document.getElementById('i-tagline')];
-    //
-    var validator = new window.artistit.FormValidation(inputs);
-    validator.addCheckers(inputs[0], 'Nimi',
-        validator.notEmpty(),
-        validator.maxLen(<%- maxArtistNameLen -%>));
-    validator.addCheckers(inputs[1], 'Tagline',
-        validator.maxLen(<%- maxTaglineLen -%>));
-    //
-    window.handleFormSubmit = function(e) {
-        e.preventDefault();
-        var status = 0;
-        window.artistit.fetch('<%- baseUrl %>artisti', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'name=' + encodeURIComponent(inputs[0].value) +
-                  '&tagline=' + encodeURIComponent(inputs[1].value) +
-                  '&userId=' + encodeURIComponent('<%- user.id %>') +
-                  '&sneakySneaky=' + encodeURIComponent(
-                        document.getElementById('i-sneakySneaky').value)
-        })
-        .then(function(res) {
-            status = res.status;
-            return res.text();
-        })
-        .then(function(insertId) {
-            if (status == 200 && insertId.length == window.artistit.ID_LEN)
-                window.location.href = '<%- baseUrl %>artisti/' + insertId;
-            else
-                toast('Artistin luonti epäonnistui.');
-        });
-    };
-});</script>
+<script>window.artistit.addPageScript(
+    <%- include('artist-create-view.js'); %>,
+    {
+        maxArtistNameLen: <%- maxArtistNameLen -%>,
+        maxTaglineLen: <%- maxTaglineLen -%>,
+        userId: '<%- user.id -%>',
+    }
+)</script>
 <%- include('layout-footer'); %>

@@ -25,15 +25,16 @@ function fetchTemplate(name) {
 function renderTemplate(name, data, htmlPrepareFn = html => html) {
     return fetchTemplate(name)
         .then(htmlPrepareFn)
-        .then(ejsCode => window.ejs.render(
-            ejsCode,
-            Object.assign({}, ejsGlobals, data)
-        ));
+        .then(ejsCode => {
+            const clsr = window.ejs.compile(ejsCode, {client: true});
+            const includeFn = () => '';
+            return clsr(Object.assign({}, ejsGlobals, data), null, includeFn);
+        });
 }
 
 /**
- * Lukee server-app/$templateName.ejs -tiedoston, renderöi sen, ja appendoi
- * DOMiin.
+ * Lukee server-app/$templateName.ejs -tiedoston sisällön backendistä,
+ * kääntää/renderöi sen selaimessa, ja appendoi DOMiin.
  *
  * @param {string} templateName esim. artist-index-view
  * @param {Object} data

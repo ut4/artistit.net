@@ -30,7 +30,7 @@ exports.makeApp = (mode, config) => {
         addFrontendTestEnvHandlers(app);
     }
     app.use(fileUpload({createParentPath: true}));
-    app.set('views', './server-app/');
+    app.set('views', ['./server-app', '../front']);
     app.set('view engine', 'ejs');
     if (mode == 'prod') app.use((req, res, next) => {
         if (!req.user) req.user = app.locals.user;

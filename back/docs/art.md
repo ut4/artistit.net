@@ -58,7 +58,7 @@ esim. `<div>Hello <%= user.id %></div>`
 ## Testien ajaminen
 
 1. Käynnistä node-serveri "test"-flagillä `node server-app/main.js test`.
-2. Avaa file:///.../frontend-tests/index.html modernilla selaimella
+2. Avaa file:///.../front/tests/index.html modernilla selaimella
 
 ## globaalit
 
@@ -68,6 +68,7 @@ interface artistit {
     pageScripts: Array<Function>;
     baseUrl: string;
     sessionStorage: Storage;
+    addPageScript: (fn: (props: any) => any, props: any): void;
     fetch: (url: string, settings?: Object): Promise;
 }
 ```

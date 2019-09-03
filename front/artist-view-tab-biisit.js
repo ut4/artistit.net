@@ -1,7 +1,7 @@
 /**
- * /artisti/:id?näytä=biisit -sivun js.
+ * /artisti/:artistiId?näytä=biisit -sivun js.
  */
-window.artistit.pageScripts.push(function() {
+function artistViewSongsTabJs() {
     var rootSongEls = document.querySelectorAll('.song');
     var latestPlays = window.artistit.sessionStorage.artistitSongPlays
         ? JSON.parse(window.artistit.sessionStorage.artistitSongPlays)
@@ -51,4 +51,4 @@ window.artistit.pageScripts.push(function() {
         });
         return true;
     }
-});
+}

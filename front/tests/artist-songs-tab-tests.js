@@ -8,8 +8,7 @@ const testTemplateData = {
 };
 
 QUnit.module('artist-songs-tab', () => {
-    // artist-view-tab-biisit.ejs-templaatin js
-    const pageScriptFn = window.artistit.pageScripts[0];
+    const pageScriptFn = window.artistViewSongsTabJs;
     QUnit.test('renderöi biisit', assert => {
         assert.expect(4);
         const data = Object.assign({}, testTemplateData);

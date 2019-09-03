@@ -8,9 +8,13 @@
         <link rel="stylesheet" href="<%- staticBaseUrl %>style.css">
         <script>window.artistit = {
             pageScripts: [],
-            baseUrl: '<%- baseUrl %>',
+            addPageScript: function(fn, props) {
+                this.pageScripts.push([fn, props]);
+            },
             sessionStorage: window.sessionStorage,
-            fetch: function(url, settings) { return fetch(url, settings); }
+            fetch: function(url, settings) { return fetch(url, settings); },
+            baseUrl: '<%- baseUrl %>',
+            ID_LEN: 20,
         };</script>
     </head>
     <body>

@@ -25,4 +25,7 @@
     </div>
 </section>
 <script src="<%- staticBaseUrl %>artistit.player.js"></script>
-<script src="<%- staticBaseUrl %>artisti-view-tab-biisit.js"></script>
+<script>window.artistit.addPageScript(
+    <%- include('artist-view-tab-biisit.js'); %>,
+    {}
+)</script>

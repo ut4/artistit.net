@@ -20,6 +20,9 @@
                 });
             }
         }())</script>
-        <script>window.artistit.pageScripts.forEach(function(fn) { fn(); });</script>
+        <script>window.artistit.pageScripts.forEach(function(s) {
+            // [0] = fn, [1] = props-objekti
+            s[0](s[1]);
+        });</script>
     </body>
 </html>
