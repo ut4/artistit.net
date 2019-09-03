@@ -56,7 +56,7 @@
         body.append('tags', inputs[3].value);
         body.append('artistId', '<%- artistId %>');
         body.append('sneakySneaky', document.getElementById('i-sneakySneaky').value);
-        fetch('<%- baseUrl %>biisi', {
+        window.artistit.fetch('<%- baseUrl %>biisi', {
             method: 'POST',
             credentials: 'same-origin',
             body

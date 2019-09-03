@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>artistit.net frontend-testit</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="qunit-2.9.2.css">
+        <script>window.artistit = {
+            pageScripts: [],
+            baseUrl: '',
+            sessionStorage: {},
+            fetch: function() {}
+        };</script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+        <div id="render-container-el"></div>
+        <script src="qunit-2.9.2.js"></script>
+        <script src="sinon-1.17.6.min.js"></script>
+        <script src="ejs.js"></script>
+        <script src="../static/artistit.js"></script>
+        <script src="../static/artistit.player.js"></script>
+        <script src="../back/config.js"></script>
+        <!-- window.artistit.pageScripts[0] -->
+        <script src="../static/artisti-view-tab-biisit.js"></script>
+        <script src="main.js" type="module"></script>
+    </body>
+</html>

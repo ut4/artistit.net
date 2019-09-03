@@ -9,7 +9,8 @@
         <script>window.artistit = {
             pageScripts: [],
             baseUrl: '<%- baseUrl %>',
-            sessionStorage: window.sessionStorage
+            sessionStorage: window.sessionStorage,
+            fetch: function(url, settings) { return fetch(url, settings); }
         };</script>
     </head>
     <body>

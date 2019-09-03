@@ -1,9 +1,9 @@
 /*
  * Tässä tiedostossa:
  *
- * express-app -instanssin luontifactory. $mode-parametrilla määritellään mitä
- * featureja instanssiin liitetään ('demo': lisää automaattisesti kirjautunut
- * demokäyttäjä http-pyyntöihin, 'test': disabloi sessio).
+ * express-app -instanssin luontifactory. $mode-parametrilla määritellään
+ * instanssiin liitettävät featuret ('demo': lisää automaattisesti kirjautunut
+ * demokäyttäjä http-pyyntöihin, 'test': disabloi sessio & enabloi cors).
  */
 process.env.TZ = 'Europe/Helsinki';
 
@@ -26,6 +26,8 @@ exports.makeApp = (mode, config) => {
     if (mode != 'test') {
         app.use(session({secret: config.sessionSecret, resave: true,
                          saveUninitialized: true}));
+    } else {
+        addFrontendTestEnvHandlers(app);
     }
     app.use(fileUpload({createParentPath: true}));
     app.set('views', './server-app/');
@@ -56,3 +58,17 @@ exports.makeApp = (mode, config) => {
     //
     return app;
 };
+
+function addFrontendTestEnvHandlers(app) {
+    app.use((_req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers',
+                   'Origin, X-Requested-With, Content-Type, Accept');
+        next();
+    });
+    app.get('/template/:name', (req, res, next) => {
+        res.sendFile(__dirname + '/' + req.params.name + '.ejs', err => {
+            if (err) next(err);
+        });
+    });
+}

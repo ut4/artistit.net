@@ -1,5 +1,5 @@
 /*
- * Tässä tiedostossa: window.artistit.Player.
+ * Tässä tiedostossa: window.artistit.makePlayer.
  */
 
 /* eslint-disable strict */
@@ -14,15 +14,16 @@ function Player(rootEl, events) {
     var progressEl = rootEl.querySelector('.progress');
     var iconEl = playPauseBtn.querySelector('use');
     var state = {playing: false, paused: false};
-    var song = {
+    var self = this;
+    this.song = {
         id: rootEl.getAttribute('data-song-id'),
         duration: parseFloat(rootEl.getAttribute('data-song-duration')),
         /** @prop {HTMLAudioElement} */
         audioEl: rootEl.querySelector('audio')
     };
-    var self = this;
     this.clicksValueEl = rootEl.querySelector('.clicks');
     playPauseBtn.addEventListener('click', function() {
+        var song = self.song;
         if (!state.playing) {
             song.audioEl.play();
             changeIcon(iconEl, 'play', 'pause');
@@ -35,13 +36,15 @@ function Player(rootEl, events) {
         state.playing = !state.playing;
         state.paused = !state.playing;
     });
-    song.audioEl.addEventListener('timeupdate', function() {
+    this.song.audioEl.addEventListener('timeupdate', function() {
+        var song = self.song;
         progressEl.textContent = parseInt(
             song.audioEl.currentTime / song.duration * 100, 10) + '%';
         events.onTimeUpdate(song, self);
     });
-    song.audioEl.addEventListener('ended', function() {
+    this.song.audioEl.addEventListener('ended', function() {
         changeIcon(iconEl, 'pause', 'play');
+        var song = self.song;
         state.playing = false;
         state.paused = false;
         events.onEnd(song, self);
@@ -58,5 +61,5 @@ function changeIcon(iconEl, from, to) {
     iconEl.setAttribute('xlink:href',
         iconEl.getAttribute('xlink:href').replace(from, to));
 }
-window.artistit.Player = Player;
+window.artistit.makePlayer = function(el, events) { return new Player(el, events); };
 }());

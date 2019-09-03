@@ -1,4 +1,9 @@
-module.exports = {
+(function(config) {
+    if (typeof window == "undefined")
+        module.exports = config;
+    else
+        window.artistitEnvConfig = config;
+}({
     baseUrl: '/',
     staticBaseUrl: '/static/',
     staticDirPath: '/var/www/html/static/',
@@ -10,4 +15,4 @@ module.exports = {
     githubClientID: 'abc.cde...',
     githubClientSecret: '1234...',
     githubCallbackURL: '/url/foo/',
-};
+}));

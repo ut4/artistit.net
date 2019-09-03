@@ -1,11 +1,3 @@
-# Testien ajaminen
-
-Testit ei tarvitse erillistä main-tiedostoa, vaan qunit osaa ajaa ne suoraan
-(katso komento back/package.jsonista).
-
-- Kaikki: `npm test`
-- Vain yksi: `npm test -- -f "testin nimi"`
-
 # Nginx-config
 
 ```conf
@@ -39,6 +31,14 @@ http {
 
 # ServerAPP
 
+## Testien ajaminen
+
+Testit ei tarvitse erillistä main-tiedostoa, vaan qunit osaa ajaa ne suoraan
+(katso komento back/package.jsonista).
+
+- Kaikki: `npm test`
+- Vain yksi: `npm test -- -f "testin nimi"`
+
 ## ejs-globaalit
 
 esim. `<div>Hello <%= user.id %></div>`
@@ -55,6 +55,11 @@ esim. `<div>Hello <%= user.id %></div>`
 
 # Selainympäristö
 
+## Testien ajaminen
+
+1. Käynnistä node-serveri "test"-flagillä `node server-app/main.js test`.
+2. Avaa file:///.../frontend-tests/index.html modernilla selaimella
+
 ## globaalit
 
 ```typescript
@@ -63,6 +68,7 @@ interface artistit {
     pageScripts: Array<Function>;
     baseUrl: string;
     sessionStorage: Storage;
+    fetch: (url: string, settings?: Object): Promise;
 }
 ```
 

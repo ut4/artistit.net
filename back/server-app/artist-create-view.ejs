@@ -36,7 +36,7 @@
     window.handleFormSubmit = function(e) {
         e.preventDefault();
         var status = 0;
-        fetch('<%- baseUrl %>artisti', {
+        window.artistit.fetch('<%- baseUrl %>artisti', {
             method: 'POST',
             credentials: 'same-origin',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},

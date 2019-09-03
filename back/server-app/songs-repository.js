@@ -87,10 +87,10 @@ class SongsRepository {
         return this.db.getPool()
             .query(
                 'select s.`id`,s.`name`,g.`name` as `genre`,s.`duration`,' +
-                        'count(sl.`id`) as amountOfPlayClicks ' +
+                        '(select count(`id`) from songListens ' +
+                        'where `songId`= s.`id`) as amountOfPlayClicks ' +
                 'from songs s ' +
                 'join genres g on (g.`id` = s.`genreId`) ' +
-                'left join songListens sl on (sl.`songId` = s.`id`) ' +
                 'where s.`artistId` = ? limit 10',
                 [artistId]
             )
