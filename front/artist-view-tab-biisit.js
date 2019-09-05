@@ -32,7 +32,7 @@ function artistViewSongsTabJs() {
         var latestPlay = latestPlays[song.id] || 0;
         var unixTimeNow = Math.floor(Date.now() / 1000);
         //
-        if (latestPlay && unixTimeNow < latestPlay + song.duration) {
+        if (latestPlay && unixTimeNow < latestPlay + song.duration + 3) {
             return false;
         }
         //

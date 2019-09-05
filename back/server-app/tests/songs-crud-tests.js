@@ -6,56 +6,58 @@
 
 /* eslint-disable no-console */
 const fs = require('fs');
+const sinon = require('sinon');
 const request = require('supertest');
 const {makeHttpTestCtx} = require('./testing-env.js');
 const testData = require('./test-data.js');
 const config = require('../../config.js');
+const songRepoModule = require('../songs-repository.js');
 
-QUnit.module('songs-crud', hooks => {
+describe('songs-crud', () => {
     let tctx;
-    hooks.before(assert => {
-        const done = assert.async();
-        makeHttpTestCtx().then(ctx => {
-            tctx = ctx;
-            done();
-        });
-    });
-    hooks.after(() => {
+    beforeAll(() => makeHttpTestCtx().then(ctx => {
+        tctx = ctx;
+    }));
+    afterAll(() => {
         tctx.tearDown();
     });
-    QUnit.test('POST /biisi validoi inputin', assert => {
-        assert.expect(5);
-        const done = assert.async();
+    it('POST /biisi validoi inputin', done => {
         request(tctx.getApp())
             .post('/biisi')
             .set('Content-Type', 'multipart/form-data')
             .send('sneakySneaky=')
             .then(res => {
-                assert.equal(res.status, 400);
+                expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
-                assert.equal(errors[0], 'name on pakollinen');
-                assert.equal(errors[1], 'file on pakollinen');
-                assert.equal(errors[2], 'genre on pakollinen');
-                assert.equal(errors[3], 'artistId on pakollinen');
+                expect(errors[0]).toEqual('name on pakollinen');
+                expect(errors[1]).toEqual('file on pakollinen');
+                expect(errors[2]).toEqual('genre on pakollinen');
+                expect(errors[3]).toEqual('artistId on pakollinen');
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });
     });
-    QUnit.test('POST /biisi kirjoittaa filen levylle ja metatiedot kantaan', assert => {
-        assert.expect(7);
-        const done = assert.async();
+    it('POST /biisi kirjoittaa filen levylle ja metatiedot kantaan', done => {
         const a = testData.artist;
         const testInput = {
             name: 'biisi',
             genre: 'Ambient',
             artistId: a.id,
         };
+        let insertId = '';
         const dirPath = `${config.staticDirPath}songs/${a.userId}/`;
         const filePath = `${dirPath}${testData.song.id}.mp3`;
-        let newFilePath = '';
-        let insertId = '';
+        const songRepo = songRepoModule.songsRepository;
+        let convertMp3Stub = sinon
+            .stub(songRepo.converter, 'convert')
+            .returns(Promise.resolve());
+        let unlinkOrigFileStub = sinon
+            .stub(songRepo.fs, 'unlink')
+            .yields(null); // triggeröi unlinkin callback, ja passaa sille
+                           // null (ei erroria)
         request(tctx.getApp())
             .post('/biisi')
             .field('name', testInput.name)
@@ -64,19 +66,11 @@ QUnit.module('songs-crud', hooks => {
             .field('artistId', testInput.artistId)
             .field('sneakySneaky', '')
             .then(res => {
-                assert.equal(res.status, 200);
-                assert.equal(res.text.length, 20, 'Pitäisi palauttaa insertId:n');
+                expect(res.status).toEqual(200);
+                expect(res.text.length).toEqual(20);
                 insertId = res.text;
-                newFilePath = `${dirPath}${insertId}.mp3`;
-                return new Promise(resolve => {
-                    fs.exists(newFilePath, doesIt => {
-                        assert.equal(doesIt, true, 'Pitäisi kirjoittaa uploadattu tiedosto levylle');
-                        resolve(doesIt);
-                    });
-                });
-            })
-            .then(fileWriteWasOk => {
-                if (!fileWriteWasOk) throw new Error('abort');
+                const convertTargetFilePath = convertMp3Stub.firstCall.args[1];
+                expect(convertTargetFilePath).toEqual(`${dirPath}${insertId}.mp3`);
                 return tctx.getDb().getPool()
                     .query(
                         'select s.`id`,s.`name`,g.`name` as `genre`,s.`artistId` ' +
@@ -87,57 +81,49 @@ QUnit.module('songs-crud', hooks => {
             })
             .then(rows => {
                 const actuallyInserted = rows[0];
-                assert.equal(actuallyInserted.name, testInput.name);
-                assert.equal(actuallyInserted.id, insertId);
-                assert.equal(actuallyInserted.genre, testInput.genre);
-                assert.equal(actuallyInserted.artistId, testInput.artistId);
+                expect(actuallyInserted.name).toEqual(testInput.name);
+                expect(actuallyInserted.id).toEqual(insertId);
+                expect(actuallyInserted.genre).toEqual(testInput.genre);
+                expect(actuallyInserted.artistId).toEqual(testInput.artistId);
             })
             .catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             })
             .finally(() => {
-                fs.exists(`${dirPath}${insertId}.mp3`, doesIt => {
-                    if (doesIt)
-                        fs.unlink(`${dirPath}${insertId}.mp3`, err => {
-                            if (err) console.error('Testitiedoston poisto epäonnistui',
-                                                   err);
-                            done();
-                        });
-                    else done();
-                });
+                convertMp3Stub.restore();
+                unlinkOrigFileStub.restore();
+                done();
             });
     });
-    QUnit.test('POST /biisi/kuuntelu validoi inputin', assert => {
-        assert.expect(2);
-        const done = assert.async();
+    it('POST /biisi/kuuntelu validoi inputin', done => {
         request(tctx.getApp())
             .post('/biisi/kuuntelu')
             .send('sneakySneaky=')
             .then(res => {
-                assert.equal(res.status, 400);
+                expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
-                assert.equal(errors[0], 'id on pakollinen');
+                expect(errors[0]).toEqual('id on pakollinen');
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });
     });
-    QUnit.test('POST /biisi/kuuntelu insertoi kuuntelukerran tietokantaan', assert => {
-        assert.expect(5);
+    it('POST /biisi/kuuntelu insertoi kuuntelukerran tietokantaan', done => {
         const unixTimeNow = Math.floor(Date.now() / 1000);
         let numTestRows = 0;
-        const done = assert.async();
         request(tctx.getApp())
             .post('/biisi/kuuntelu')
             .send('id=' + testData.song.id +
                   '&sneakySneaky=')
             .then(res => {
-                assert.equal(res.status, 200);
-                assert.ok(res.text >= 1, 'Pitäisi palauttaa insertId');
+                expect(res.status).toEqual(200);
+                expect(res.text).toBeGreaterThanOrEqual(1);
                 return tctx.getDb().getPool()
                     .query(
-                        'select `id`,`songId`,`registeredAt`,`timeListened`' +
+                        'select `id`,`songId`,`registeredAt`,`secondsListened`' +
                         ' from songListens' +
                         ' where `songId`=? and `userId`=?' +
                         ' order by `registeredAt` desc limit 1',
@@ -146,10 +132,9 @@ QUnit.module('songs-crud', hooks => {
             })
             .then(rows => {
                 numTestRows = rows.length;
-                assert.equal(numTestRows, 1);
-                assert.equal(rows[0].timeListened, 0);
-                assert.ok(rows[0].registeredAt >= unixTimeNow,
-                          rows[0].registeredAt + ' >= ' + unixTimeNow);
+                expect(numTestRows).toEqual(1);
+                expect(rows[0].secondsListened).toEqual(0);
+                expect(rows[0].registeredAt).toBeGreaterThanOrEqual(unixTimeNow);
                 return tctx.getDb().getPool()
                     .query('delete from songListens where `id`=?', [rows[0].id]);
             })
@@ -158,15 +143,14 @@ QUnit.module('songs-crud', hooks => {
                     throw new Error('Testidatan siivous epäonnistui.');
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });
     });
-    QUnit.test('POST /biisi/kuuntelu ei rekisteröi liian aikaista kuuntelukertaa',
-    assert => {
-        assert.expect(2);
+    it('POST /biisi/kuuntelu ei rekisteröi liian aikaista kuuntelukertaa',
+    done => {
         let testListenId = null;
-        const done = assert.async();
         const unixTimeNow = Math.floor(Date.now() / 1000);
         // 1. Insertoi ensimmäinen kuuntelu
         tctx.getDb().getPool()
@@ -188,8 +172,8 @@ QUnit.module('songs-crud', hooks => {
             })
         // 3. Assertoi että rejektoi
             .then(res => {
-                assert.equal(res.status, 500);
-                assert.equal(res.text, '-1');
+                expect(res.status).toEqual(500);
+                expect(res.text).toEqual('-1');
                 return tctx.getDb().getPool()
                     .query(
                         'delete from songListens where `id`=?',
@@ -201,6 +185,7 @@ QUnit.module('songs-crud', hooks => {
                     throw new Error('Testidatan siivous epäonnistui.');
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });

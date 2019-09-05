@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node node_modules/qunit/bin/qunit.js server-app/tests/*-tests.js"
+    "test": "node node_modules/jasmine/bin/jasmine --config=server-app/tests/jasmine.json"
   },
   "author": "",
   "license": "MIT",
@@ -13,13 +13,16 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.1.5",
     "express-session": "^1.16.2",
+    "fluent-ffmpeg": "^2.1.2",
     "loglevel": "^1.6.3",
     "mariadb": "^2.1.0",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0"
   },
   "devDependencies": {
+    "jasmine": "^3.4.0",
     "qunit": "^2.9.2",
+    "sinon": "^7.4.1",
     "supertest": "^4.0.2"
   }
 }

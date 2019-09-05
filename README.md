@@ -1,6 +1,6 @@
 # Artistit.net
 
-Kuvitteelinen sivusto musiikin tekijöille (mikseri.net, soundcloud.com).
+Kuvitteellinen sivusto musiikin tekijöille (mikseri.net, soundcloud.com).
 
 ## Erot soundcloudiin
 
@@ -43,6 +43,6 @@ jos /static-alkuinen       kaikki muut           |__MariaDB-serveri__|
                     vastauksena html:ää/tekstiä
 ```
 
-Lisenssi
+## Lisenssi
 
 MIT

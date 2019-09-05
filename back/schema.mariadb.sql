@@ -87,7 +87,7 @@ CREATE TABLE songListens (
     `userId` CHAR(20) NULL, -- null = anonyymi/vierailija
     `ipAddress` VARCHAR(15) NULL,
     `registeredAt` INT UNSIGNED NOT NULL,
-    `timeListened` FLOAT DEFAULT 0.0,
+    `secondsListened` FLOAT DEFAULT 0.0,
     FOREIGN KEY (`songId`) REFERENCES songs(`id`),
     FOREIGN KEY (`userId`) REFERENCES users(`id`),
     PRIMARY KEY (`id`)

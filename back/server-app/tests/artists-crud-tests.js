@@ -9,38 +9,34 @@ const request = require('supertest');
 const {makeHttpTestCtx} = require('./testing-env.js');
 const testData = require('./test-data.js');
 
-QUnit.module('artists-crud', hooks => {
+describe('artists-crud', () => {
     let tctx;
-    hooks.before(assert => {
-        const done = assert.async();
+    beforeAll(done => {
         makeHttpTestCtx().then(ctx => {
             tctx = ctx;
             done();
         });
     });
-    hooks.after(() => {
+    afterAll(() => {
         tctx.tearDown();
     });
-    QUnit.test('POST /artisti validoi inputin', assert => {
-        assert.expect(3);
-        const done = assert.async();
+    it('POST /artisti validoi inputin', done => {
         request(tctx.getApp())
             .post('/artisti')
             .send('sneakySneaky=')
             .then(res => {
-                assert.equal(res.status, 400);
+                expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
-                assert.equal(errors[0], 'name on pakollinen');
-                assert.equal(errors[1], 'userId on pakollinen');
+                expect(errors[0]).toEqual('name on pakollinen');
+                expect(errors[1]).toEqual('userId on pakollinen');
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });
     });
-    QUnit.test('POST /artisti insertoi uuden artistin tietokantaan', assert => {
-        assert.expect(3);
-        const done = assert.async();
+    it('POST /artisti insertoi uuden artistin tietokantaan', done => {
         const testInput = {name: 'dos'};
         request(tctx.getApp())
             .post('/artisti')
@@ -48,55 +44,52 @@ QUnit.module('artists-crud', hooks => {
                   '&userId=' + testData.user.id +
                   '&sneakySneaky=')
             .then(res => {
-                assert.equal(res.status, 200);
+                expect(res.status).toEqual(200);
                 return fetchArtistFromDb(tctx, testInput.name);
             }).then(rows => {
                 const actuallyInserted = rows[0];
-                assert.equal(actuallyInserted.name, testInput.name);
-                assert.equal(actuallyInserted.id.length, 20);
+                expect(actuallyInserted.name).toEqual(testInput.name);
+                expect(actuallyInserted.id.length).toEqual(20);
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });
     });
-    QUnit.test('GET /artisti/:artistId renderöi artistisivun', assert => {
-        assert.expect(2);
-        const done = assert.async();
+    it('GET /artisti/:artistId renderöi artistisivun', done => {
         request(tctx.getApp())
             .get('/artisti/' + testData.artist.id)
             .then(res => {
-                assert.equal(res.status, 200);
+                expect(res.status).toEqual(200);
                 const n = testData.artist.name;
-                assert.equal(res.text.split('<h1>')[1].substr(0, n.length), n);
+                expect(res.text.split('<h1>')[1].substr(0, n.length)).toEqual(n);
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });
     });
-    QUnit.test('PUT /artisti validoi inputin', assert => {
-        assert.expect(5);
-        const done = assert.async();
+    it('PUT /artisti validoi inputin', done => {
         request(tctx.getApp())
             .put('/artisti')
             .send('sneakySneaky=')
             .then(res => {
-                assert.equal(res.status, 400);
+                expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
-                assert.equal(errors[0], 'name on pakollinen');
-                assert.equal(errors[1], 'id on pakollinen');
-                assert.equal(errors[2], 'tagline on pakollinen');
-                assert.equal(errors[3], 'widgets on pakollinen');
+                expect(errors[0]).toEqual('name on pakollinen');
+                expect(errors[1]).toEqual('id on pakollinen');
+                expect(errors[2]).toEqual('tagline on pakollinen');
+                expect(errors[3]).toEqual('widgets on pakollinen');
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });
     });
-    QUnit.test('PUT /artisti päivittää tiedot tietokantaan', assert => {
-        assert.expect(6);
-        const done = assert.async();
+    it('PUT /artisti päivittää tiedot tietokantaan', done => {
         const a = {
             id: '-aaaaaaaaaaaaaaaaaaa',
             name: 'toinen',
@@ -128,17 +121,18 @@ QUnit.module('artists-crud', hooks => {
                           '&sneakySneaky='
                     );
             }).then(res => {
-                assert.equal(res.status, 200);
-                assert.equal(res.text, '1');
+                expect(res.status).toEqual(200);
+                expect(res.text).toEqual('1');
                 return fetchArtistFromDb(tctx, testInput.name);
             }).then(rows => {
                 const actuallyInserted = rows[0];
-                assert.equal(actuallyInserted.name, testInput.name);
-                assert.equal(actuallyInserted.tagline, testInput.tagline);
-                assert.equal(actuallyInserted.widgets, testInput.widgets);
-                assert.equal(actuallyInserted.id.length, 20);
+                expect(actuallyInserted.name).toEqual(testInput.name);
+                expect(actuallyInserted.tagline).toEqual(testInput.tagline);
+                expect(actuallyInserted.widgets).toEqual(testInput.widgets);
+                expect(actuallyInserted.id.length).toEqual(20);
             }).catch(err => {
                 console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
             }).finally(() => {
                 done();
             });

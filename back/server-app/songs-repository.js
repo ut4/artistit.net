@@ -6,21 +6,25 @@
  */
 
 const fs = require('fs');
+const log = require('loglevel');
 const {makeDb, generatePushID} = require('./db.js');
 const config = require('../config.js');
+const {SongFormatConverter} = require('./song-format-converter.js');
 
 class SongsRepository {
     /**
      * @param {Db} db
+     * @param {SongFormatConverter} converter
      * @param {fs} fs
      */
-    constructor(db, fs) {
+    constructor(db, converter, fs) {
         this.db = db;
+        this.converter = converter;
         this.fs = fs;
     }
     /**
-     * Kirjoittaa uploadatun biisin $data.file levylle, ja insertoi sen meta-
-     * tiedot tietokantaan.
+     * Kirjoittaa uploadatun biisin $data.file levylle (mp3-muotoon konvertoi-
+     * tuna), ja insertoi sen metatiedot tietokantaan.
      *
      * @param {{name: string; file: {File}; genre: string; tags: string; artistId: string;}} data
      * @param {string} userId
@@ -29,30 +33,41 @@ class SongsRepository {
     uploadAndInsertSong(data, userId) {
         data.id = generatePushID();
         data.duration = 0;
-        // Step 1: konvertoi biisi + lue mime & pituus(todo)
-        // Step 2: uploadaa biisi
+        const targetDirPath = `${config.staticDirPath}songs/${userId}/`;
+        const origFilePath = targetDirPath + data.file.name;
+        const sampledFilePath = targetDirPath + data.id + '.mp3';
+        // Step 1: uploadaa käyttäjän valitsema tiedosto sellaisenaan
         return new Promise(resolve => {
-            data.file.mv(`${config.staticDirPath}songs/${userId}/${data.id}.mp3`, err => {
+            data.file.mv(origFilePath, err => {
                 resolve(err);
             });
         })
-        // Step 3: insertoi genre (mikäli ei ole jo kannassa)
+        // Step 2: konvertoi biisi + lue sen duration
         .then(err => {
             if (err) throw err;
-            return this.db.getPool().query(
-                'insert ignore into genres (`name`) values (?)',
-                [data.genre]
+            return this.converter.convert(origFilePath, sampledFilePath,
+                data // note: data.duration täydentyy tämän kutsun aikana
             );
         })
+        .then(() => new Promise(resolve => {
+            this.fs.unlink(origFilePath, err => {
+                if (err) log.error('tmp-tiedoston ' + origFilePath +
+                                   ' poisto epäonnistui: ' + err.stack);
+                resolve();
+            });
+        }))
+        // Step 3: insertoi genre (mikäli ei ole jo kannassa)
+        .then(() => this.db.getPool().query(
+            'insert ignore into genres (`name`) values (?)',
+            [data.genre]
+        ))
         // Step 4: insertoi biisi
-        .then(() =>
-            this.db.getPool().query(
-                'insert into songs values (?,?,?,?,(' +
-                    'select id from genres where `name` = ?' +
-                '))',
-                [data.id, data.name, data.duration, data.artistId, data.genre]
-            )
-        )
+        .then(() => this.db.getPool().query(
+            'insert into songs values (?,?,?,?,(' +
+                'select id from genres where `name` = ?' +
+            '))',
+            [data.id, data.name, data.duration, data.artistId, data.genre]
+        ))
         .then(res => {
             if (res.affectedRows > 0) return {insertId: data.id,
                                               duration: data.duration};
@@ -153,4 +168,6 @@ function parseSong(row) {
     };
 }
 
-exports.songsRepository = new SongsRepository(makeDb(), fs);
+exports.songsRepository = new SongsRepository(makeDb(),
+                                              new SongFormatConverter(),
+                                              fs);

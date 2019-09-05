@@ -33,11 +33,10 @@ http {
 
 ## Testien ajaminen
 
-Testit ei tarvitse erillistä main-tiedostoa, vaan qunit osaa ajaa ne suoraan
-(katso komento back/package.jsonista).
+Katso koko komento back/package.jsonista.
 
 - Kaikki: `npm test`
-- Vain yksi: `npm test -- -f "testin nimi"`
+- Vain yksi: `npm test -- --filter="testin nimi"`
 
 ## ejs-globaalit
 
