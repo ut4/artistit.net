@@ -28,10 +28,16 @@ body {
     stroke-linejoin: round;
     fill: none;
 }
+.feather.filled {
+    fill: currentColor;
+}
 .icon-button {
     background-color: transparent;
     color: #fff;
     border: none;
+}
+input[name="sneakySneaky"] {
+    display: none;
 }
 
 /* -- layout.css ------------------------------------------------------------ */

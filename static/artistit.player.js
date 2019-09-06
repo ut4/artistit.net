@@ -11,9 +11,12 @@
  */
 function Player(rootEl, events) {
     var playPauseBtn = rootEl.querySelector('.play');
+    var likeBtn = rootEl.querySelector('.like');
     var progressEl = rootEl.querySelector('.progress');
     var iconEl = playPauseBtn.querySelector('use');
-    var state = {playing: false, paused: false};
+    var clicksValueEl = rootEl.querySelector('.clicks');
+    var likesValueEl = rootEl.querySelector('.likes');
+    var state = {playing: false, paused: false, isLikedByCurrentUser: false};
     var self = this;
     this.song = {
         id: rootEl.getAttribute('data-song-id'),
@@ -21,13 +24,15 @@ function Player(rootEl, events) {
         /** @prop {HTMLAudioElement} */
         audioEl: rootEl.querySelector('audio')
     };
-    this.clicksValueEl = rootEl.querySelector('.clicks');
     playPauseBtn.addEventListener('click', function() {
         var song = self.song;
         if (!state.playing) {
             song.audioEl.play();
             changeIcon(iconEl, 'play', 'pause');
-            if (!state.paused) events.onStart(song, self);
+            if (!state.paused) events.onStart(song, self).then(function(ok) {
+                if (ok) clicksValueEl.textContent =
+                            parseInt(clicksValueEl.textContent, 10) + 1;
+            });
         } else {
             song.audioEl.pause();
             changeIcon(iconEl, 'pause', 'play');
@@ -35,6 +40,15 @@ function Player(rootEl, events) {
         }
         state.playing = !state.playing;
         state.paused = !state.playing;
+    });
+    likeBtn.addEventListener('click', function() {
+        if (state.isLikedByCurrentUser) return;
+        state.isLikedByCurrentUser = true;
+        likeBtn.querySelector('svg').classList.add('filled');
+        events.onLike(self.song, self).then(function(ok) {
+            if (ok) likesValueEl.textContent =
+                        parseInt(likesValueEl.textContent, 10) + 1;
+        });
     });
     this.song.audioEl.addEventListener('timeupdate', function() {
         var song = self.song;
@@ -50,12 +64,6 @@ function Player(rootEl, events) {
         events.onEnd(song, self);
     });
 }
-/**
- * Lisää biisin kuuntelukertoja yhdellä.
- */
-Player.prototype.increasePlayClickCount = function() {
-    this.clicksValueEl.textContent = parseInt(this.clicksValueEl.textContent, 10) + 1;
-};
 
 function changeIcon(iconEl, from, to) {
     iconEl.setAttribute('xlink:href',

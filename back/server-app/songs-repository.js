@@ -103,7 +103,9 @@ class SongsRepository {
             .query(
                 'select s.`id`,s.`name`,g.`name` as `genre`,s.`duration`,' +
                         '(select count(`id`) from songListens ' +
-                        'where `songId`= s.`id`) as amountOfPlayClicks ' +
+                        'where `songId`= s.`id`) as amountOfPlayClicks, ' +
+                        '(select count(`songId`) from songLikes ' +
+                        'where `songId`= s.`id`) as amountOfLikes ' +
                 'from songs s ' +
                 'join genres g on (g.`id` = s.`genreId`) ' +
                 'where s.`artistId` = ? limit 10',
@@ -114,7 +116,7 @@ class SongsRepository {
             });
     }
     /**
-     * Insertoi $data.id:lle uuden kuuntelukerran.
+     * Insertoi biisille $data.id uuden kuuntelukerran.
      *
      * @param {{id: string; ipAddress: string; userId?: string;}} data
      * @returns {Promise<{insertId: number;}>}
@@ -152,10 +154,31 @@ class SongsRepository {
             else throw new Error('res.affectedRows < 1');
         });
     }
+    /**
+     * Insertoi biisille $data.id tykkäyksen käyttäjältä $data.userId|$data.ipAddress,
+     * tai ei tee mitään jos tykkäys oli suoritettu jo aikaisemmin.
+     *
+     * @param {{id: string; ipAddress: string; userId?: string;}} data
+     * @returns {Promise<{affectedRows: number;}>}
+     */
+    insertLike(data) {
+        let userIdOrIpAddress, identityIsIpAddress;
+        if (data.userId) {
+            userIdOrIpAddress = data.userId;
+            identityIsIpAddress = 0;
+        } else {
+            userIdOrIpAddress = data.ipAddress;
+            identityIsIpAddress = 1;
+        }
+        return this.db.getPool().query(
+            'insert ignore into songLikes values (?,?,?)',
+            [data.id, userIdOrIpAddress, identityIsIpAddress]
+        );
+    }
 }
 
 /**
- * @param {{id: string; name: string; genre: string; duration: string; amountOfPlayClicks: number;}}
+ * @param {{id: string; name: string; genre: string; duration: string; amountOfPlayClicks: number; amountOfLikes: number;}}
  * @returns {Song}
  */
 function parseSong(row) {
@@ -165,6 +188,7 @@ function parseSong(row) {
         genre: row.genre,
         duration: parseFloat(row.duration).toFixed(2),
         amountOfPlayClicks: parseInt(row.amountOfPlayClicks),
+        amountOfLikes: parseInt(row.amountOfLikes),
     };
 }
 

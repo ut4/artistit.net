@@ -95,8 +95,8 @@ CREATE TABLE songListens (
 
 CREATE TABLE songLikes (
     `songId` CHAR(20) NOT NULL,
-    `userId` CHAR(20) NOT NULL,
+    `userIdOrIpAddress` VARCHAR(20) NOT NULL,
+    `identityIsIpAddress` TINYINT UNSIGNED NOT NULL DEFAULT 0,
     FOREIGN KEY (`songId`) REFERENCES songs(`id`),
-    FOREIGN KEY (`userId`) REFERENCES users(`id`),
-    PRIMARY KEY (`songId`, `userId`)
+    PRIMARY KEY (`songId`, `userIdOrIpAddress`)
 ) DEFAULT CHARSET = utf8mb4;

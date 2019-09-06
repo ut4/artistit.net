@@ -5,7 +5,6 @@
  */
 
 /* eslint-disable no-console */
-const fs = require('fs');
 const sinon = require('sinon');
 const request = require('supertest');
 const {makeHttpTestCtx} = require('./testing-env.js');
@@ -13,12 +12,33 @@ const testData = require('./test-data.js');
 const config = require('../../config.js');
 const songRepoModule = require('../songs-repository.js');
 
+const testSong = {id: '-sssssssssssssssssss', name: 'test', duration: 2,
+                  artistId: testData.artist.id, genreId: 1};
+
 describe('songs-crud', () => {
     let tctx;
-    beforeAll(() => makeHttpTestCtx().then(ctx => {
-        tctx = ctx;
-    }));
-    afterAll(() => {
+    beforeAll(done => {
+        makeHttpTestCtx().then(ctx => {
+            tctx = ctx;
+            return tctx.getDb().getPool()
+                .query(
+                    'insert into songs values (?,?,?,?,?)',
+                    Object.values(testSong)
+                );
+        }).then(res => {
+            if (res.affectedRows < 1)
+                throw new Error('Testibiisin insertointi epäonnistui');
+            done();
+        });
+    });
+    afterAll(done => {
+        tctx.getDb().getPool()
+            .query('delete from songs where `id`=?', [testSong.id])
+            .then(res => {
+                if (res.affectedRows < 1)
+                    throw new Error('Testibiisin siivous epäonnistui');
+                done();
+            });
         tctx.tearDown();
     });
     it('POST /biisi validoi inputin', done => {
@@ -99,7 +119,7 @@ describe('songs-crud', () => {
     it('POST /biisi/kuuntelu validoi inputin', done => {
         request(tctx.getApp())
             .post('/biisi/kuuntelu')
-            .send('sneakySneaky=')
+            .type('form')
             .then(res => {
                 expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
@@ -113,11 +133,9 @@ describe('songs-crud', () => {
     });
     it('POST /biisi/kuuntelu insertoi kuuntelukerran tietokantaan', done => {
         const unixTimeNow = Math.floor(Date.now() / 1000);
-        let numTestRows = 0;
         request(tctx.getApp())
             .post('/biisi/kuuntelu')
-            .send('id=' + testData.song.id +
-                  '&sneakySneaky=')
+            .send('id=' + testData.song.id)
             .then(res => {
                 expect(res.status).toEqual(200);
                 expect(res.text).toBeGreaterThanOrEqual(1);
@@ -131,15 +149,14 @@ describe('songs-crud', () => {
                     );
             })
             .then(rows => {
-                numTestRows = rows.length;
-                expect(numTestRows).toEqual(1);
+                expect(rows.length).toEqual(1);
                 expect(rows[0].secondsListened).toEqual(0);
                 expect(rows[0].registeredAt).toBeGreaterThanOrEqual(unixTimeNow);
                 return tctx.getDb().getPool()
                     .query('delete from songListens where `id`=?', [rows[0].id]);
             })
             .then(res => {
-                if (res.affectedRows < numTestRows)
+                if (res.affectedRows < 1)
                     throw new Error('Testidatan siivous epäonnistui.');
             }).catch(err => {
                 console.error(err);
@@ -165,8 +182,7 @@ describe('songs-crud', () => {
                     testListenId = res.insertId;
                     return request(tctx.getApp())
                         .post('/biisi/kuuntelu')
-                        .send('id=' + testData.song.id +
-                              '&sneakySneaky=');
+                        .send('id=' + testData.song.id);
                 }
                 throw new Error('Testidatan insertointi epäonnistui');
             })
@@ -182,6 +198,53 @@ describe('songs-crud', () => {
             })
             .then(res => {
                 if (testListenId && res.affectedRows < 1)
+                    throw new Error('Testidatan siivous epäonnistui.');
+            }).catch(err => {
+                console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
+            }).finally(() => {
+                done();
+            });
+    });
+    it('POST /biisi/tykkaa validoi inputin', done => {
+        request(tctx.getApp())
+            .post('/biisi/tykkaa')
+            .type('form')
+            .then(res => {
+                expect(res.status).toEqual(400);
+                const errors = res.text.split('\n');
+                expect(errors[0]).toEqual('id on pakollinen');
+            }).catch(err => {
+                console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
+            }).finally(() => {
+                done();
+            });
+    });
+    it('POST /biisi/tykkaa insertoi tykkäyksen tietokantaan', done => {
+        const where = 'where `songId`=? and `userIdOrIpAddress`=?';
+        request(tctx.getApp())
+            .post('/biisi/tykkaa')
+            .send('id=' + testSong.id)
+            .then(res => {
+                expect(res.status).toEqual(200);
+                expect(res.text).toEqual('1');
+                return tctx.getDb().getPool()
+                    .query(
+                        'select `songId` from songLikes ' + where,
+                        [testData.song.id, testData.user.id]
+                    );
+            })
+            .then(rows => {
+                expect(rows.length).toEqual(1);
+                return tctx.getDb().getPool()
+                    .query(
+                        'delete from songLikes ' + where,
+                        [testData.song.id, testData.user.id]
+                    );
+            })
+            .then(res => {
+                if (res.affectedRows < 1)
                     throw new Error('Testidatan siivous epäonnistui.');
             }).catch(err => {
                 console.error(err);

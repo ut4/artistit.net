@@ -9,9 +9,8 @@ function artistViewSongsTabJs() {
     var httpScheduler = new window.artistit.AsyncQueue();
     for (var i = 0; i < rootSongEls.length; ++i) {
         window.artistit.makePlayer(rootSongEls[i], {
-            onStart: function(song, player) {
-                if (registerPlay(song))
-                    player.increasePlayClickCount();
+            onStart: function(song) {
+                return Promise.resolve(registerPlay(song));
             },
             onEnd: function(_song) {
                 // todo updatePlay(song.id);
@@ -22,6 +21,11 @@ function artistViewSongsTabJs() {
             onTimeUpdate: function(_song) {
                 // todo if (throttle(song.audioEl.currentTime-last>1000)) updatePlay(song.id);
             },
+            onLike: function(song) {
+                return registerLike(song).then(function(affectedRows) {
+                    return affectedRows == 1;
+                });
+            }
         });
     }
     /**
@@ -44,11 +48,25 @@ function artistViewSongsTabJs() {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'id=' + encodeURIComponent(song.id) + '&sneakySneaky='
+                body: 'id=' + encodeURIComponent(song.id)
             }).then(() => {
                 callNextTaskFn();
             });
         });
         return true;
+    }
+    /**
+     * Lähettää tykkäyksen backendiin tallennettavaksi.
+     */
+    function registerLike(song) {
+        return window.artistit.fetch(window.artistit.baseUrl + 'biisi/tykkaa', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'id=' + encodeURIComponent(song.id)
+        })
+        .then(function(res) {
+            return res.text();
+        });
     }
 }

@@ -2,7 +2,7 @@
     submitText: string;
     gotoOnCancel?: string;
 } %>
-<input id="i-sneakySneaky" type="hidden" value=""/>
+<input type="text" name="sneakySneaky" id="i-sneakySneaky" tabindex="-1" autocomplete="off">
 <div class="form-buttons">
     <button id="i-submit" class="primary" disabled><%- submitText %></button>
     <a href="<%- baseUrl + (typeof gotoOnCancel != 'undefined' ? gotoOnCancel : '') %>">Peruuta</a>

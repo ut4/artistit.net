@@ -31,6 +31,7 @@ interface Song {
     genre: string;
     duration: string;
     amountOfPlayClicks: number;
+    amountOfLikes: number;
 }
 ```
 
@@ -60,8 +61,8 @@ interface Db {
 
 ```typescript
 interface Player {
+    song: Song;
     new (rootEl: HTMLElement, events: PlayerEvents);
-    increasePlayClickCount(): void;
 }
 ```
 
@@ -69,7 +70,7 @@ interface Player {
 
 ```typescript
 interface Song {
-    id: string;,
+    id: string;
     duration: number;
     audioEl: HTMLAudioElement;
 }
@@ -79,9 +80,18 @@ interface Song {
 
 ```typescript
 interface PlayerEvents {
-    onStart: (song: Song, player: Player): void;
-    onEnd: (song: Song): void;
-    onPause: (song: Song): void;
-    onTimeUpdate: (song: Song): void;
+    /**
+     * Promisen palauttaessa true = lisää kuuntelumäärää yhdellä,
+     *                       false = älä lisää kuuntelumäärää.
+     */
+    onStart: (song: Song, player: Player): Promise<boolean>;
+    onEnd: (song: Song, player: Player): void;
+    onPause: (song: Song, player: Player): void;
+    onTimeUpdate: (song: Song, player: Player): void;
+    /**
+     * Promisen palauttaessa true = lisää tykkäysmäärää yhdellä,
+     *                       false = älä lisää tykkäysmäärää.
+     */
+    onLike: (song: Song, player: Player): Promise<boolean>;
 }
 ```

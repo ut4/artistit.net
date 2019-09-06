@@ -15,7 +15,9 @@
             <h2><%= song.name %></h2>
             <span class="progress"></span>
             <button class="play"><%- featherSvg('play') %></button>
+            <button class="like"><%- featherSvg('heart') %></button>
             <div>Klikit: <span class="clicks"><%- song.amountOfPlayClicks %></span></div>
+            <div>Tykkäykset: <span class="likes"><%- song.amountOfLikes %></span></div>
             <audio>
                 <source src="<%= url %>" type="audio/mpeg">
                 <p>Selaimesi ei tue HTML5 audiota. <a href="<%= url %>">Lataa</a> biisi sen sijaan?.</p>

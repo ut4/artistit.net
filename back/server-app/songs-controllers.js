@@ -24,6 +24,8 @@ class SongsControllers {
         // roles: all
         app.post(baseUrl + 'biisi/kuuntelu', ensureHasContentType(),
             (a, b) => makeCtrl().registerListen(a, b));
+        app.post(baseUrl + 'biisi/tykkaa', ensureHasContentType(),
+            (a, b) => makeCtrl().registerLike(a, b));
     }
     /**
      * @param {SongsRepository} repo
@@ -32,7 +34,7 @@ class SongsControllers {
         this.repo = repo;
     }
     /**
-     * Renderöi biisin lataus -sivun.
+     * GET /biisi/uusi/:artistId: Renderöi biisin lataus -sivun.
      */
     newSongView(req, res) {
         let props = {artistId: req.params.artistId};
@@ -40,8 +42,8 @@ class SongsControllers {
         res.render('song-upload-view', props);
     }
     /**
-     * Vastaanottaa /biisi/uusi -sivun lomakedatan, validoi sen, ja insertoi
-     * levylle ja tietokantaan.
+     * POST /biisi: Vastaanottaa /biisi/uusi -sivun lomakedatan, validoi sen, ja
+     * insertoi levylle ja tietokantaan.
      */
     createSong(req, res) {
         const errors = [];
@@ -81,15 +83,14 @@ class SongsControllers {
             });
     }
     /**
-     * Lisää $req.body.songId:lle kuuntelukerran (0 min 0 sek) ja linkkaa sen
-     * $req.user.id:lle, tai pyynnön ip-osoitteeseen mikäli kyseessä vierailija.
+     * POST /biisi/kuuntelu: Lisää $req.body.songId:lle kuuntelukerran (0 min 0 sek)
+     * ja linkkaa sen $req.user.id:lle, tai pyynnön ip-osoitteeseen (mikäli
+     * kyseessä vierailija).
      */
     registerListen(req, res) {
         const errors = [];
         if (!req.body.id) errors.push('id on pakollinen');
         else if (!isValidFireId(req.body.id)) errors.push('id ei kelpaa');
-        if (!req.body.hasOwnProperty('sneakySneaky') ||
-            req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;
@@ -99,14 +100,42 @@ class SongsControllers {
             id: req.body.id,
             userId: req.user.id,
             ipAddress: req.ip,
-        }).then(result => {
+        })
+        .then(result => {
             res.send(result.insertId.toString());
-        }).catch(err => {
-            // Note to self: tämä voi palauttaa errorin (res.affectedRows < 1),
+        })
+        .catch(err => {
+            // Note to self: tämä palauttaa errorin (res.affectedRows < 1),
             // jos kuuntelukerta insertoidaan liian aikaisin. Tätä ei kuitenkaan
             // normaalissa käytössä tapahdu, koska kuuntelukertojen väliset ajat
             // tsekataan frontendissä
             log.error('Biisikuuntelun lisäys tietokantaan epäonnistui', err.stack);
+            res.status(500).send('-1');
+        });
+    }
+    /**
+     * POST /biisi/tykkaa: Merkkaa biisin $req.id tykätyksi käyttäjältä
+     * $req.user.id tai $req.ip (mikäli kyseessä vierailija).
+     */
+    registerLike(req, res) {
+        const errors = [];
+        if (!req.body.id) errors.push('id on pakollinen');
+        else if (!isValidFireId(req.body.id)) errors.push('id ei kelpaa');
+        if (errors.length) {
+            res.status(400).send(errors.join('\n'));
+            return;
+        }
+        //
+        this.repo.insertLike({
+            id: req.body.id,
+            userId: req.user.id,
+            ipAddress: req.ip,
+        })
+        .then(result => {
+            res.send(result.affectedRows.toString());
+        })
+        .catch(err => {
+            log.error('Tykkäyksen lisäys tietokantaan epäonnistui', err.stack);
             res.status(500).send('-1');
         });
     }

@@ -42,7 +42,7 @@ class ArtistsControllers {
         this.tabLoader = tabLoader;
     }
     /**
-     * Renderöi artistisivun.
+     * GET /artisti/:artistId: Renderöi artistisivun.
      */
     indexView(req, res) {
         if (!isValidFireId(req.params.artistId)) {
@@ -57,14 +57,14 @@ class ArtistsControllers {
         });
     }
     /**
-     * Renderöi artistin luonti -lomakkeen.
+     * GET /artisti/uusi: Renderöi artistin luonti -lomakkeen.
      */
     newArtistView(req, res) {
         res.render('artist-create-view', validationConstants);
     }
     /**
-     * Vastaanottaa /artisti/uusi -sivun lomakedatan, validoi sen, ja insertoi
-     * tietokantaan.
+     * POST /artisti: Vastaanottaa /artisti/uusi -sivun lomakedatan, validoi sen,
+     * ja insertoi tietokantaan.
      */
     createArtist(req, res) {
         const errors = [];
@@ -82,15 +82,17 @@ class ArtistsControllers {
             name: req.body.name,
             tagline: req.body.tagline || null,
             userId: req.body.userId
-        }).then(result => {
+        })
+        .then(result => {
             res.send(result.insertId.toString());
-        }).catch(err => {
+        })
+        .catch(err => {
             log.error('Artistin lisäys tietokantaan epäonnistui', err.stack);
             res.status(500).send('-1');
         });
     }
     /**
-     * Renderöi artistin muokkaus -lomakkeen.
+     * GET /artisti/muokkaa/:artistId: Renderöi artistin muokkaus -lomakkeen.
      */
     editArtistView(req, res) {
         this.fetchArtist(req, res, artist => {
@@ -106,8 +108,8 @@ class ArtistsControllers {
         });
     }
     /**
-     * Vastaanottaa /artisti/muokkaa -sivun lomakedatan, validoi sen, ja päivit-
-     * tää tietokantaan.
+     * PUT /artisti: Vastaanottaa /artisti/muokkaa -sivun lomakedatan, validoi sen,
+     * ja päivittää tietokantaan.
      */
     updateArtist(req, res) {
         const errors = [];
@@ -127,9 +129,11 @@ class ArtistsControllers {
             name: req.body.name,
             tagline: req.body.tagline,
             widgets: req.body.widgets,
-        }).then(result => {
+        })
+        .then(result => {
             res.send(result.affectedRows.toString());
-        }).catch(err => {
+        })
+        .catch(err => {
             log.error('Artistin päivittäminen tietokantaan epäonnistui', err.stack);
             res.status(500).send('-1');
         });

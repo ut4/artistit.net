@@ -24,11 +24,11 @@ if (step == 'step1' || step == 'all') step1();
 if (step == 'step2' || step == 'all') step2();
 
 function step1() {
-    exec(connectCmd + ' < schema.mariadb.sql', 'Creating database schema');
+    exec(connectCmd + ' < schema.mariadb.sql', 'Luodaan tietokantarakenne');
 }
 
 function step2() {
-    exec(connectCmd + ' < example-data.mariadb.sql', 'Inserting test data');
+    exec(connectCmd + ' < example-data.mariadb.sql', 'Insertoidaan testidataa');
 }
 
 ////////////////////////////////////////////////////////////////////////////////

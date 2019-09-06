@@ -3,7 +3,6 @@ import {renderIntoDocument} from './testutils.js';
 QUnit.module('artist-create-view', () => {
     const pageScriptFn = window.artistCreateViewJs;
     QUnit.test('todo', assert => {
-        assert.expect(1);
         const data = {maxArtistNameLen: 2, maxTaglineLen: 2, user: {id: 'a'}};
         const pageScriptProps = Object.assign({}, data);
         pageScriptProps.userId = data.user.id;
