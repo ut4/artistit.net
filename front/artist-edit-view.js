@@ -1,5 +1,5 @@
 /**
- * /artisti/muokkaa/:artistiId -sivun js.
+ * /artisti/muokkaa/:artistId -sivun js.
  *
  * @param {{maxArtistNameLen: number; maxTaglineLen: number; artistId: string;}} props
  */

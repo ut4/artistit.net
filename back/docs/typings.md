@@ -32,6 +32,7 @@ interface Song {
     duration: string;
     amountOfPlayClicks: number;
     amountOfLikes: number;
+    isLikedByCurrentUser?: boolean;
 }
 ```
 

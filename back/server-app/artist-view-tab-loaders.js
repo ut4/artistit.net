@@ -22,10 +22,11 @@ class ArtistViewTabLoaders {
      *
      * @param {string} tabName 'seinä'|'biisit'
      * @param {Artist|{}} artist
+     * @param {express.Request} req
      * @param {(data: Object|{}, normalizedTabName: string) => any} then
      * @access public
      */
-    loadDataFor(tabName, artist, then) {
+    loadDataFor(tabName, artist, req, then) {
         let loaderMethodName = this.tabNameToLoaderMethodName[tabName];
         let normalizedTabName = tabName;
         if (!loaderMethodName) {
@@ -33,7 +34,7 @@ class ArtistViewTabLoaders {
             normalizedTabName = 'seinä';
         }
         if (artist.id) {
-            this[loaderMethodName](artist, data => {
+            this[loaderMethodName](artist, req, data => {
                 then(data, normalizedTabName);
             });
         } else {
@@ -44,21 +45,23 @@ class ArtistViewTabLoaders {
      * Lataa artistisivun seinä-tabin datan.
      *
      * @param {Artist} artist
+     * @param {express.Request} req
      * @param {(data: Object) => any} then
      * @access private
      */
-    loadFeedTabData(artist, then) {
+    loadFeedTabData(artist, req, then) {
         then({widgets: JSON.parse(artist.widgets)});
     }
     /**
      * Lataa artistisivun biisit-tabin datan.
      *
      * @param {Artist} artist
+     * @param {express.Request} req
      * @param {(data: Object) => any} then
      * @access private
      */
-    loadSongsTabData(artist, then) {
-        this.songsRepo.getSongsByArtist(artist.id)
+    loadSongsTabData(artist, req, then) {
+        this.songsRepo.getSongsByArtist(artist.id, req.user.id || req.ip)
             .then(songs => {
                 then({songs});
             })

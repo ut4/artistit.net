@@ -1,5 +1,5 @@
 /**
- * /artisti/:artistiId?näytä=biisit -sivun js.
+ * /artisti/:artistId?näytä=biisit -sivun js.
  */
 function artistViewSongsTabJs() {
     var rootSongEls = document.querySelectorAll('.song');

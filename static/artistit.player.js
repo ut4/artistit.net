@@ -16,7 +16,9 @@ function Player(rootEl, events) {
     var iconEl = playPauseBtn.querySelector('use');
     var clicksValueEl = rootEl.querySelector('.clicks');
     var likesValueEl = rootEl.querySelector('.likes');
-    var state = {playing: false, paused: false, isLikedByCurrentUser: false};
+    var state = {playing: false, paused: false, isLikedByCurrentUser:
+                 rootEl.getAttribute('data-song-isLikedByCurrentUser') == 'true'};
+    if (state.isLikedByCurrentUser) fillIcon(likeBtn.querySelector('svg'));
     var self = this;
     this.song = {
         id: rootEl.getAttribute('data-song-id'),
@@ -44,7 +46,7 @@ function Player(rootEl, events) {
     likeBtn.addEventListener('click', function() {
         if (state.isLikedByCurrentUser) return;
         state.isLikedByCurrentUser = true;
-        likeBtn.querySelector('svg').classList.add('filled');
+        fillIcon(likeBtn.querySelector('svg'));
         events.onLike(self.song, self).then(function(ok) {
             if (ok) likesValueEl.textContent =
                         parseInt(likesValueEl.textContent, 10) + 1;
@@ -68,6 +70,9 @@ function Player(rootEl, events) {
 function changeIcon(iconEl, from, to) {
     iconEl.setAttribute('xlink:href',
         iconEl.getAttribute('xlink:href').replace(from, to));
+}
+function fillIcon(svgEl) {
+    svgEl.classList.add('filled');
 }
 window.artistit.makePlayer = function(el, events) { return new Player(el, events); };
 }());

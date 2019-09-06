@@ -96,20 +96,28 @@ class SongsRepository {
     }
     /**
      * @param {string} artistId
+     * @param {string?} currentUserIdOrIpAddress = null
      * @returns {Promise<Array<Song>>}
      */
-    getSongsByArtist(artistId) {
+    getSongsByArtist(artistId, currentUserIdOrIpAddress = null) {
         return this.db.getPool()
             .query(
                 'select s.`id`,s.`name`,g.`name` as `genre`,s.`duration`,' +
                         '(select count(`id`) from songListens ' +
                         'where `songId`= s.`id`) as amountOfPlayClicks, ' +
                         '(select count(`songId`) from songLikes ' +
-                        'where `songId`= s.`id`) as amountOfLikes ' +
+                        'where `songId`= s.`id`) as amountOfLikes, ' +
+                        (currentUserIdOrIpAddress
+                            ? '(select `songId` from songLikes ' +
+                              'where `songId`=s.`id` and `userIdOrIpAddress`=?)'
+                            : 'null'
+                        ) + ' as isLikedByCurrentUser ' +
                 'from songs s ' +
                 'join genres g on (g.`id` = s.`genreId`) ' +
                 'where s.`artistId` = ? limit 10',
-                [artistId]
+                currentUserIdOrIpAddress
+                    ? [currentUserIdOrIpAddress, artistId]
+                    : [artistId]
             )
             .then(rows => {
                 return rows.map(song => parseSong(song));
@@ -178,7 +186,7 @@ class SongsRepository {
 }
 
 /**
- * @param {{id: string; name: string; genre: string; duration: string; amountOfPlayClicks: number; amountOfLikes: number;}}
+ * @param {{id: string; name: string; genre: string; duration: string; amountOfPlayClicks: number; amountOfLikes: number; isLikedByCurrentUser?: string;}}
  * @returns {Song}
  */
 function parseSong(row) {
@@ -189,6 +197,7 @@ function parseSong(row) {
         duration: parseFloat(row.duration).toFixed(2),
         amountOfPlayClicks: parseInt(row.amountOfPlayClicks),
         amountOfLikes: parseInt(row.amountOfLikes),
+        isLikedByCurrentUser: row.isLikedByCurrentUser != null
     };
 }
 

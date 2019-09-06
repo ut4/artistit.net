@@ -50,7 +50,7 @@ class ArtistsControllers {
             return;
         }
         this.fetchArtist(req, res, artist => {
-            this.tabLoader.loadDataFor(req.query['näytä'], artist,
+            this.tabLoader.loadDataFor(req.query['näytä'], artist, req,
                 (tabData, tabName) => {
                     res.render('artist-index-view', {artist, tabName, tabData});
                 });
