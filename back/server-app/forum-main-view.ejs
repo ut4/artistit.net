@@ -1,0 +1,43 @@
+<%# lokaalit tässä tiedostossa: {
+    topics: Array<Topic>|null;
+} %>
+<%- include('layout-header', {title: 'Keskustelut'}); %>
+<% if (topics && topics.length) { %>
+    <header class="default-background forums">
+        <h1>Keskustelut</h1>
+        <p>...</p>
+    </header>
+    <section class="main">
+        <table class="topic-list">
+            <thead><tr>
+                <th>Alue</th>
+                <th>Uusin</th>
+            </tr></thead>
+        <% for (const topic of topics) { %>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <a href="<%- `${baseUrl}foorumi/alue/${topic.id}` %>"><%- topic.title %></a>
+                    </td>
+                </tr>
+            <% if (topic.latestThreads.length) {
+                for (const thread of topic.latestThreads) { %>
+                <tr>
+                    <td><a href="<%- `${baseUrl}foorumi/lanka/${thread.id}` %>"><%= thread.title %></a></td>
+                    <td><%- thread.createdAt %></td>
+                </tr>
+                <% }
+            } else { %>
+                <tr>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+            <% } %>
+            </tbody>
+        <% } %>
+        </table>
+    </section>
+<% } else { %>
+    <p>Jokin meni pieleen.</p>
+<% } %>
+<%- include('layout-footer'); %>

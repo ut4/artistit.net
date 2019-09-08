@@ -1,7 +1,7 @@
 /*
  * Tässä tiedostossa:
  *
- * Acceptance-testit /biisit-alkuisille reiteille.
+ * Acceptance/integraatiotestit /biisit-alkuisille reiteille.
  */
 
 /* eslint-disable no-console */
@@ -25,7 +25,8 @@ describe('songs-crud', () => {
                     'insert into songs values (?,?,?,?,?)',
                     Object.values(testSong)
                 );
-        }).then(res => {
+        })
+        .then(res => {
             if (res.affectedRows < 1)
                 throw new Error('Testibiisin insertointi epäonnistui');
             done();
@@ -53,10 +54,12 @@ describe('songs-crud', () => {
                 expect(errors[1]).toEqual('file on pakollinen');
                 expect(errors[2]).toEqual('genre on pakollinen');
                 expect(errors[3]).toEqual('artistId on pakollinen');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -124,10 +127,12 @@ describe('songs-crud', () => {
                 expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
                 expect(errors[0]).toEqual('id on pakollinen');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -158,10 +163,12 @@ describe('songs-crud', () => {
             .then(res => {
                 if (res.affectedRows < 1)
                     throw new Error('Testidatan siivous epäonnistui.');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -199,10 +206,12 @@ describe('songs-crud', () => {
             .then(res => {
                 if (testListenId && res.affectedRows < 1)
                     throw new Error('Testidatan siivous epäonnistui.');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -214,10 +223,12 @@ describe('songs-crud', () => {
                 expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
                 expect(errors[0]).toEqual('id on pakollinen');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -246,10 +257,12 @@ describe('songs-crud', () => {
             .then(res => {
                 if (res.affectedRows < 1)
                     throw new Error('Testidatan siivous epäonnistui.');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });

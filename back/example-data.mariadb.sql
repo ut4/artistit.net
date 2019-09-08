@@ -16,3 +16,25 @@ insert into tags values
 insert into songTags values
 ("-Lkbki8w-8PgWYRje-ta", 1),
 ("-Lkbki8w-8PgWYRje-ta", 2);
+
+--
+
+insert into topics values
+(1 , 'Musiikin tekeminen', 'Musiikin tekeminen-alueen kuvaus, todo.'),
+(2 , 'Yhteistyökumppanin etsijät', 'Yhteistyökumppanin etsijät-alueen kuvaus, todo.'),
+(3 , 'Yleistä keskustelua', 'Yleistä keskustelua-alueen kuvaus, todo.'),
+(4 , 'Demot', 'Demot-alueen kuvaus, todo.'),
+(5 , 'Kilpailut', 'Kilpailut-alueen kuvaus, todo.'),
+(6 , 'Hardware', 'Hardware-alueen kuvaus, todo.'),
+(7 , 'Software', 'Software-alueen kuvaus, todo.'),
+(8 , 'Osta & Myy', 'Osta & Myy-alueen kuvaus, todo.'),
+(9 , 'Hiekkalaatikko', 'Hiekkalaatikko-alueen kuvaus, todo.'),
+(10, 'artistit.net', 'artistit.net-alueen kuvaus, todo.');
+insert into threads values
+(1, 'Mun demo', 1567945260, 0, 4, '-abcdefghijklmnopqrs'),
+(2, 'Mun demo2', 1567858860, 0, 4, '-abcdefghijklmnopqrs'),
+(3, 'Help 1', 1567772460, 0, 1, '-abcdefghijklmnopqrs');
+insert into posts values
+(1, 'Mun demo ap', 1567945261, 1, '-abcdefghijklmnopqrs'),
+(2, 'Mun demo2 ap', 1567858861, 2, '-abcdefghijklmnopqrs'),
+(3, 'Help 1 ap', 1567772461, 3, '-abcdefghijklmnopqrs');

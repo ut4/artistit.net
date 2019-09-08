@@ -49,7 +49,8 @@ function artistViewSongsTabJs() {
                 credentials: 'same-origin',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: 'id=' + encodeURIComponent(song.id)
-            }).then(() => {
+            })
+            .then(() => {
                 callNextTaskFn();
             });
         });

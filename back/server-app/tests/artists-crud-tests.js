@@ -1,7 +1,7 @@
 /*
  * Tässä tiedostossa:
  *
- * Acceptance-testit /artisti-alkuisille reiteille.
+ * Acceptance/integraatiotestit /artisti-alkuisille reiteille.
  */
 
 /* eslint-disable no-console */
@@ -29,10 +29,12 @@ describe('artists-crud', () => {
                 const errors = res.text.split('\n');
                 expect(errors[0]).toEqual('name on pakollinen');
                 expect(errors[1]).toEqual('userId on pakollinen');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -46,14 +48,17 @@ describe('artists-crud', () => {
             .then(res => {
                 expect(res.status).toEqual(200);
                 return fetchArtistFromDb(tctx, testInput.name);
-            }).then(rows => {
+            })
+            .then(rows => {
                 const actuallyInserted = rows[0];
                 expect(actuallyInserted.name).toEqual(testInput.name);
                 expect(actuallyInserted.id.length).toEqual(20);
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -64,10 +69,12 @@ describe('artists-crud', () => {
                 expect(res.status).toEqual(200);
                 const n = testData.artist.name;
                 expect(res.text.split('<h1>')[1].substr(0, n.length)).toEqual(n);
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -82,10 +89,12 @@ describe('artists-crud', () => {
                 expect(errors[1]).toEqual('id on pakollinen');
                 expect(errors[2]).toEqual('tagline on pakollinen');
                 expect(errors[3]).toEqual('widgets on pakollinen');
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });
@@ -120,20 +129,24 @@ describe('artists-crud', () => {
                           '&widgets=' + testInput.widgets +
                           '&sneakySneaky='
                     );
-            }).then(res => {
+            })
+            .then(res => {
                 expect(res.status).toEqual(200);
                 expect(res.text).toEqual('1');
                 return fetchArtistFromDb(tctx, testInput.name);
-            }).then(rows => {
+            })
+            .then(rows => {
                 const actuallyInserted = rows[0];
                 expect(actuallyInserted.name).toEqual(testInput.name);
                 expect(actuallyInserted.tagline).toEqual(testInput.tagline);
                 expect(actuallyInserted.widgets).toEqual(testInput.widgets);
                 expect(actuallyInserted.id.length).toEqual(20);
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.error(err);
                 expect(1).toBe('Ei pitäisi heittää virhettä');
-            }).finally(() => {
+            })
+            .finally(() => {
                 done();
             });
     });

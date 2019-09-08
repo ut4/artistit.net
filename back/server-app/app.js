@@ -15,6 +15,7 @@ const {AppControllers} = require('./app-controllers.js');
 const {AuthControllers} = require('./auth-controllers.js');
 const {ArtistsControllers} = require('./artists-controllers.js');
 const {SongsControllers} = require('./songs-controllers.js');
+const {ForumControllers} = require('./forum-controllers.js');
 
 /**
  * @param {string} mode 'prod'|'demo'|'test'
@@ -55,6 +56,7 @@ exports.makeApp = (mode, config) => {
     AuthControllers.registerRoutes(app, config.baseUrl);
     ArtistsControllers.registerRoutes(app, config.baseUrl);
     SongsControllers.registerRoutes(app, config.baseUrl);
+    ForumControllers.registerRoutes(app, config.baseUrl);
     //
     return app;
 };

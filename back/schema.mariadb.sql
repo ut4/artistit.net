@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS threadSubs;
+DROP TABLE IF EXISTS threads;
+DROP TABLE IF EXISTS topics;
+--
 DROP TABLE IF EXISTS songLikes;
 DROP TABLE IF EXISTS songListens;
 DROP TABLE IF EXISTS songTags;
@@ -99,4 +104,45 @@ CREATE TABLE songLikes (
     `identityIsIpAddress` TINYINT UNSIGNED NOT NULL DEFAULT 0,
     FOREIGN KEY (`songId`) REFERENCES songs(`id`),
     PRIMARY KEY (`songId`, `userIdOrIpAddress`)
+) DEFAULT CHARSET = utf8mb4;
+
+--
+
+CREATE TABLE topics (
+    `id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(64) NOT NULL,
+    `description` TEXT,
+    PRIMARY KEY (`id`)
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE threads (
+    `id` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(128) NOT NULL,
+    `createdAt` INT NOT NULL,
+    `isLocked` TINYINT NOT NULL DEFAULT 0,
+    `topicId` SMALLINT UNSIGNED NOT NULL,
+    `userId` CHAR(20) NOT NULL,
+    FOREIGN KEY (`topicId`) REFERENCES topics(`id`),
+    FOREIGN KEY (`userId`) REFERENCES users(`id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE threadSubs (
+    `threadId` MEDIUMINT UNSIGNED NOT NULL,
+    `userId` CHAR(20) NOT NULL,
+    FOREIGN KEY (`threadId`) REFERENCES threads(`id`),
+    FOREIGN KEY (`userId`) REFERENCES users(`id`),
+    PRIMARY KEY (`threadId`, `userId`)
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE posts (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `content` TEXT,
+    `createdAt` INT NOT NULL,
+    `threadId` MEDIUMINT UNSIGNED NOT NULL,
+    `userId` CHAR(20) NOT NULL,
+    FOREIGN KEY (`threadId`) REFERENCES threads(`id`),
+    FOREIGN KEY (`userId`) REFERENCES users(`id`),
+    FULLTEXT(`content`),
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4;

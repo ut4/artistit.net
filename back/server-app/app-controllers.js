@@ -11,7 +11,7 @@ class AppControllers {
         app.get(baseUrl, (a, b) => makeCtrl().indexView(a, b));
     }
     /**
-     * Renderöi artistit.netin etusivun.
+     * GET /: Renderöi artistit.netin etusivun.
      */
     indexView(req, res) {
         res.render('app-home-view', {kirjauduttu: req.query.kirjauduttu == '1'});

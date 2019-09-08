@@ -56,6 +56,28 @@ interface Db {
 
 [mariadb-connector-nodejs docs](https://github.com/MariaDB/mariadb-connector-nodejs/blob/master/documentation/promise-api.md#poolgetconnection--promise)
 
+## Topic
+
+```typescript
+interface Topic {
+    id: number;
+    title: string;
+    description: string;
+    latestThreads?: Array<Thread>;
+}
+```
+
+## Thread
+
+```typescript
+interface Thread {
+    id: number;
+    title: string;
+    topicId: number;
+    createdAt: number;
+}
+```
+
 # Selainympäristö
 
 ## Player
