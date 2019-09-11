@@ -17,8 +17,8 @@ class ArtistViewTabLoaders {
         };
     }
     /**
-     * Lataa artistisivun $tabName-tabille datan, ja tarjoilee sen callbackiin. Jos
-     * $tabName on virheellinen, palauttaa oletustabin (seinä) datan.
+     * Lataa artistisivun $tabName-tabille datan, ja tarjoilee sen callbackiin.
+     * Jos $tabName on virheellinen, palauttaa oletustabin (seinä) datan.
      *
      * @param {string} tabName 'seinä'|'biisit'
      * @param {Artist|{}} artist
@@ -50,6 +50,8 @@ class ArtistViewTabLoaders {
      * @access private
      */
     loadFeedTabData(artist, req, then) {
+        // Note: artist.widgets-json sisältää itsessään jo widgetin tarvitseman
+        // datan, joten erillisiä tietokantahakuja ei tässä kohtaa tarvita
         then({widgets: JSON.parse(artist.widgets)});
     }
     /**

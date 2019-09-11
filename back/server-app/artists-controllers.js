@@ -52,7 +52,8 @@ class ArtistsControllers {
         this.fetchArtist(req, res, artist => {
             this.tabLoader.loadDataFor(req.query['näytä'], artist, req,
                 (tabData, tabName) => {
-                    res.render('artist-index-view', {artist, tabName, tabData});
+                    res.render('artist-index-view',
+                               {artist, tabName, tabData, templates: {}});
                 });
         });
     }
@@ -60,7 +61,8 @@ class ArtistsControllers {
      * GET /artisti/uusi: Renderöi artistin luonti -lomakkeen.
      */
     newArtistView(req, res) {
-        res.render('artist-create-view', validationConstants);
+        res.render('artist-create-view', Object.assign({templates: {}},
+                                                       validationConstants));
     }
     /**
      * POST /artisti: Vastaanottaa /artisti/uusi -sivun lomakedatan, validoi sen,

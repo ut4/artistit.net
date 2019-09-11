@@ -7,7 +7,7 @@ insert into connectedAuthAccounts values
 insert into genres values
 (1, "Ambient");
 insert into artists values
-("-LkbhE8-_8AZFR1rPgtc", "Artistin nimi", "...", "-LkbhF4iOa032wUATTzV", "[]", "1564035762", "-abcdefghijklmnopqrs");
+("-LkbhE8-_8AZFR1rPgtc", "Artistin nimi", "...", "-LkbhF4iOa032wUATTzV", "[{\"type\":\"info-box\",\"data\":{\"infos\":[{\"title\":\"Jäsenet\",\"text\":\"Foo\"}]}},{\"type\":\"twitter-feed\",\"data\":{\"tid\":123}}]", "1564035762", "-abcdefghijklmnopqrs");
 insert into songs values
 ("-Lkbki8w-8PgWYRje-ta", "Biisin nimi", 0.270, "-LkbhE8-_8AZFR1rPgtc", 1);
 insert into tags values

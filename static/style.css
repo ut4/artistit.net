@@ -42,6 +42,14 @@ a {
 a:hover {
     text-decoration: underline;
 }
+.icon-h3 {
+    border-bottom: 3px solid #54cfff;
+    font: normal 22px/46px "Fira sans heavy";
+    padding-bottom: 2px;
+}
+.icon-h3 .feather {
+    margin: 0 8px -6px 0;
+}
 .feather {
     width: 26px;
     height: 26px;
@@ -58,6 +66,19 @@ a:hover {
     background-color: transparent;
     color: #fff;
     border: none;
+    cursor: pointer;
+}
+.icon-button.filled {
+    background-color: #ed8247;
+    border-radius: 2px;
+    padding: 3px 5px 4px 10px;
+    line-height: 18px;
+}
+.icon-button.filled .feather {
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-right: 6px;
 }
 input[name="sneakySneaky"] {
     display: none;
@@ -223,6 +244,30 @@ h1 .feather {
     font: normal 14px/14px "Fira sans light";
     margin-bottom: 24px;
 }
+
+.artist-widgets-list {
+    overflow: hidden;
+    position: relative;
+    min-height: 54px;
+}
+.artist-widgets-list > div {
+    width: 50%;
+    float: left;
+    position: relative;
+}
+.artist-widgets-list > div > div {
+    position: relative;
+    margin: 8px;
+}
+.artist-widgets-list .icon-button {
+    right: 12px;
+    position: absolute;
+    top: 9px;
+}
+.artist-widgets-list > .icon-button {
+    left: 0;
+}
+
 
 /* -- app-forum.css --------------------------------------------------------- */
 .topic-list a {
