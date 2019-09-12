@@ -15,4 +15,5 @@
     githubClientID: 'abc.cde...',
     githubClientSecret: '1234...',
     githubCallbackURL: '/url/foo/',
+    demoUserId: '-abcdefghijklmnopqrs',
 }));

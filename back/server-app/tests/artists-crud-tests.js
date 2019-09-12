@@ -6,8 +6,9 @@
 
 /* eslint-disable no-console */
 const request = require('supertest');
-const {makeHttpTestCtx} = require('./testing-env.js');
-const testData = require('./test-data.js');
+const testUtils = require('./setup/test-utils.js');
+const {makeHttpTestCtx} = require('./setup/testing-env.js');
+const testData = require('./setup/test-data.js');
 
 describe('artists-crud', () => {
     let tctx;
@@ -62,13 +63,37 @@ describe('artists-crud', () => {
                 done();
             });
     });
-    it('GET /artisti/:artistId renderöi artistisivun', done => {
+    it('GET /artisti/:artistId ilman credentiaaleja renderöi artistisivun ja widgetit', done => {
+        const app = tctx.getApp();
+        const origUserId = app.locals.user.id;
+        app.locals.user.id = 'someOtherArtistUserId';
+        request(app)
+            .get('/artisti/' + testData.artist.id)
+            .then(res => {
+                expect(res.status).toEqual(200);
+                const n = testData.artist.name;
+                const $ = testUtils.parseDocumentBody(res.text);
+                expect($('h1').text()).toEqual(n);
+                expect($('.artist-widgets-list').length).toEqual(1);
+            })
+            .catch(err => {
+                console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
+            })
+            .finally(() => {
+                app.locals.user.id = origUserId;
+                done();
+            });
+    });
+    it('GET /artisti/:artistId credentiaaleilla renderöi artistisivun mutta ei widgettejä', done => {
         request(tctx.getApp())
             .get('/artisti/' + testData.artist.id)
             .then(res => {
                 expect(res.status).toEqual(200);
                 const n = testData.artist.name;
-                expect(res.text.split('<h1>')[1].substr(0, n.length)).toEqual(n);
+                const $ = testUtils.parseDocumentBody(res.text);
+                expect($('h1').text()).toEqual(n);
+                expect($('.artist-widgets-list').length).toEqual(0);
             })
             .catch(err => {
                 console.error(err);

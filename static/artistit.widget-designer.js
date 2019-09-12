@@ -1,59 +1,60 @@
 /*
- * Tässä tiedostossa: window.artistit.WidgetDesigner.
+ * Tässä tiedostossa: window.artistit.WidgetDesigner: react-komponentti, jolla
+ * artisti voi rakennella oman sivunsa.
  */
 
 /* eslint-disable strict */
 (function() {
 'use strict';
-var featherSvg = function(iconId) {
-    return '<svg class="feather">' +
-        '<use xlink:href="' + window.artistit.staticBaseUrl + 'feather-sprite.svg#' +
-            iconId + '"/>' +
-    '</svg>';
+var $el = preact.createElement;
+var featherSvg = window.artistit.widgetTemplates.featherSvg;
+
+/**
+ * @param {{widgets: Array<Widget>;}} props
+ */
+function WidgetDesigner(props) {
+    preact.Component.call(this, props);
+    this.state = {widgets: props.widgets || []};
+}
+WidgetDesigner.prototype = Object.create(preact.Component.prototype);
+/**
+ *
+ */
+WidgetDesigner.prototype.render = function() {
+    var self = this;
+    return $el('div', {class: 'artist-widgets-list'},
+        $el('button', {class: 'icon-button filled', title: 'Järjestä widgettejä'},
+            featherSvg('layout'), 'Järjestä'),
+        self.state.widgets.length
+            ? self.state.widgets.map(function(w) {
+                return $el(Slot, {widget: w, onEditBtnClick: function() {
+                    //
+                }});
+            })
+            : $el('p', null, 'Hmm, minimaalista.')
+    );
 };
 /**
- * Muuntaa backendissä renderöidyn widgettinäkymän $el dynaamisesti muokattavaksi
- * (/artisti/:artistId?näytä=seinä), tai luo sellaisen (/artisti/uusi).
+ *
  */
-function WidgetDesigner(el, _templates, widgets) {
-    var usePreRenderedEls = el.children.length > 1;
-    var me = {rootEl: el};
-    me.rootEl.appendChild(makeConfigBtn(function() {
-        //
-    }));
-    var slots = widgets.map(function(_widget, i) {
-        return new Slot(usePreRenderedEls ? el.children[i] : null, me);
-    });
-}
-function makeConfigBtn(onClick) {
-    var tmp = document.createElement('div');
-    tmp.innerHTML = '<button class="icon-button filled" title="Konfiguroi ' +
-        'widgettien layoutia">' + featherSvg('layout') + 'Muokkaa layoutia</button>';
-    var out = tmp.children[0];
-    out.addEventListener('click', onClick);
-    return out;
-}
+WidgetDesigner.prototype.openWidgetEditDialog = function(_widget) {
+    //
+};
 /**
- * Wräpper-elementti widgetille.
+ *
  */
-function Slot(preRenderedWidget, designer) {
-    var slotEl = makeSlotEl();
-    if (preRenderedWidget) {
-        preRenderedWidget.parentNode.insertBefore(slotEl, preRenderedWidget);
-        slotEl.appendChild(preRenderedWidget);
-    } else {
-        designer.rootEl.appendChild(slotEl);
-    }
-}
-function makeSlotEl() {
-    var out = document.createElement('div');
-    out.className = 'widget-slot';
-    out.innerHTML = '<button class="icon-button filled" title="Muokkaa widgettiä"'+
-                     ' type="button">' + featherSvg('edit-3') + '</button>';
-    out.children[0].addEventListener('click', function() {
-        //
-    });
-    return out;
+function Slot(props) {
+    var w = props.widget;
+    return $el('div', null,
+        $el('button', {onClick: function() { props.onEditBtnClick(w); },
+                    class: 'icon-button filled',
+                    title: 'Muokkaa widgettiä',
+                    type: 'button'},
+            featherSvg('edit-3')),
+        $el('div', {class: 'widget'}, $el('div', null,
+            $el(window.artistit.widgetTemplates[w.type], w.data)
+        ))
+    );
 }
 //
 window.artistit.WidgetDesigner = WidgetDesigner;

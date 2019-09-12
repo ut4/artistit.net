@@ -263,6 +263,7 @@ h1 .feather {
     right: 12px;
     position: absolute;
     top: 9px;
+    z-index: 1;
 }
 .artist-widgets-list > .icon-button {
     left: 0;

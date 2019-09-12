@@ -7,7 +7,9 @@ function artistCreateViewJs(props) {
     var inputs = [document.getElementById('i-name'),
                   document.getElementById('i-tagline')];
     //
-    new artistit.WidgetDesigner(document.getElementById('widgets-designer'), null, []);
+    preact.render(preact.createElement(window.artistit.WidgetDesigner, {
+        widgets: null
+    }), document.getElementById('widgets-designer-app'));
     //
     var validator = new window.artistit.FormValidation(inputs);
     validator.addCheckers(inputs[0], 'Nimi',

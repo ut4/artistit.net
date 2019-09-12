@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node node_modules/jasmine/bin/jasmine --config=server-app/tests/jasmine.json"
+    "test": "node node_modules/jasmine/bin/jasmine --config=server-app/tests/setup/jasmine.json"
   },
   "author": "",
   "license": "MIT",
@@ -17,7 +17,9 @@
     "loglevel": "^1.6.3",
     "mariadb": "^2.1.0",
     "passport": "^0.4.0",
-    "passport-github": "^1.1.0"
+    "passport-github": "^1.1.0",
+    "preact": "^8.5.2",
+    "preact-render-to-string": "^4.1.0"
   },
   "devDependencies": {
     "cheerio": "^1.0.0-rc.3",

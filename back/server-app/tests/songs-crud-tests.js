@@ -7,8 +7,8 @@
 /* eslint-disable no-console */
 const sinon = require('sinon');
 const request = require('supertest');
-const {makeHttpTestCtx} = require('./testing-env.js');
-const testData = require('./test-data.js');
+const {makeHttpTestCtx} = require('./setup/testing-env.js');
+const testData = require('./setup/test-data.js');
 const config = require('../../config.js');
 const songRepoModule = require('../songs-repository.js');
 
@@ -243,7 +243,7 @@ describe('songs-crud', () => {
                 return tctx.getDb().getPool()
                     .query(
                         'select `songId` from songLikes ' + where,
-                        [testData.song.id, testData.user.id]
+                        [testSong.id, testData.user.id]
                     );
             })
             .then(rows => {
@@ -251,7 +251,7 @@ describe('songs-crud', () => {
                 return tctx.getDb().getPool()
                     .query(
                         'delete from songLikes ' + where,
-                        [testData.song.id, testData.user.id]
+                        [testSong.id, testData.user.id]
                     );
             })
             .then(res => {

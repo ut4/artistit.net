@@ -4,11 +4,11 @@
  * mm. tietokantaan liittyvissä testeissä käytettävä data.
  */
 
-const config = require('../../config.js');
+const config = require('../../../config.js');
 
 module.exports = {
     user: {
-        id: config.testUserId,
+        id: config.demoUserId,
     },
     artist: {
         id: '-123456789abcdefghij',
@@ -17,7 +17,7 @@ module.exports = {
         coverPhoto: null,
         widgets: '[]',
         createdAt: Math.floor(Date.now() / 1000),
-        userId: config.testUserId,
+        userId: config.demoUserId,
     },
     song: {
         id: '-Lkbki8w-8PgWYRje-ta',

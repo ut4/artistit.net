@@ -15,6 +15,9 @@ const validationConstants = {
     maxArtistNameLen: 128,
     maxTaglineLen: 512,
 };
+const widgetTmplsBundleBaseUrl = config.appMode != 'prod'
+    ? '/'
+    : config.staticBaseUrl;
 
 class ArtistsControllers {
     static registerRoutes(app, baseUrl) {
@@ -53,7 +56,7 @@ class ArtistsControllers {
             this.tabLoader.loadDataFor(req.query['näytä'], artist, req,
                 (tabData, tabName) => {
                     res.render('artist-index-view',
-                               {artist, tabName, tabData, templates: {}});
+                               {artist, tabName, tabData, widgetTmplsBundleBaseUrl});
                 });
         });
     }
@@ -61,7 +64,7 @@ class ArtistsControllers {
      * GET /artisti/uusi: Renderöi artistin luonti -lomakkeen.
      */
     newArtistView(req, res) {
-        res.render('artist-create-view', Object.assign({templates: {}},
+        res.render('artist-create-view', Object.assign({widgetTmplsBundleBaseUrl},
                                                        validationConstants));
     }
     /**

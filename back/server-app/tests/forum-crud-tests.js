@@ -6,9 +6,9 @@
 
 /* eslint-disable no-console */
 const request = require('supertest');
-const cheerio = require('cheerio');
-const {makeHttpTestCtx} = require('./testing-env.js');
-const testData = require('./test-data.js');
+const {makeHttpTestCtx} = require('./setup/testing-env.js');
+const testData = require('./setup/test-data.js');
+const testUtils = require('./setup/test-utils.js');
 const unixTime = (addSecs = 0) => Math.floor(Date.now() / 1000) + addSecs;
 
 const testTopics = [{id:1001,title:'Kissat',description:'Kuvaus 1'},
@@ -57,7 +57,7 @@ describe('forums-crud', () => {
             .send()
             .then(res => {
                 expect(res.status).toEqual(200);
-                const $ = parseDocumentBody(res.text);
+                const $ = testUtils.parseDocumentBody(res.text);
                 const groupEls = $('.topic-list tbody');
                 // Kisset
                 const testTopic1GroupEl = groupEls[groupEls.length-2];
@@ -92,10 +92,3 @@ describe('forums-crud', () => {
             });
     });
 });
-
-function parseDocumentBody(docHtml) {
-    const begin = docHtml.indexOf('<div id="app">');
-    const firstElAfterAppEl = '<div class="toast hidden">';
-    const end = docHtml.indexOf(firstElAfterAppEl);
-    return cheerio.load(docHtml.substr(begin, end));
-}

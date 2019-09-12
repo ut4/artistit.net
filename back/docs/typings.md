@@ -78,6 +78,15 @@ interface Thread {
 }
 ```
 
+## Widget
+
+```typescript
+interface Widget {
+    type: string;
+    data: Object;
+}
+```
+
 # Selainympäristö
 
 ## Player

@@ -1,7 +1,7 @@
 <%# lokaalit tässä tiedostossa: {
     maxArtistNameLen: number;
     maxTaglineLen: number;
-    templates: Object;
+    widgetTmplsBundleBaseUrl: string;
 } %>
 <%- include('layout-header', {title: 'Uusi artisti'}); %>
 <form class="create-artist-view" onSubmit="handleFormSubmit(event)">
@@ -17,20 +17,21 @@
     </header>
     <section class="main">
         <div class="error"></div>
-        <div class="artist-widgets-list" id="widgets-designer">
+        <div class="artist-widgets-list" id="widgets-designer-app">
             <!-- Renderöityy dynaamisesti tänne -->
         </div>
         <%- include('form-buttons', {submitText: 'Luo artisti'}); %>
     </section>
 </form>
+<script src="<%- staticBaseUrl %>preact.min.js"></script>
+<script src="<%- widgetTmplsBundleBaseUrl %>widget-templates.js"></script>
 <script src="<%- staticBaseUrl %>artistit.widget-designer.js"></script>
 <script>window.artistit.addPageScript(
     <%- include('artist-create-view.js'); %>,
     {
         maxArtistNameLen: <%- maxArtistNameLen -%>,
         maxTaglineLen: <%- maxTaglineLen -%>,
-        userId: '<%- user.id -%>',
-        templates: <%- JSON.stringify(templates) %>,
+        userId: '<%- user.id -%>'
     }
 )</script>
 <%- include('layout-footer'); %>
