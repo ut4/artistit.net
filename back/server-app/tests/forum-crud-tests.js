@@ -36,7 +36,7 @@ describe('forums-crud', () => {
         .then(res => {
             if (res.affectedRows < 1) throw err;
             return tctx.getDb().getPool()
-                .query('insert into threads values (?,?,?,?,?,?),(?,?,?,?,?,?)'+
+                .query('insert into threads values (?,?,?,?,?,?),(?,?,?,?,?,?)' +
                                                    ',(?,?,?,?,?,?)',
                     Object.values(testThreads[0])
                           .concat(Object.values(testThreads[1]))

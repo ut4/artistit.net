@@ -24,12 +24,10 @@ class AuthControllers {
             },
             (_accessToken, _refreshToken, profile, cb) => {
                 authUserRepository.getUser(AuthProviders.GITHUB, profile.id)
-                    .then(user => {
-                        return user || authUserRepository.createUser(
-                            AuthProviders.GITHUB,
-                            profile.id
-                        );
-                    })
+                    .then(user => user || authUserRepository.createUser(
+                        AuthProviders.GITHUB,
+                        profile.id
+                    ))
                     .then(user => {
                         cb(null, user);
                     })

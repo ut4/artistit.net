@@ -11,8 +11,8 @@ let connSingleton = null;
 
 class SelfCleaningDb extends Db {
     getPool() {
-        return {query: (...args) => {
-            return new Promise((resolve) => {
+        return {query: (...args) =>
+            new Promise((resolve) => {
                 if (connSingleton) {
                     resolve(connSingleton);
                 } else {
@@ -23,10 +23,10 @@ class SelfCleaningDb extends Db {
                         resolve(connSingleton);
                     });
                 }
-            }).then(conn => {
-                return conn.query(...args);
-            });
-        }};
+            }).then(conn =>
+                conn.query(...args)
+            )
+        };
     }
     /**
      * @returns {Promise}

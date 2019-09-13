@@ -24,13 +24,13 @@ class AuthUserRepository {
     getUser(authProvider, authProviderId) {
         return this.db.getPool()
             .query(
-                'select u.`id` from users u ' +
-                'join connectedAuthAccounts ca on ca.`userId` = u.`id` ' +
-                'where ca.`provider` = ? and ca.identity = ?',
+                'select u.`id` from users u' +
+                ' join connectedAuthAccounts ca on ca.`userId` = u.`id`' +
+                ' where ca.`provider` = ? and ca.identity = ?',
                 [authProvider, authProviderId]
-            ).then(rows => {
-                return rows.length ? {id: rows[0].id} : null;
-            });
+            ).then(rows =>
+                rows.length ? {id: rows[0].id} : null
+            );
     }
     /**
      * @param {number} authProvider

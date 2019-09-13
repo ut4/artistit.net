@@ -7,11 +7,19 @@ QUnit.module('artist-edit-view', () => {
         const pageScriptProps = Object.assign({}, data);
         pageScriptProps.artistId = data.artist.id;
         const done = assert.async();
+        ////////////////////////////////////////////////////////////////////////
         renderIntoDocument('artist-edit-view', data)
-        .then(el => {
+        .then(_el => {
             pageScriptFn(pageScriptProps);
-            assert.equal('todo', 'todo');
-            done();
+            verifySomething();
+            cleanup();
+            ////////////////////////////////////////////////////////////////////
+            function verifySomething() {
+                assert.equal('todo', 'todo');
+            }
+            function cleanup() {
+                done();
+            }
         });
     });
 });

@@ -48,9 +48,9 @@ class ArtistsRepository {
                 ' from artists where `id` = ?',
                 [artistId]
             )
-            .then(rows => {
-                return rows.length ? parseArtist(rows[0]) : {};
-            });
+            .then(rows =>
+                rows.length ? parseArtist(rows[0]) : {}
+            );
     }
     /**
      * @param {string} artistId
@@ -61,8 +61,8 @@ class ArtistsRepository {
     updateArtist(artistId, loggedInUserId, data) {
         return this.db.getPool()
             .query(
-                'update artists set `name`=?,`tagline`=?,`widgets`=? ' +
-                'where `id`=? and `userId`=?',
+                'update artists set `name`=?,`tagline`=?,`widgets`=?' +
+                ' where `id`=? and `userId`=?',
                 [
                     data.name,
                     data.tagline,

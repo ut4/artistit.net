@@ -14,50 +14,51 @@ QUnit.module('artist-create-view', () => {
         renderIntoDocument('artist-create-view', data)
             .then(el => {
                 pageScriptFn(pageScriptProps);
-                const mocks = attachStubsAndSpies();
+                const s = setup();
                 fillAndSendArtistCreateForm(el);
-                verifySentStuffToBackend(assert, mocks.httpCallStub)
+                verifySentStuffToBackend()
                     .then(() => {
-                        verifyRedirectedToNewArtistPage(assert, mocks);
-                        cleanUp(mocks, done);
+                        verifyRedirectedToNewArtistPage();
+                        cleanup();
                     });
+                ////////////////////////////////////////////////////////////////
+                function setup() {
+                    return {
+                        httpCallStub: sinon.stub(artistit, 'fetch')
+                            .returns(Promise.resolve({status: 200, text: () => testInsertId})),
+                        redirectSpy: sinon.spy(artistit, 'redirect'),
+                    };
+                }
+                function fillAndSendArtistCreateForm(el) {
+                    el.querySelector('#i-name').value = testNewArtist.name;
+                    el.querySelector('#i-tagline').value = testNewArtist.tagline;
+                    const artistCreatePageSubmitHandler = window.handleFormSubmit;
+                    artistCreatePageSubmitHandler({preventDefault: () => undefined});
+                }
+                function verifySentStuffToBackend() {
+                    const call = s.httpCallStub.firstCall;
+                    assert.ok(!!call, 'Pitäisi lähettää tiedot backendiin');
+                    assert.equal(call.args[0], 'artisti');
+                    assert.equal(call.args[1].body,
+                        'name=' + encodeURIComponent(testNewArtist.name) +
+                        '&tagline=' + encodeURIComponent(testNewArtist.tagline) +
+                        '&widgets=' + encodeURIComponent(
+                            pageScriptProps.widgetDesigner.getWidgetsAsJson()) +
+                        '&userId=' + encodeURIComponent(data.user.id) +
+                        '&sneakySneaky='
+                    );
+                    return call.returnValue.then(()=>{});
+                }
+                function verifyRedirectedToNewArtistPage() {
+                    assert.ok(s.redirectSpy.calledAfter(s.httpCallStub),
+                            'Pitäisi ohjata juuri luodulle artistisivulle');
+                    assert.equal(s.redirectSpy.firstCall.args[0], 'artisti/' + testInsertId);
+                }
+                function cleanup() {
+                    s.httpCallStub.restore();
+                    s.redirectSpy.restore();
+                    done();
+                }
             });
-        ////////////////////////////////////////////////////////////////////////
-        function attachStubsAndSpies() {
-            const httpCallStub = sinon.stub(artistit, 'fetch')
-                .returns(Promise.resolve({status: 200, text: () => testInsertId}));
-            const redirectSpy = sinon.spy(artistit, 'redirect');
-            return {httpCallStub, redirectSpy};
-        }
-        function fillAndSendArtistCreateForm(el) {
-            el.querySelector('#i-name').value = testNewArtist.name;
-            el.querySelector('#i-tagline').value = testNewArtist.tagline;
-            const artistCreatePageSubmitHandler = window.handleFormSubmit;
-            artistCreatePageSubmitHandler({preventDefault: () => undefined});
-        }
-        function verifySentStuffToBackend(assert, httpCallStub) {
-            const call = httpCallStub.firstCall;
-            assert.ok(!!call, 'Pitäisi lähettää tiedot backendiin');
-            assert.equal(call.args[0], 'artisti');
-            assert.equal(call.args[1].body,
-                'name=' + encodeURIComponent(testNewArtist.name) +
-                '&tagline=' + encodeURIComponent(testNewArtist.tagline) +
-                '&widgets=' + encodeURIComponent(
-                    pageScriptProps.widgetDesigner.getWidgetsAsJson()) +
-                '&userId=' + encodeURIComponent(data.user.id) +
-                '&sneakySneaky='
-            );
-            return call.returnValue.then(()=>{});
-        }
-        function verifyRedirectedToNewArtistPage(assert, {httpCallStub, redirectSpy}) {
-            assert.ok(redirectSpy.calledAfter(httpCallStub),
-                      'Pitäisi ohjata juuri luodulle artistisivulle');
-            assert.equal(redirectSpy.firstCall.args[0], 'artisti/' + testInsertId);
-        }
-        function cleanUp(mocks, done) {
-            mocks.httpCallStub.restore();
-            mocks.redirectSpy.restore();
-            done();
-        }
     });
 });

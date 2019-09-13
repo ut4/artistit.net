@@ -10,9 +10,9 @@
     <% tabData.songs.forEach(song => {
         var url = `${staticBaseUrl}songs/${artist.userId}/${song.id}.mp3`;
         %>
-        <div class="song" <%- 'data-song-id="' + song.id + '" ' +
-                              'data-song-isLikedByCurrentUser="' + song.isLikedByCurrentUser + '"' +
-                              'data-song-duration="' + song.duration + '"' %>>
+        <div class="song" <%- 'data-song-id="' + song.id + '"' +
+                              ' data-song-isLikedByCurrentUser="' + song.isLikedByCurrentUser + '"' +
+                              ' data-song-duration="' + song.duration + '"' %>>
             <h2><%= song.name %></h2>
             <span class="progress"></span>
             <button class="play"><%- featherSvg('play') %></button>

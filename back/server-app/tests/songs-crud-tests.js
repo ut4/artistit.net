@@ -96,9 +96,9 @@ describe('songs-crud', () => {
                 expect(convertTargetFilePath).toEqual(`${dirPath}${insertId}.mp3`);
                 return tctx.getDb().getPool()
                     .query(
-                        'select s.`id`,s.`name`,g.`name` as `genre`,s.`artistId` ' +
-                        'from songs s ' +
-                        'join genres g on (g.`id` = s.`genreId`) where s.`name`=?',
+                        'select s.`id`,s.`name`,g.`name` as `genre`,s.`artistId`' +
+                        ' from songs s' +
+                        ' join genres g on (g.`id` = s.`genreId`) where s.`name`=?',
                         [testInput.name]
                     );
             })

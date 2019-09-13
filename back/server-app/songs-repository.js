@@ -90,9 +90,9 @@ class SongsRepository {
                 'select `id` from artists where `id` = ? and `userId` = ?',
                 [artistId, loggedInUserId]
             )
-            .then(rows => {
-                return rows.length > 0;
-            });
+            .then(rows =>
+                rows.length > 0
+            );
     }
     /**
      * @param {string} artistId
@@ -103,25 +103,25 @@ class SongsRepository {
         return this.db.getPool()
             .query(
                 'select s.`id`,s.`name`,g.`name` as `genre`,s.`duration`,' +
-                        '(select count(`id`) from songListens ' +
-                        'where `songId`= s.`id`) as amountOfPlayClicks, ' +
-                        '(select count(`songId`) from songLikes ' +
-                        'where `songId`= s.`id`) as amountOfLikes, ' +
+                        ' (select count(`id`) from songListens' +
+                            ' where `songId`= s.`id`) as amountOfPlayClicks,' +
+                        ' (select count(`songId`) from songLikes' +
+                            ' where `songId`= s.`id`) as amountOfLikes,' +
                         (currentUserIdOrIpAddress
-                            ? '(select `songId` from songLikes ' +
-                              'where `songId`=s.`id` and `userIdOrIpAddress`=?)'
-                            : 'null'
-                        ) + ' as isLikedByCurrentUser ' +
-                'from songs s ' +
-                'join genres g on (g.`id` = s.`genreId`) ' +
-                'where s.`artistId` = ? limit 10',
+                            ? ' (select `songId` from songLikes' +
+                                ' where `songId`=s.`id` and `userIdOrIpAddress`=?)'
+                            : ' null'
+                        ) + ' as isLikedByCurrentUser' +
+                ' from songs s' +
+                ' join genres g on (g.`id` = s.`genreId`)' +
+                ' where s.`artistId` = ? limit 10',
                 currentUserIdOrIpAddress
                     ? [currentUserIdOrIpAddress, artistId]
                     : [artistId]
             )
-            .then(rows => {
-                return rows.map(song => parseSong(song));
-            });
+            .then(rows =>
+                rows.map(parseSong)
+            );
     }
     /**
      * Insertoi biisille $data.id uuden kuuntelukerran.
@@ -143,16 +143,16 @@ class SongsRepository {
         }
         return this.db.getPool().query(
             // Insertoi arvot vain jos ...
-            'insert into songListens (`songId`,`userId`,`ipAddress`,`registeredAt`) ' +
-            'select ?, ?, ?, ? ' +
+            'insert into songListens (`songId`,`userId`,`ipAddress`,`registeredAt`)' +
+            ' select ?, ?, ?, ?' +
             // edellisestä rekisteröintikerrasta on vähemmän aikaa kuin biisin pituus
-            'where ifnull('+
-                '(select sl.`registeredAt` + s.`duration` ' +
-                    'from songListens sl ' +
-                    'left join songs s on (s.`id` = sl.`songId`) ' +
-                    'where sl.`songId` = ? and sl.`'+identityFieldName+'` = ? ' +
-                    'order by sl.`registeredAt` desc limit 1), '+
-                '0'+
+            ' where ifnull(' +
+                '(select sl.`registeredAt` + s.`duration`' +
+                    ' from songListens sl' +
+                    ' left join songs s on (s.`id` = sl.`songId`)' +
+                    ' where sl.`songId` = ? and sl.`'+identityFieldName+'` = ?' +
+                    ' order by sl.`registeredAt` desc limit 1),' +
+                ' 0' +
             ') < ?;',
             [data.id, data.userId || null, ipAddressInsertValue, unixTimeNow,
              data.id, identityValue, unixTimeNow]
