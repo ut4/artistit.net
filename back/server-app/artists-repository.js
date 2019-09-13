@@ -21,11 +21,12 @@ class ArtistsRepository {
         const fireId = generatePushID();
         return this.db.getPool()
             .query(
-                'insert into artists values (?,?,?,\'\',\'[]\',?,?)',
+                'insert into artists values (?,?,?,\'\',?,?,?)',
                 [
                     fireId,
                     data.name,
                     data.tagline,
+                    data.widgets,
                     Math.floor(Date.now() / 1000),
                     data.userId
                 ]

@@ -27,7 +27,9 @@ function renderTemplate(name, data, htmlPrepareFn = html => html) {
         .then(htmlPrepareFn)
         .then(ejsCode => {
             const clsr = window.ejs.compile(ejsCode, {client: true});
-            const includeFn = () => '';
+            const includeFn = (fileName) => fileName !== 'form-buttons'
+                ? ''
+                : '<input id="i-sneakySneaky">';
             return clsr(Object.assign({}, ejsGlobals, data), null, includeFn);
         });
 }

@@ -7,8 +7,13 @@ function artistCreateViewJs(props) {
     var inputs = [document.getElementById('i-name'),
                   document.getElementById('i-tagline')];
     //
+    var widgetDesigner = null;
     preact.render(preact.createElement(window.artistit.WidgetDesigner, {
-        widgets: null
+        widgets: null,
+        ref: function(instance) {
+            widgetDesigner = instance;
+            props.widgetDesigner = widgetDesigner;
+        }
     }), document.getElementById('widgets-designer-app'));
     //
     var validator = new window.artistit.FormValidation(inputs);
@@ -21,12 +26,13 @@ function artistCreateViewJs(props) {
     window.handleFormSubmit = function(e) {
         e.preventDefault();
         var status = 0;
-        window.artistit.fetch(window.artistit.baseUrl + 'artisti', {
+        return window.artistit.fetch(window.artistit.baseUrl + 'artisti', {
             method: 'POST',
             credentials: 'same-origin',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: 'name=' + encodeURIComponent(inputs[0].value) +
                   '&tagline=' + encodeURIComponent(inputs[1].value) +
+                  '&widgets=' + encodeURIComponent(widgetDesigner.getWidgetsAsJson()) +
                   '&userId=' + encodeURIComponent(props.userId) +
                   '&sneakySneaky=' + encodeURIComponent(
                         document.getElementById('i-sneakySneaky').value)
@@ -37,7 +43,7 @@ function artistCreateViewJs(props) {
         })
         .then(function(insertId) {
             if (status == 200 && insertId.length == window.artistit.ID_LEN)
-                window.location.href = window.artistit.baseUrl + 'artisti/' + insertId;
+                window.artistit.redirect('artisti/' + insertId);
             else
                 window.toast('Artistin luonti epäonnistui.');
         });

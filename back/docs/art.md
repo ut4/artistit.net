@@ -69,6 +69,7 @@ interface artistit {
     sessionStorage: Storage;
     addPageScript: (fn: (props: any) => any, props: any): void;
     fetch: (url: string, settings?: Object): Promise;
+    redirect: (to: string): void;
 }
 ```
 

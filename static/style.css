@@ -268,7 +268,9 @@ h1 .feather {
 .artist-widgets-list > .icon-button {
     left: 0;
 }
-
+.slot {
+    min-height: 45px;
+}
 
 /* -- app-forum.css --------------------------------------------------------- */
 .topic-list a {

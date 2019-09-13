@@ -4,22 +4,27 @@
         <title>artistit.net frontend-testit</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="qunit-2.9.2.css">
+        <link rel="stylesheet" href="./setup/qunit-2.9.2.css">
         <script>window.artistit = {
             baseUrl: '',
             sessionStorage: {},
-            fetch: function() {}
+            ID_LEN: '-mockfireid'.length,
+            fetch: () => {},
+            redirect: () => {},
         };</script>
     </head>
     <body>
         <div id="qunit"></div>
         <div id="qunit-fixture"></div>
         <div id="render-container-el"></div>
-        <script src="qunit-2.9.2.js"></script>
-        <script src="sinon-1.17.6.min.js"></script>
-        <script src="ejs.js"></script>
+        <script src="./setup/qunit-2.9.2.js"></script>
+        <script src="./setup/sinon-1.17.6.min.js"></script>
+        <script src="./setup/ejs.js"></script>
+        <script src="../../static/preact.min.js"></script>
         <script src="../../static/artistit.js"></script>
         <script src="../../static/artistit.player.js"></script>
+        <script src="http://localhost:3000/widget-templates.js"></script>
+        <script src="../../static/artistit.widget-designer.js"></script>
         <script src="../../back/config.js"></script>
         <script src="../artist-create-view.js"></script>
         <script src="../artist-edit-view.js"></script>

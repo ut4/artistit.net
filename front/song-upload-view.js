@@ -36,7 +36,7 @@ function songUploadViewJs(props) {
         })
         .then(function(result) {
             if (status == 200 && result.length == window.artistit.ID_LEN)
-                window.location.href = `${window.artistit.baseUrl}artisti/${props.artistId}?näytä=biisit`;
+                window.artistit.redirect('artisti/' + props.artistId + '?näytä=biisit');
             else
                 window.toast('Biisin lataus epäonnistui.');
         });

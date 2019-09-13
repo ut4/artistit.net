@@ -13,6 +13,7 @@
             },
             sessionStorage: window.sessionStorage,
             fetch: function(url, settings) { return fetch(url, settings); },
+            redirect: function(to) { window.location.href = '<%- baseUrl %>' + to; },
             baseUrl: '<%- baseUrl %>',
             ID_LEN: 20,
         };</script>

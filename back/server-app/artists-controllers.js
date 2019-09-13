@@ -76,6 +76,8 @@ class ArtistsControllers {
         if (!req.body.name) errors.push('name on pakollinen');
         if (!req.body.userId) errors.push('userId on pakollinen');
         else if (req.body.userId != req.user.id) errors.push('userId ei kelpaa');
+        if (!req.body.widgets) errors.push('widgets on pakollinen');
+        else if (!isValidWidgetsJson(req.body.widgets)) errors.push('widgets ei kelpaa');
         if (!req.body.hasOwnProperty('sneakySneaky') ||
             req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
@@ -86,6 +88,7 @@ class ArtistsControllers {
         this.repo.insertArtist({
             name: req.body.name,
             tagline: req.body.tagline || null,
+            widgets: req.body.widgets,
             userId: req.body.userId
         })
         .then(result => {
@@ -123,6 +126,7 @@ class ArtistsControllers {
         else if (!isValidFireId(req.body.id)) errors.push('id ei kelpaa');
         if (!req.body.hasOwnProperty('tagline')) errors.push('tagline on pakollinen');
         if (!req.body.widgets) errors.push('widgets on pakollinen');
+        else if (!isValidWidgetsJson(req.body.widgets)) errors.push('widgets ei kelpaa');
         if (!req.body.hasOwnProperty('sneakySneaky') ||
             req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
@@ -156,4 +160,19 @@ class ArtistsControllers {
     }
 }
 
+/**
+ * @param {string} json
+ * @returns {boolean}
+ */
+function isValidWidgetsJson(json) {
+    try {
+        const widgets = JSON.parse(json);
+        // todo, validoi kunnolla
+        return Array.isArray(widgets);
+    } catch (e) {
+        return false;
+    }
+}
+
 exports.ArtistsControllers = ArtistsControllers;
+exports.isValidWidgetsJson = isValidWidgetsJson;

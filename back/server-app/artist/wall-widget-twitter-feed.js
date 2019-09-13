@@ -13,8 +13,14 @@ function TwitterFeed(props) {
     preact.Component.call(this, props);
 }
 TwitterFeed.prototype = Object.create(preact.Component.prototype);
-
 /**
+ * @access public
+ */
+TwitterFeed.prototype.setEditModeIsOn = function(_isIt) {
+    // todo
+};
+/**
+ * @access protected
  */
 TwitterFeed.prototype.render = function() {
     return $el('div', null,

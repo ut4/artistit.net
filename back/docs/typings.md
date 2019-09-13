@@ -127,3 +127,11 @@ interface PlayerEvents {
     onLike: (song: Song, player: Player): Promise<boolean>;
 }
 ```
+
+## ReactWidget
+
+```typescript
+interface ReactWidget {
+    setEditModeIsOn(isIt: boolean): any;
+}
+```

@@ -35,7 +35,7 @@ function artistEditViewJs(props) {
         })
         .then(function(numAffectedRows) {
             if (status == 200 && numAffectedRows.length == 1)
-                window.location.href = `${window.artistit.baseUrl}artisti/${props.artistId}`;
+                window.artistit.redirect('artisti/' + props.artistId);
             else
                 window.toast('Tietojen tallennus epäonnistui.');
         });

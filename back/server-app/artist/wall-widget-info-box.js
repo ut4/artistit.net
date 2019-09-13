@@ -13,8 +13,14 @@ function InfoBox(props) {
     preact.Component.call(this, props);
 }
 InfoBox.prototype = Object.create(preact.Component.prototype);
-
 /**
+ * @access public
+ */
+InfoBox.prototype.setEditModeIsOn = function(isIt) {
+    // todo
+};
+/**
+ * @access protected
  */
 InfoBox.prototype.render = function() {
     var self = this;
@@ -27,5 +33,4 @@ InfoBox.prototype.render = function() {
         )
     );
 };
-
 exports.InfoBox = InfoBox;

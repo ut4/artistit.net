@@ -24,12 +24,13 @@ describe('artists-crud', () => {
     it('POST /artisti validoi inputin', done => {
         request(tctx.getApp())
             .post('/artisti')
-            .send('sneakySneaky=')
+            .send('widgets=not:json&sneakySneaky=')
             .then(res => {
                 expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
                 expect(errors[0]).toEqual('name on pakollinen');
                 expect(errors[1]).toEqual('userId on pakollinen');
+                expect(errors[2]).toEqual('widgets ei kelpaa');
             })
             .catch(err => {
                 console.error(err);
@@ -45,6 +46,7 @@ describe('artists-crud', () => {
             .post('/artisti')
             .send('name=' + testInput.name +
                   '&userId=' + testData.user.id +
+                  '&widgets=[]' +
                   '&sneakySneaky=')
             .then(res => {
                 expect(res.status).toEqual(200);
@@ -53,6 +55,7 @@ describe('artists-crud', () => {
             .then(rows => {
                 const actuallyInserted = rows[0];
                 expect(actuallyInserted.name).toEqual(testInput.name);
+                expect(actuallyInserted.widgets).toEqual('[]');
                 expect(actuallyInserted.id.length).toEqual(20);
             })
             .catch(err => {

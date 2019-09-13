@@ -1,4 +1,4 @@
-import {renderIntoDocument} from './testutils.js';
+import {renderIntoDocument} from './setup/testutils.js';
 
 QUnit.module('artist-edit-view', () => {
     const pageScriptFn = window.artistEditViewJs;

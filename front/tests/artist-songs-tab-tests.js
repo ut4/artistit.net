@@ -1,4 +1,4 @@
-import {renderIntoDocument} from './testutils.js';
+import {renderIntoDocument} from './setup/testutils.js';
 
 const testSongs = [
     {id: 'foo', name: 'foo', duration: 10, amountOfPlayClicks: 1, amountOfLikes: 2}
