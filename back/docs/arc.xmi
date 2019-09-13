@@ -113,7 +113,7 @@
       <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uDORaG1QyJ71M" name="fileUpload"/>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical_View" supplier="uuxlTSXuy5Xdx" xmi.id="udhooUUow4Sno" client="uDORaG1QyJ71M" name=""/>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical_View" supplier="udE2lj7c8xm2o" xmi.id="un5ptzzBrwY6P" client="uHdQlDmuHFcoc" name=""/>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uDwIQRaxJNHwr" name="AppControllers"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uDwIQRaxJNHwr" name="SiteControllers"/>
       <UML:Abstraction visibility="public" isSpecification="false" namespace="Logical_View" supplier="uNXrnxRqIQAhN" xmi.id="uHTXvmO1klCbd" client="uDwIQRaxJNHwr" name=""/>
       <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uKf74nIP5wW37" name="Templating"/>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical_View" supplier="uGXfF6KpxVzaD" xmi.id="uW8HUVST1LsPN" client="uKf74nIP5wW37" name=""/>

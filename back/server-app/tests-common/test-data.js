@@ -4,7 +4,7 @@
  * mm. tietokantaan liittyvissä testeissä käytettävä data.
  */
 
-const config = require('../../../config.js');
+const config = require('../../config.js');
 
 module.exports = {
     user: {

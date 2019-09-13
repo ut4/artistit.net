@@ -20,9 +20,9 @@ Module.prototype.require = function (moduleId) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const config = require('../../../config.js');
-const {makeApp} = require('../../app.js');
-const {makeDb} = require('../../db.js');
+const config = require('../../config.js');
+const {makeApp} = require('../app.js');
+const {makeDb} = require('../common/db.js');
 const testData = require('./test-data.js');
 
 /*

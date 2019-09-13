@@ -3,7 +3,7 @@
     tabName: string;
     tabData: Object;
 } %>
-<%- include('layout-header', {title: artist.name}); %>
+<%- include('common/layout-header', {title: artist.name}); %>
 <% if (artist.id) { %>
     <header style="<%- artist.coverPhoto
         ? `background-image:url('${staticBaseUrl}user-images/${artist.coverPhoto}')`
@@ -23,4 +23,4 @@
 <% } else { %>
     <p>Artistia ei löytynyt.</p>
 <% } %>
-<%- include('layout-footer'); %>
+<%- include('common/layout-footer'); %>

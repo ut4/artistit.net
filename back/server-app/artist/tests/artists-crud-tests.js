@@ -6,9 +6,9 @@
 
 /* eslint-disable no-console */
 const request = require('supertest');
-const testUtils = require('./setup/test-utils.js');
-const {makeHttpTestCtx} = require('./setup/testing-env.js');
-const testData = require('./setup/test-data.js');
+const testUtils = require('../../tests-common/test-utils.js');
+const {makeHttpTestCtx} = require('../../tests-common/testing-env.js');
+const testData = require('../../tests-common/test-data.js');
 
 describe('artists-crud', () => {
     let tctx;

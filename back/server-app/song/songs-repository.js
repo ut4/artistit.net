@@ -7,8 +7,8 @@
 
 const fs = require('fs');
 const log = require('loglevel');
-const {makeDb, generatePushID} = require('./db.js');
-const config = require('../config.js');
+const {makeDb, generatePushID} = require('../common/db.js');
+const config = require('../../config.js');
 const {SongFormatConverter} = require('./song-format-converter.js');
 
 class SongsRepository {

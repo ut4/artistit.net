@@ -5,7 +5,7 @@ QUnit.module('song-upload-view', () => {
     QUnit.test('todo', assert => {
         const data = {maxSongNameLen: 2, artistId: 'a'};
         const done = assert.async();
-        renderIntoDocument('song-upload-view', data)
+        renderIntoDocument('song/song-upload-view', data)
         .then(el => {
             pageScriptFn(data);
             assert.equal('todo', 'todo');

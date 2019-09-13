@@ -2,7 +2,7 @@
     artistId: string;
     maxSongNameLen: number;
 } %>
-<%- include('layout-header', {title: 'Uusi biisi'}); %>
+<%- include('common/layout-header', {title: 'Uusi biisi'}); %>
 <header class="default-background">
     <h1>Uusi biisi</h1>
     <p>Lataa uusi kappale artistit.netiin.</p>
@@ -30,7 +30,7 @@
             <input id="i-tags"/>
             <div class="error"></div>
         </div>
-        <%- include('form-buttons', {submitText: 'Lataa'}); %>
+        <%- include('common/form-buttons', {submitText: 'Lataa'}); %>
     </form>
 </section>
 <script>window.artistit.addPageScript(
@@ -40,4 +40,4 @@
         artistId: '<%- artistId %>',
     }
 )</script>
-<%- include('layout-footer'); %>
+<%- include('common/layout-footer'); %>

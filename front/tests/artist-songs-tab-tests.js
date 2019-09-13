@@ -13,7 +13,7 @@ QUnit.module('artist-songs-tab', () => {
         const data = Object.assign({}, testTemplateData);
         const done = assert.async();
         ////////////////////////////////////////////////////////////////////////
-        renderIntoDocument('artist-view-tab-biisit', data)
+        renderIntoDocument('artist/artist-view-tab-biisit', data)
         .then(el => {
             pageScriptFn();
             verifyRenderedSongs(el);
@@ -50,7 +50,7 @@ QUnit.module('artist-songs-tab', () => {
         const done = assert.async();
         const mockInsertId = '23';
         ////////////////////////////////////////////////////////////////////////
-        renderIntoDocument('artist-view-tab-biisit', data)
+        renderIntoDocument('artist/artist-view-tab-biisit', data)
         .then(el => {
             pageScriptFn();
             const s = setup();
@@ -114,7 +114,7 @@ QUnit.module('artist-songs-tab', () => {
         const done = assert.async();
         const mockAffectedRows = '1';
         ////////////////////////////////////////////////////////////////////////
-        renderIntoDocument('artist-view-tab-biisit', data)
+        renderIntoDocument('artist/artist-view-tab-biisit', data)
         .then(el => {
             pageScriptFn();
             const s = setup();

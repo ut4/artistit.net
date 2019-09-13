@@ -15,7 +15,7 @@ const ejsGlobals = {
  * ks. renderTemplate()
  */
 function fetchTemplate(name) {
-    return fetch(config.nodeServer + 'template/' + name)
+    return fetch(config.nodeServer + 'template?name=' + name)
             .then(res => res.text());
 }
 
@@ -27,7 +27,7 @@ function renderTemplate(name, data, htmlPrepareFn = html => html) {
         .then(htmlPrepareFn)
         .then(ejsCode => {
             const clsr = window.ejs.compile(ejsCode, {client: true});
-            const includeFn = (fileName) => fileName !== 'form-buttons'
+            const includeFn = (fileName) => fileName !== 'common/form-buttons'
                 ? ''
                 : '<input id="i-sneakySneaky">';
             return clsr(Object.assign({}, ejsGlobals, data), null, includeFn);

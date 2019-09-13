@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node node_modules/jasmine/bin/jasmine --config=server-app/tests/setup/jasmine.json"
+    "test": "node node_modules/jasmine/bin/jasmine --config=server-app/tests-common/jasmine.json"
   },
   "author": "",
   "license": "MIT",

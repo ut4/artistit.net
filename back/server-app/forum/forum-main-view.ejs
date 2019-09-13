@@ -1,7 +1,7 @@
 <%# lokaalit tässä tiedostossa: {
     topics: Array<Topic>|null;
 } %>
-<%- include('layout-header', {title: 'Keskustelut'}); %>
+<%- include('common/layout-header', {title: 'Keskustelut'}); %>
 <% if (topics && topics.length) { %>
     <header class="default-background forums">
         <h1>Keskustelut</h1>
@@ -40,4 +40,4 @@
 <% } else { %>
     <p>Jokin meni pieleen.</p>
 <% } %>
-<%- include('layout-footer'); %>
+<%- include('common/layout-footer'); %>

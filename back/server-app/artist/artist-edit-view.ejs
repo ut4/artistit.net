@@ -3,7 +3,7 @@
     maxArtistNameLen: number;
     maxTaglineLen: number;
 } %>
-<%- include('layout-header', {title: 'Muokkaa artistia ' + artist.name}); %>
+<%- include('common/layout-header', {title: 'Muokkaa artistia ' + artist.name}); %>
 <form class="edit-artist-view" onSubmit="handleFormSubmit(event)">
     <header style="<%- artist.coverPhoto
         ? `background-image:url('${staticBaseUrl}user-images/${artist.coverPhoto}')`
@@ -23,7 +23,7 @@
             <textarea id="i-widgets"><%- artist.widgets %></textarea>
             <div class="error"></div>
         </div>
-        <%- include('form-buttons', {
+        <%- include('common/form-buttons', {
             submitText: 'Tallenna',
             gotoOnCancel: 'artisti/' + artist.id}); %>
     </section>
@@ -36,4 +36,4 @@
         artistId: '<%- artist.id -%>',
     }
 )</script>
-<%- include('layout-footer'); %>
+<%- include('common/layout-footer'); %>

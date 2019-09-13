@@ -3,7 +3,7 @@
  * twitter-feed -widgetin.
  */
 const preact = require('preact');
-const featherSvg = require('../templating.js').reactFeatherSvg;
+const featherSvg = require('../common/templating.js').reactFeatherSvg;
 const $el = preact.createElement;
 
 /**

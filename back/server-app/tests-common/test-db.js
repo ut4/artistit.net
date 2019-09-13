@@ -5,7 +5,7 @@
  * kaikki sillä tehdyt kyselyt (rollback).
  */
 
-const {Db} = require('../../db.js');
+const {Db} = require('../common/db.js');
 
 let connSingleton = null;
 

@@ -8,10 +8,10 @@
 const log = require('loglevel');
 const preact = require('preact');
 const render = require('preact-render-to-string');
-const {songsRepository} = require('./songs-repository.js');
+const {songsRepository} = require('../song/songs-repository.js');
 const widgetRenderers = {
-    'info-box': require('./artist/wall-widget-info-box.js').InfoBox,
-    'twitter-feed': require('./artist/wall-widget-twitter-feed').TwitterFeed,
+    'info-box': require('./wall-widget-info-box.js').InfoBox,
+    'twitter-feed': require('./wall-widget-twitter-feed').TwitterFeed,
 };
 
 class ArtistViewTabLoaders {

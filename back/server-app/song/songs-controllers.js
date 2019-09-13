@@ -5,9 +5,9 @@
  */
 
 const log = require('loglevel');
-const {ensureIsLoggedIn, ensureHasContentType} = require('./route-filters.js');
+const {ensureIsLoggedIn, ensureHasContentType} = require('../common/route-filters.js');
 const {songsRepository} = require('./songs-repository.js');
-const {isValidFireId} = require('./validation.js');
+const {isValidFireId} = require('../common/validation.js');
 const validationConstants = {
     maxSongNameLen: 128,
 };
@@ -39,7 +39,7 @@ class SongsControllers {
     newSongView(req, res) {
         let props = {artistId: req.params.artistId};
         Object.assign(props, validationConstants);
-        res.render('song-upload-view', props);
+        res.render('song/song-upload-view', props);
     }
     /**
      * POST /biisi: Vastaanottaa /biisi/uusi -sivun lomakedatan, validoi sen, ja

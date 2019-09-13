@@ -8,7 +8,7 @@ QUnit.module('artist-edit-view', () => {
         pageScriptProps.artistId = data.artist.id;
         const done = assert.async();
         ////////////////////////////////////////////////////////////////////////
-        renderIntoDocument('artist-edit-view', data)
+        renderIntoDocument('artist/artist-edit-view', data)
         .then(_el => {
             pageScriptFn(pageScriptProps);
             verifySomething();

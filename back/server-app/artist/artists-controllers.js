@@ -5,12 +5,12 @@
  */
 
 const log = require('loglevel');
-const {ensureIsLoggedIn, ensureHasContentType} = require('./route-filters.js');
+const {ensureIsLoggedIn, ensureHasContentType} = require('../common/route-filters.js');
 const {artistsRepository} = require('./artists-repository.js');
 const {artistViewTabLoaders} = require('./artist-view-tab-loaders.js');
-const {isValidFireId} = require('./validation.js');
-const {renderError} = require('./templating.js');
-const config = require('../config.js');
+const {isValidFireId} = require('../common/validation.js');
+const {renderError} = require('../common/templating.js');
+const config = require('../../config.js');
 const validationConstants = {
     maxArtistNameLen: 128,
     maxTaglineLen: 512,
@@ -55,7 +55,7 @@ class ArtistsControllers {
         this.fetchArtist(req, res, artist => {
             this.tabLoader.loadDataFor(req.query['näytä'], artist, req,
                 (tabData, tabName) => {
-                    res.render('artist-index-view',
+                    res.render('artist/artist-index-view',
                                {artist, tabName, tabData, widgetTmplsBundleBaseUrl});
                 });
         });
@@ -64,7 +64,7 @@ class ArtistsControllers {
      * GET /artisti/uusi: Renderöi artistin luonti -lomakkeen.
      */
     newArtistView(req, res) {
-        res.render('artist-create-view', Object.assign({widgetTmplsBundleBaseUrl},
+        res.render('artist/artist-create-view', Object.assign({widgetTmplsBundleBaseUrl},
                                                        validationConstants));
     }
     /**
@@ -105,7 +105,7 @@ class ArtistsControllers {
     editArtistView(req, res) {
         this.fetchArtist(req, res, artist => {
             if (artist.userId == req.user.id) {
-                res.render('artist-edit-view',
+                res.render('artist/artist-edit-view',
                            Object.assign({artist}, validationConstants));
             } else {
                 log.warn('Muokattava artisti (' + req.body.artistId +

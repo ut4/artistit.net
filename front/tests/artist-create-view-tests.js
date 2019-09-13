@@ -11,7 +11,7 @@ QUnit.module('artist-create-view', () => {
         pageScriptProps.userId = data.user.id;
         const done = assert.async();
         ////////////////////////////////////////////////////////////////////////
-        renderIntoDocument('artist-create-view', data)
+        renderIntoDocument('artist/artist-create-view', data)
             .then(el => {
                 pageScriptFn(pageScriptProps);
                 const s = setup();

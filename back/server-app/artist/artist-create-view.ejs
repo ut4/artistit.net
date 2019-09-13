@@ -3,7 +3,7 @@
     maxTaglineLen: number;
     widgetTmplsBundleBaseUrl: string;
 } %>
-<%- include('layout-header', {title: 'Uusi artisti'}); %>
+<%- include('common/layout-header', {title: 'Uusi artisti'}); %>
 <form class="create-artist-view" onSubmit="handleFormSubmit(event)">
     <header style="<%- `background-image:url('${staticBaseUrl}user-images/-LkbhF4iOa032wUATTzV')` %>">
         <div>
@@ -20,7 +20,7 @@
         <div id="widgets-designer-app">
             <!-- Renderöityy dynaamisesti tänne -->
         </div>
-        <%- include('form-buttons', {submitText: 'Luo artistisivu'}); %>
+        <%- include('common/form-buttons', {submitText: 'Luo artistisivu'}); %>
     </section>
 </form>
 <script src="<%- staticBaseUrl %>preact.min.js"></script>
@@ -34,4 +34,4 @@
         userId: '<%- user.id -%>'
     }
 )</script>
-<%- include('layout-footer'); %>
+<%- include('common/layout-footer'); %>

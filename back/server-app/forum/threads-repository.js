@@ -4,7 +4,7 @@
  * DAO foorumi-threadeihin liittyvälle datalle.
  */
 
-const {makeDb} = require('./db.js');
+const {makeDb} = require('../common/db.js');
 
 class ThreadsRepository {
     /**

@@ -7,9 +7,9 @@
 /* eslint-disable no-console */
 const sinon = require('sinon');
 const request = require('supertest');
-const {makeHttpTestCtx} = require('./setup/testing-env.js');
-const testData = require('./setup/test-data.js');
-const config = require('../../config.js');
+const {makeHttpTestCtx} = require('../../tests-common/testing-env.js');
+const testData = require('../../tests-common/test-data.js');
+const config = require('../../../config.js');
 const songRepoModule = require('../songs-repository.js');
 
 const testSong = {id: '-sssssssssssssssssss', name: 'test', duration: 2,

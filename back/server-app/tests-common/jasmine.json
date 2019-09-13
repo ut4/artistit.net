@@ -1,0 +1,10 @@
+{
+  "spec_dir": "server-app",
+  "spec_files": [
+    "artist/tests/*.js",
+    "forum/tests/*.js",
+    "song/tests/*.js"
+  ],
+  "stopSpecOnExpectationFailure": true,
+  "random": true
+}

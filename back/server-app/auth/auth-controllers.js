@@ -7,7 +7,7 @@
 const log = require('loglevel');
 const passport = require('passport');
 const GitHubAuth = require('passport-github').Strategy;
-const config = require('../config.js');
+const config = require('../../config.js');
 const {authUserRepository} = require('./auth-user-repository.js');
 
 const AuthProviders = {
@@ -71,7 +71,7 @@ class AuthControllers {
      * Renderöi kirjautumissivun.
      */
     loginView(_req, res) {
-        res.render('auth-login-view');
+        res.render('auth/auth-login-view');
     }
     /**
      * ...

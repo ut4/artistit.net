@@ -28,11 +28,11 @@ class ForumControllers {
     renderMainView(_req, res) {
         this.threadsRepo.getTopicsWithLatestThreads()
             .then(topics => {
-                res.render('forum-main-view', {topics});
+                res.render('forum/forum-main-view', {topics});
             })
             .catch(err => {
                 log.error('Thread-alueiden haku epäonnistui', err.stack);
-                res.render('forum-main-view', {topics: null});
+                res.render('forum/forum-main-view', {topics: null});
             });
     }
     /**

@@ -4,7 +4,7 @@
  * Repository / DAO artisti-datalle.
  */
 
-const {makeDb, generatePushID} = require('./db.js');
+const {makeDb, generatePushID} = require('../common/db.js');
 
 class ArtistsRepository {
     /**

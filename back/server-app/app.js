@@ -11,11 +11,12 @@ const app = require('express')();
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
-const {AppControllers} = require('./app-controllers.js');
-const {AuthControllers} = require('./auth-controllers.js');
-const {ArtistsControllers} = require('./artists-controllers.js');
-const {SongsControllers} = require('./songs-controllers.js');
-const {ForumControllers} = require('./forum-controllers.js');
+const {ejsFeatherSvg} = require('./common/templating.js');
+const {SiteControllers} = require('./site/site-controllers.js');
+const {AuthControllers} = require('./auth/auth-controllers.js');
+const {ArtistsControllers} = require('./artist/artists-controllers.js');
+const {SongsControllers} = require('./song/songs-controllers.js');
+const {ForumControllers} = require('./forum/forum-controllers.js');
 
 /**
  * @param {string} mode 'prod'|'demo'|'test'
@@ -40,14 +41,11 @@ exports.makeApp = (mode, config) => {
     //
     app.locals.baseUrl = config.baseUrl;
     app.locals.staticBaseUrl = config.staticBaseUrl;
-    app.locals.featherSvg = iconId => '<svg class="feather">' +
-        '<use xlink:href="' + config.staticBaseUrl + 'feather-sprite.svg#' +
-            iconId + '"/>' +
-    '</svg>';
+    app.locals.featherSvg = ejsFeatherSvg;
     //
     AuthControllers.registerMiddleware(app);
     //
-    AppControllers.registerRoutes(app, config.baseUrl);
+    SiteControllers.registerRoutes(app, config.baseUrl);
     AuthControllers.registerRoutes(app, config.baseUrl);
     ArtistsControllers.registerRoutes(app, config.baseUrl);
     SongsControllers.registerRoutes(app, config.baseUrl);
@@ -83,8 +81,8 @@ function configureTestEnv(app, config) {
                    'Origin, X-Requested-With, Content-Type, Accept');
         next();
     });
-    app.get('/template/:name', (req, res, next) => {
-        res.sendFile(__dirname + '/' + req.params.name + '.ejs', err => {
+    app.get('/template', (req, res, next) => {
+        res.sendFile(__dirname + '/' + req.query.name + '.ejs', err => {
             if (err) next(err);
         });
     });
@@ -96,7 +94,7 @@ function configureTestEnv(app, config) {
  */
 function bundleReactTemplates() {
     const fs = require('fs');
-    const featherSvg = require('./templating.js').reactFeatherSvg;
+    const featherSvg = require('./common/templating.js').reactFeatherSvg;
     const {staticBaseUrl} = require('../config.js');
     return '(function() {\n' +
         'var $el = preact.createElement;\n' +
