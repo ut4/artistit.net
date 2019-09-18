@@ -19,16 +19,16 @@ const {SongsControllers} = require('./song/songs-controllers.js');
 const {ForumControllers} = require('./forum/forum-controllers.js');
 
 /**
- * @param {string} mode 'prod'|'demo'|'test'
+ * @param {string} mode 'prod'|'dev'|'demo'|'test'
  * @param {Object} config
  * @returns {Express}
  */
 exports.makeApp = (mode, config) => {
     config.appMode = mode;
-    if (mode == 'prod') configureProdEnv(app, config);
+    if (mode == 'prod' || mode == 'dev') configureProdEnv(app, config);
     else if (mode == 'demo') configureDemoEnv(app, config);
     else if (mode == 'test') configureTestEnv(app, config);
-    else throw new Error('Virheellinen env-mode. Validit: prod, demo, test');
+    else throw new Error('Virheellinen env-mode. Validit: prod, dev, demo, test');
     //
     setupEjs(mode);
     app.use(bodyParser.urlencoded({extended: true}));
@@ -58,11 +58,6 @@ exports.makeApp = (mode, config) => {
 function configureProdEnv(app, config) {
     app.use(session({secret: config.sessionSecret, resave: true,
         saveUninitialized: true}));
-    app.use((req, res, next) => {
-        if (!req.user) req.user = app.locals.user;
-        next();
-    });
-    app.locals.user = {};
 }
 
 function configureDemoEnv(app, config) {

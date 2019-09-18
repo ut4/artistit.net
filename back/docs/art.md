@@ -42,7 +42,7 @@ Katso koko komento back/package.jsonista.
 
 esim. `<div>Hello <%= user.id %></div>`
 
-- user: {id: string;} || {};
+- user: {id: string;} || null;
 - baseUrl: string;
 - staticBaseUrl: string;
 - featherSvg: (iconId: string) => string;

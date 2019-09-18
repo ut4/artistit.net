@@ -8,7 +8,7 @@
     <header style="<%- artist.coverPhoto
         ? `background-image:url('${staticBaseUrl}user-images/${artist.coverPhoto}')`
         : '' %>" class="has-sub-nav">
-        <h1><%= artist.name %><%- artist.userId == user.id
+        <h1><%= artist.name %><%- typeof user !== 'undefined' && artist.userId == user.id
             ? `<a href="${baseUrl}artisti/muokkaa/${artist.id}">${featherSvg('edit-3')}</a>`
             : '' %></h1>
         <p><%= artist.tagline %></p>

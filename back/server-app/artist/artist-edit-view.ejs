@@ -10,7 +10,7 @@
         ? `background-image:url('${staticBaseUrl}user-images/${artist.coverPhoto}')`
         : '' %>">
         <div>
-            <input id="i-name" value="<%= artist.name %>" class="head-input" autofocus/>
+            <input id="i-name" value="<%= artist.name %>" class="head-input" autofocus>
             <div class="error"></div>
         </div>
         <div>
@@ -20,7 +20,8 @@
     </header>
     <section class="main">
         <%- include('artist/widget-designer',
-                    {widgets: JSON.parse(artist.widgets), readTemplate}) %>
+                    {widgets: JSON.parse(artist.widgets), readTemplate,
+                     widgetInputsId: 'i-widgets'}) %>
         <%- include('common/form-buttons',
                     {submitText: 'Tallenna',
                      gotoOnCancel: 'artisti/' + artist.id}); %>

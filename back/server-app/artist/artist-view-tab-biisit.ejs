@@ -3,7 +3,7 @@
     tabData: {songs: Array<Song>;};
 } %>
 <section class="main artist-song-list">
-    <% if (user.id == artist.userId) { %>
+    <% if (typeof user != 'undefined' && user.id == artist.userId) { %>
         <a href="<%- `${baseUrl}biisi/uusi/${artist.id}` %>">Lataa biisi</a>
     <% } %>
     <div class="artist-song-list">

@@ -26,7 +26,7 @@
                     <a href="<%- baseUrl %>">artistit.net</a>
                     <a href="<%- baseUrl %>foorumi">Keskustelut</a>
                 </nav>
-                <% if (!user.id) { %>
+                <% if (typeof user == 'undefined') { %>
                     <nav class="user-menu">
                         <a href="<%- baseUrl %>auth/kirjaudu">Tunnistaudu</a>
                     </nav>

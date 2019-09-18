@@ -24,13 +24,12 @@ describe('artists-crud', () => {
     it('POST /artisti validoi inputin', done => {
         request(tctx.getApp())
             .post('/artisti')
-            .send('widgets=not:json&sneakySneaky=')
+            .send('widgets=not:json')
             .then(res => {
                 expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
                 expect(errors[0]).toEqual('name on pakollinen');
-                expect(errors[1]).toEqual('userId on pakollinen');
-                expect(errors[2]).toEqual('widgets ei kelpaa');
+                expect(errors[1]).toEqual('widgets ei kelpaa');
             })
             .catch(err => {
                 console.error(err);
@@ -42,14 +41,14 @@ describe('artists-crud', () => {
     });
     it('POST /artisti insertoi uuden artistin tietokantaan', done => {
         const testInput = {name: 'dos'};
+        let actuallyRedirectedTo = '';
         request(tctx.getApp())
             .post('/artisti')
             .send('name=' + testInput.name +
-                  '&userId=' + testData.user.id +
-                  '&widgets=[]' +
-                  '&sneakySneaky=')
+                  '&widgets=[]')
             .then(res => {
-                expect(res.status).toEqual(200);
+                expect(res.status).toEqual(302);
+                actuallyRedirectedTo = res.header.location;
                 return fetchArtistFromDb(tctx, testInput.name);
             })
             .then(rows => {
@@ -57,6 +56,7 @@ describe('artists-crud', () => {
                 expect(actuallyInserted.name).toEqual(testInput.name);
                 expect(actuallyInserted.widgets).toEqual('[]');
                 expect(actuallyInserted.id.length).toEqual(20);
+                expect(actuallyRedirectedTo, '/artisti/' + actuallyInserted.id);
             })
             .catch(err => {
                 console.error(err);

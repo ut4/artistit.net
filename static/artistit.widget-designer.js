@@ -18,7 +18,7 @@ var initialWidgetProps = {
 var friendlyWidgetNames = ['Infoboksi', 'Twitter-feed'];
 
 /**
- * @param {{widgets: Array<Widget>; templates: {[name: string]; string};}} props
+ * @param {{widgets: Array<Widget>; templates: {[name: string]; string}; onUpdate: (widgetsAsJson: string): any;}} props
  */
 function WidgetDesigner(props) {
     preact.Component.call(this, props);
@@ -31,6 +31,7 @@ function WidgetDesigner(props) {
         type: defaultType,
         data: initialWidgetProps[defaultType]
     }]};
+    this.emitUpdate();
     featherSvg = function(iconId) {
         return $el('svg', {className: 'feather'},
             $el('use', {'xlink:href': props.ejsGlobals.staticBaseUrl + 'feather-sprite.svg#' + iconId})
@@ -63,6 +64,7 @@ WidgetDesigner.prototype.render = function() {
         }),
         $el(EmptySlot, {onNewWidgetSelected: function(widgetType) {
                             self.addNewWidget(widgetType);
+                            self.emitUpdate();
                         },
                         widgetTypes: self.widgetTypes})
     );
@@ -76,6 +78,12 @@ WidgetDesigner.prototype.addNewWidget = function(widgetType) {
         data: initialWidgetProps[widgetType]
     });
     this.setState({widgets: this.state.widgets});
+};
+/**
+ * @access private
+ */
+WidgetDesigner.prototype.emitUpdate = function() {
+    this.props.onUpdate(this.getWidgetsAsJson());
 };
 
 /**

@@ -1,4 +1,3 @@
-import './artist-create-view-tests.js';
 import './artist-edit-view-tests.js';
 import './artist-songs-tab-tests.js';
 import './song-upload-view-tests.js';

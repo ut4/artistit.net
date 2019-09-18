@@ -2,23 +2,43 @@
     maxArtistNameLen: number;
     maxTaglineLen: number;
     readTemplate: (name: string): string;
+    errorCode: number;
 } %>
 <%- include('common/layout-header', {title: 'Uusi artisti'}); %>
-<form class="create-artist-view" onSubmit="handleFormSubmit(event)">
+<form class="create-artist-view" method="POST" action="<%- baseUrl %>artisti">
     <header style="<%- `background-image:url('${staticBaseUrl}user-images/-LkbhF4iOa032wUATTzV')` %>">
         <div>
-            <input id="i-name" class="head-input" placeholder="Nimi" autofocus/>
+            <input id="i-name" name="name" class="head-input" placeholder="Nimi" autofocus>
             <div class="error"></div>
         </div>
         <div>
-            <textarea id="i-tagline" class="tagline-input" placeholder="Tagline"></textarea>
+            <textarea id="i-tagline" name="tagline" class="tagline-input" placeholder="Tagline"></textarea>
             <div class="error"></div>
         </div>
     </header>
     <section class="main">
+        <input id="i-widgets" name="widgets" type="hidden">
         <div class="error"></div>
-        <%- include('artist/widget-designer', {widgets: null, readTemplate}) %>
+        <%- include('artist/widget-designer',
+                    {widgets: null, readTemplate, widgetsInputId: 'i-widgets'}) %>
         <%- include('common/form-buttons', {submitText: 'Luo artistisivu'}); %>
     </section>
 </form>
-<%- include('common/layout-footer'); %>
+<script>window.artistit.addPageScript(function() {
+    var inputs = [document.getElementById('i-name'),
+                  document.getElementById('i-tagline'),
+                  document.getElementById('i-widgets')];
+    //
+    var validator = new window.artistit.FormValidation(inputs);
+    validator.addCheckers(inputs[0], 'Nimi',
+        validator.notEmpty(),
+        validator.maxLen(<%- maxArtistNameLen %>));
+    validator.addCheckers(inputs[1], 'Tagline',
+        validator.maxLen(<%- maxTaglineLen %>));
+    validator.addCheckers(inputs[2], 'Widgets',
+        validator.notEmpty());
+    validator.checkAll();
+})</script>
+<%- include('common/layout-footer', errorCode != '-1'
+    ? {}
+    : {toastMessage: {message: 'Artistin luonti epäonnistui.', level: 'error'}}); %>

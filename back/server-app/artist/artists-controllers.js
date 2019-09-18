@@ -65,7 +65,8 @@ class ArtistsControllers {
      */
     newArtistView(req, res) {
         res.render('artist/artist-create-view',
-                   Object.assign({readTemplate}, validationConstants));
+                   Object.assign({readTemplate, errorCode: req.query.error},
+                                  validationConstants));
     }
     /**
      * POST /artisti: Vastaanottaa /artisti/uusi -sivun lomakedatan, validoi sen,
@@ -74,12 +75,8 @@ class ArtistsControllers {
     createArtist(req, res) {
         const errors = [];
         if (!req.body.name) errors.push('name on pakollinen');
-        if (!req.body.userId) errors.push('userId on pakollinen');
-        else if (req.body.userId != req.user.id) errors.push('userId ei kelpaa');
         if (!req.body.widgets) errors.push('widgets on pakollinen');
         else if (!isValidWidgetsJson(req.body.widgets)) errors.push('widgets ei kelpaa');
-        if (!req.body.hasOwnProperty('sneakySneaky') ||
-            req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;
@@ -89,14 +86,14 @@ class ArtistsControllers {
             name: req.body.name,
             tagline: req.body.tagline || null,
             widgets: req.body.widgets,
-            userId: req.body.userId
+            userId: req.user.id
         })
         .then(result => {
-            res.send(result.insertId.toString());
+            res.redirect('/artisti/' + result.insertId.toString());
         })
         .catch(err => {
             log.error('Artistin lisäys tietokantaan epäonnistui', err.stack);
-            res.status(500).send('-1');
+            res.redirect('/artisti/uusi?error=-1');
         });
     }
     /**

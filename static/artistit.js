@@ -13,6 +13,7 @@
  * @param {HTMLElement?} submitButton
  */
 function FormValidation(inputEls, submitButton) {
+    this.checkers = new Array(inputEls.length);
     this.inputEls = inputEls;
     this.errEls = inputEls.map(function(el) {
         return el.parentElement.querySelector('.error');
@@ -32,31 +33,72 @@ function FormValidation(inputEls, submitButton) {
  * }, '%s tulisi olla max. 128 merkkiä pitkä'])
  *
  * @param {HTMLElement} el Validoitava input-elementti
- * @param {string} inputName Nimi jolla korvataan virheviestin "%s"
+ * @param {string} friendlyInputName Nimi jolla korvataan virheviestin "%s"
  * @param {[(input: HTMLElement) => boolean, string]} validatorPair ([checkIsValidFn, errMessage])
  * @param {...[(input: HTMLElement) => boolean, string]} lisääValidatorPareja
+ * @param {boolean?} isInitiallyValid
  */
-FormValidation.prototype.addCheckers = function(el, inputName) {
-    var i = this.inputEls.indexOf(el);
-    if (i < 0)
+FormValidation.prototype.addCheckers = function(el, friendlyInputName) {
+    var idx = this.inputEls.indexOf(el);
+    if (idx < 0)
         throw new Error('elementtiä ei löytynyt konstruktoriin tarjotusta listasta');
     var self = this;
-    var args = arguments;
-    el.addEventListener('input', function(e) {
-        for (var i2 = 2; i2 < args.length; ++i2) {
-            var checkIsValid = args[i2][0];
-            var errMessage = args[i2][1];
-            var isValid = checkIsValid(e.target);
-            self.errEls[i].textContent = isValid
-                ? ''
-                : errMessage.replace('%s', inputName);
-            self.submitButton.disabled = self.inputEls.some(function(_el, i3) {
-                return self.errEls[i3].textContent != '';
-            });
-            if (!isValid) break;
-        }
+    self.checkers[idx] = makeChecker(friendlyInputName, arguments);
+    //
+    el.addEventListener('input', function() {
+        self.checkSingle(idx, true);
+        self.updateSubmitButton();
     });
 };
+/**
+ * @param {boolean} doShowErrors
+ * @access public
+ */
+FormValidation.prototype.checkAll = function(doShowErrors) {
+    var self = this;
+    for (var i = 0; i < self.checkers.length; ++i) {
+        self.checkSingle(i, doShowErrors === true);
+    }
+    self.updateSubmitButton();
+};
+/**
+ * @access private
+ */
+FormValidation.prototype.checkSingle = function(idx, doUpdateError) {
+    var self = this;
+    var lastErr = '';
+    var checker = self.checkers[idx];
+    var inputEl = self.inputEls[idx];
+    for (var i = 0; i < checker.validators.length; ++i) {
+        var pair = checker.validators[i];
+        checker.isValid = pair.checkFn(inputEl);
+        lastErr = checker.isValid
+            ? ''
+            : pair.errorMessage.replace('%s', checker.friendlyInputName);
+        if (!checker.isValid) break;
+    }
+    if (doUpdateError)
+        self.errEls[idx].textContent = lastErr;
+};
+/**
+ * @access private
+ */
+FormValidation.prototype.updateSubmitButton = function() {
+    this.submitButton.disabled = this.checkers.some(function(c) {
+        return !c.isValid;
+    });
+};
+function makeChecker(friendlyInputName, args) {
+    var out = {friendlyInputName: friendlyInputName,
+               isValid: args[args.length - 1] === true,
+               validators: []};
+    for (var i = 2; i < args.length; ++i) {
+        if (typeof args[i] == 'boolean') break;
+        out.validators.push({checkFn: args[i][0], errorMessage: args[i][1]});
+    }
+    return out;
+}
+//
 FormValidation.prototype.notEmpty = function() {
     return [function(input) {
         return input.value != '';
@@ -67,6 +109,7 @@ FormValidation.prototype.maxLen = function(len) {
         return input.value.length <= len;
     }, '%s tulisi olla max. '+len+' merkkiä pitkä'];
 };
+//
 window.artistit.FormValidation = FormValidation;
 }());
 

@@ -3,9 +3,11 @@
                 <section>© 2019 - <%- new Date().getFullYear() %> artistit.net</section>
             </div></footer>
         </div><%# div#app %>
-        <div class="toast hidden">
-            <span></span>
+        <% if (typeof toastMessage != 'undefined') { %>
+        <div class="toast hidden <%- toastMessage.level %>">
+            <span><%- toastMessage.message %></span>
         </div>
+        <% } %>
         <script src="<%- staticBaseUrl %>artistit.js"></script>
         <script>(function() {
             var userMenuEl = document.querySelector('.user-menu');

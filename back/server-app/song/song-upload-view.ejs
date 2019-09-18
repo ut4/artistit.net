@@ -11,23 +11,23 @@
     <form onSubmit="handleFormSubmit(event)">
         <div>
             <label for="i-name">Nimi<span>*</span></label>
-            <input id="i-name"/>
+            <input id="i-name">
             <div class="error"></div>
         </div>
         <div>
             <label for="i-file">Tiedosto<span>*</span></label>
-            <input id="i-file" type="file" accept=".mp3,.wav,.ogg,.flac,.weba,.webm"/>
+            <input id="i-file" type="file" accept=".mp3,.wav,.ogg,.flac,.weba,.webm">
             <div class="info">mp3|wav|ogg|flac|weba|webm, max (20Mb)</div>
             <div class="error"></div>
         </div>
         <div>
             <label for="i-genre">Genre</label>
-            <input id="i-genre" value="Ambient" disabled/>
+            <input id="i-genre" value="Ambient" disabled>
             <div class="error"></div>
         </div>
         <div>
             <label for="i-tags">Tagit</label>
-            <input id="i-tags"/>
+            <input id="i-tags">
             <div class="error"></div>
         </div>
         <%- include('common/form-buttons', {submitText: 'Lataa'}); %>
