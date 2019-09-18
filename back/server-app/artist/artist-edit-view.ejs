@@ -2,6 +2,7 @@
     artist: Artist;
     maxArtistNameLen: number;
     maxTaglineLen: number;
+    readTemplate: (name: string): string;
 } %>
 <%- include('common/layout-header', {title: 'Muokkaa artistia ' + artist.name}); %>
 <form class="edit-artist-view" onSubmit="handleFormSubmit(event)">
@@ -18,14 +19,11 @@
         </div>
     </header>
     <section class="main">
-        <div>
-            <label for="i-widgets">Widgets</label>
-            <textarea id="i-widgets"><%- artist.widgets %></textarea>
-            <div class="error"></div>
-        </div>
-        <%- include('common/form-buttons', {
-            submitText: 'Tallenna',
-            gotoOnCancel: 'artisti/' + artist.id}); %>
+        <%- include('artist/widget-designer',
+                    {widgets: JSON.parse(artist.widgets), readTemplate}) %>
+        <%- include('common/form-buttons',
+                    {submitText: 'Tallenna',
+                     gotoOnCancel: 'artisti/' + artist.id}); %>
     </section>
 </form>
 <script>window.artistit.addPageScript(

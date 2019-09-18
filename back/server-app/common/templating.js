@@ -4,22 +4,34 @@
  * Templatointiin liittyviä helpereitä.
  */
 
-const $el = require('preact').createElement;
+const ejs = require('ejs');
 const {staticBaseUrl} = require('../../config.js');
 
 /**
+ * Prod-modessa korvaa ejs-templaattien include-funktion versiolla, joka palaut-
+ * taa includetettavan tiedoston sisällön suoraan muistista (default-versio
+ * blokkaa, readFileSync).
+ */
+exports.setupEjs = appMode => {
+    if (appMode != 'prod') return;
+    const bundledTemplates = require('./todo.js');
+    ejs.fileLoader = filePath => {
+        return bundledTemplates[filePath];
+    };
+};
+
+/**
+ * Note: käytetään frontendissä ja backendissä.
+ *
  * @param {string} iconId ks. https://feathericons.com
  * @returns {string}
  */
-exports.reactFeatherSvg = function(iconId) {
-    return $el('svg', {className: 'feather'},
-        $el('use', {'xlink:href': staticBaseUrl + 'feather-sprite.svg#' + iconId})
-    );
+exports.ejsFeatherSvg = function(iconId) {
+    return '<svg class="feather">' +
+        '<use xlink:href="' + staticBaseUrl + 'feather-sprite.svg#' +
+            iconId + '"/>' +
+    '</svg>';
 };
-exports.ejsFeatherSvg = iconId => '<svg class="feather">' +
-    '<use xlink:href="' + staticBaseUrl + 'feather-sprite.svg#' +
-        iconId + '"/>' +
-'</svg>';
 
 /**
  * @param {string} message

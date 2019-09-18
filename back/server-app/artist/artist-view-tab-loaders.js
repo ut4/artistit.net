@@ -6,13 +6,7 @@
  */
 
 const log = require('loglevel');
-const preact = require('preact');
-const render = require('preact-render-to-string');
 const {songsRepository} = require('../song/songs-repository.js');
-const widgetRenderers = {
-    'info-box': require('./wall-widget-info-box.js').InfoBox,
-    'twitter-feed': require('./wall-widget-twitter-feed').TwitterFeed,
-};
 
 class ArtistViewTabLoaders {
     constructor(songsRepo) {
@@ -58,11 +52,7 @@ class ArtistViewTabLoaders {
     loadFeedTabData(artist, req, then) {
         // Note: artist.widgets-json sisältää itsessään jo widgetin tarvitseman
         // datan, joten erillisiä tietokantahakuja ei tässä kohtaa tarvita
-        then({widgets: JSON.parse(artist.widgets),
-              renderWidget: w => render(
-                  preact.createElement(widgetRenderers[w.type], w.data)
-              )
-            });
+        then({widgets: JSON.parse(artist.widgets)});
     }
     /**
      * Lataa artistisivun biisit-tabin datan.

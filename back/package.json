@@ -17,14 +17,11 @@
     "loglevel": "^1.6.3",
     "mariadb": "^2.1.0",
     "passport": "^0.4.0",
-    "passport-github": "^1.1.0",
-    "preact": "^8.5.2",
-    "preact-render-to-string": "^4.1.0"
+    "passport-github": "^1.1.0"
   },
   "devDependencies": {
     "cheerio": "^1.0.0-rc.3",
     "jasmine": "^3.4.0",
-    "qunit": "^2.9.2",
     "sinon": "^7.4.1",
     "supertest": "^4.0.2"
   }

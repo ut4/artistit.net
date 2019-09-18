@@ -66,29 +66,7 @@ describe('artists-crud', () => {
                 done();
             });
     });
-    it('GET /artisti/:artistId ilman credentiaaleja renderöi artistisivun ja widgetit', done => {
-        const app = tctx.getApp();
-        const origUserId = app.locals.user.id;
-        app.locals.user.id = 'someOtherArtistUserId';
-        request(app)
-            .get('/artisti/' + testData.artist.id)
-            .then(res => {
-                expect(res.status).toEqual(200);
-                const n = testData.artist.name;
-                const $ = testUtils.parseDocumentBody(res.text);
-                expect($('h1').text()).toEqual(n);
-                expect($('.artist-widgets-list').length).toEqual(1);
-            })
-            .catch(err => {
-                console.error(err);
-                expect(1).toBe('Ei pitäisi heittää virhettä');
-            })
-            .finally(() => {
-                app.locals.user.id = origUserId;
-                done();
-            });
-    });
-    it('GET /artisti/:artistId credentiaaleilla renderöi artistisivun mutta ei widgettejä', done => {
+    it('GET /artisti/:artistId renderöi seinä-tabin', done => {
         request(tctx.getApp())
             .get('/artisti/' + testData.artist.id)
             .then(res => {
@@ -96,7 +74,7 @@ describe('artists-crud', () => {
                 const n = testData.artist.name;
                 const $ = testUtils.parseDocumentBody(res.text);
                 expect($('h1').text()).toEqual(n);
-                expect($('.artist-widgets-list').length).toEqual(0);
+                expect($('.artist-widgets-list').length).toEqual(1);
             })
             .catch(err => {
                 console.error(err);

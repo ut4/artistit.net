@@ -4,6 +4,7 @@
  * Handlerit /artisti-alkuisille reiteille.
  */
 
+const ejs = require('ejs');
 const log = require('loglevel');
 const {ensureIsLoggedIn, ensureHasContentType} = require('../common/route-filters.js');
 const {artistsRepository} = require('./artists-repository.js');
@@ -15,9 +16,8 @@ const validationConstants = {
     maxArtistNameLen: 128,
     maxTaglineLen: 512,
 };
-const widgetTmplsBundleBaseUrl = config.appMode != 'prod'
-    ? '/'
-    : config.staticBaseUrl;
+const readTemplate = name => ejs.fileLoader(__dirname + name + '.ejs',
+                                            {encoding: 'utf-8'});
 
 class ArtistsControllers {
     static registerRoutes(app, baseUrl) {
@@ -56,7 +56,7 @@ class ArtistsControllers {
             this.tabLoader.loadDataFor(req.query['näytä'], artist, req,
                 (tabData, tabName) => {
                     res.render('artist/artist-index-view',
-                               {artist, tabName, tabData, widgetTmplsBundleBaseUrl});
+                               {artist, tabName, tabData});
                 });
         });
     }
@@ -64,8 +64,8 @@ class ArtistsControllers {
      * GET /artisti/uusi: Renderöi artistin luonti -lomakkeen.
      */
     newArtistView(req, res) {
-        res.render('artist/artist-create-view', Object.assign({widgetTmplsBundleBaseUrl},
-                                                       validationConstants));
+        res.render('artist/artist-create-view',
+                   Object.assign({readTemplate}, validationConstants));
     }
     /**
      * POST /artisti: Vastaanottaa /artisti/uusi -sivun lomakedatan, validoi sen,
@@ -106,7 +106,7 @@ class ArtistsControllers {
         this.fetchArtist(req, res, artist => {
             if (artist.userId == req.user.id) {
                 res.render('artist/artist-edit-view',
-                           Object.assign({artist}, validationConstants));
+                           Object.assign({artist, readTemplate}, validationConstants));
             } else {
                 log.warn('Muokattava artisti (' + req.body.artistId +
                          ') ei kuulunut kirjaantuneelle käyttäjälle (' +

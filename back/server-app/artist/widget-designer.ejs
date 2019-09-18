@@ -1,0 +1,29 @@
+<%# lokaalit tässä tiedostossa: {
+    widgets: Array<Widget>;
+    readTemplate: (name: string): string;
+} %>
+<div id="widgets-designer-app"></div>
+<script src="<%- staticBaseUrl %>preact.min.js"></script>
+<script src="<%- staticBaseUrl %>ejs.js"></script>
+<script src="<%- staticBaseUrl %>artistit.widget-designer.js"></script>
+<script>preact.render(
+    preact.createElement(window.artistit.WidgetDesigner, {
+        widgets: <%- JSON.stringify(widgets) %>,
+        templates: <%- JSON.stringify(
+            ['info-box', 'twitter-feed'].reduce((obj, tn) => {
+                obj[tn] = encodeURIComponent(readTemplate('/wall-widget-' + tn));
+                return obj;
+            }, {})
+        ) %>,
+        ejsGlobals: Object.assign({
+            user: {},
+            baseUrl: '<%- baseUrl %>',
+            staticBaseUrl: '<%- staticBaseUrl %>',
+            featherSvg: (function () {
+                var staticBaseUrl = '<%- staticBaseUrl %>';
+                return <%- featherSvg %>;
+            }())
+        })
+    }),
+    document.getElementById('widgets-designer-app')
+)</script>

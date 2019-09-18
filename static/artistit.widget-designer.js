@@ -7,7 +7,7 @@
 (function() {
 'use strict';
 var $el = preact.createElement;
-var featherSvg = window.artistit.widgetTemplates.featherSvg;
+var featherSvg = null;
 var initialWidgetProps = {
     'info-box': {
         infos: [{title: 'Jäsenet', text: 'Jäsen1, Jäsen2'},
@@ -18,15 +18,24 @@ var initialWidgetProps = {
 var friendlyWidgetNames = ['Infoboksi', 'Twitter-feed'];
 
 /**
- * @param {{widgets: Array<Widget>; initialWidgetProps: {[key: string]: Object};}} props
+ * @param {{widgets: Array<Widget>; templates: {[name: string]; string};}} props
  */
 function WidgetDesigner(props) {
     preact.Component.call(this, props);
-    var defaultType = Object.keys(initialWidgetProps)[0];
+    this.widgetTypes = Object.keys(initialWidgetProps);
+    var defaultType = this.widgetTypes[0];
+    this.templates = props.templates;
+    for (var key in this.templates)
+        this.templates[key] = decodeURIComponent(this.templates[key]);
     this.state = {widgets: props.widgets || [{
         type: defaultType,
         data: initialWidgetProps[defaultType]
     }]};
+    featherSvg = function(iconId) {
+        return $el('svg', {className: 'feather'},
+            $el('use', {'xlink:href': props.ejsGlobals.staticBaseUrl + 'feather-sprite.svg#' + iconId})
+        );
+    };
 }
 WidgetDesigner.prototype = Object.create(preact.Component.prototype);
 /**
@@ -47,12 +56,15 @@ WidgetDesigner.prototype.render = function() {
     return $el('div', {class: 'artist-widgets-list'},
         $el('button', {class: 'icon-button filled', title: 'Järjestä widgettejä'},
             featherSvg('layout'), 'Järjestä'),
-        self.state.widgets.map(function(w) {
-            return $el(Slot, {widget: w});
+        self.state.widgets.map(function(widget) {
+            return $el(Slot, {widget: widget,
+                              template: self.templates[widget.type],
+                              templateGlobals: self.props.ejsGlobals});
         }),
         $el(EmptySlot, {onNewWidgetSelected: function(widgetType) {
-            self.addNewWidget(widgetType);
-        }})
+                            self.addNewWidget(widgetType);
+                        },
+                        widgetTypes: self.widgetTypes})
     );
 };
 /**
@@ -67,11 +79,10 @@ WidgetDesigner.prototype.addNewWidget = function(widgetType) {
 };
 
 /**
- * @param {{widget: Widget;}} props
+ * @param {{widget: Widget; template: string; templateGlobals: Object;}} props
  */
 function Slot(props) {
     preact.Component.call(this, props);
-    this.widgetInstance = null;
 }
 Slot.prototype = Object.create(preact.Component.prototype);
 /**
@@ -79,18 +90,16 @@ Slot.prototype = Object.create(preact.Component.prototype);
  */
 Slot.prototype.render = function() {
     var self = this;
-    var w = self.props.widget;
-    var widgetProps = {ref: function(instance) { self.widgetInstance = instance; }};
-    for (var key in w.data) widgetProps[key] = w.data[key];
     return $el('div', {class: 'slot populated'},
         $el('button', {onClick: function() { self.emitEditBtnClick(); },
                        class: 'icon-button filled',
                        title: 'Muokkaa widgettiä',
                        type: 'button'},
             featherSvg('edit-3')),
-        $el('div', {class: 'widget'}, $el('div', null,
-            $el(window.artistit.widgetTemplates[w.type], widgetProps)
-        ))
+        $el('div', {class: 'widget'}, $el('div', {
+            dangerouslySetInnerHTML: {__html: window.ejs.render(
+                self.props.template, self.makeWidgetProps(self.props.widget))}
+        }))
     );
 };
 /**
@@ -99,15 +108,25 @@ Slot.prototype.render = function() {
 Slot.prototype.emitEditBtnClick = function() {
     this.widgetInstance.setEditModeIsOn(true);
 };
+/**
+ * @access private
+ */
+Slot.prototype.makeWidgetProps = function(widget) {
+    var out = {widget: widget};
+    for (var key in widget.data)
+        out[key] = widget.data[key];
+    for (key in this.props.templateGlobals)
+        out[key] = this.props.templateGlobals[key];
+    return out;
+};
 
 /**
- * @param {{onNewWidgetSelected: (widgetType: string): any;}} props
+ * @param {{onNewWidgetSelected: (widgetType: string): any; widgetTypes: {[name: string]; string};}} props
  */
 function EmptySlot(props) {
     preact.Component.call(this, props);
     this.state = {isNewWidgetSelectorVisible: false};
-    this.widgetTypes = Object.keys(initialWidgetProps);
-    this.selectedType = this.widgetTypes[0];
+    this.selectedType = props.widgetTypes[0];
 }
 EmptySlot.prototype = Object.create(preact.Component.prototype);
 /**
@@ -125,7 +144,7 @@ EmptySlot.prototype.render = function() {
                              type: 'button'},
                 featherSvg('plus'))
             : $el('div', null,
-                $el('select', null, self.widgetTypes
+                $el('select', null, self.props.widgetTypes
                     .map(function(widgetType, i) {
                         return $el('option', {onClick: function(e) {
                                                 self.selectedType = e.target.value;

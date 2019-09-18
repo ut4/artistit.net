@@ -11,7 +11,7 @@ const app = require('express')();
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
-const {ejsFeatherSvg} = require('./common/templating.js');
+const {ejsFeatherSvg, setupEjs} = require('./common/templating.js');
 const {SiteControllers} = require('./site/site-controllers.js');
 const {AuthControllers} = require('./auth/auth-controllers.js');
 const {ArtistsControllers} = require('./artist/artists-controllers.js');
@@ -30,6 +30,7 @@ exports.makeApp = (mode, config) => {
     else if (mode == 'test') configureTestEnv(app, config);
     else throw new Error('Virheellinen env-mode. Validit: prod, demo, test');
     //
+    setupEjs(mode);
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(fileUpload({createParentPath: true}));
     app.set('views', ['./server-app', '../front']);

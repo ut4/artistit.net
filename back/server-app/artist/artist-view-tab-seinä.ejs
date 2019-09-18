@@ -1,33 +1,18 @@
 <%# lokaalit tässä tiedostossa: {
     artist: Artist;
-    tabData: {
-        widgets: Array<Widget>;
-        renderWidget: (widget: Widget): string;
-    };
-    widgetTmplsBundleBaseUrl: string;
+    tabData: {widgets: Array<Widget>;};
 } %>
 <section class="main">
-<% if (user.id != artist.userId) { %>
-    <div><div class="artist-widgets-list">
-    <% if (tabData.widgets.length) {
-        for (const widget of tabData.widgets) { %>
-        <div class="widget <%- widget.type %>"><div>
-            <%- tabData.renderWidget(widget); %>
-        </div></div>
-        <% } %>
-    <% } else { %>
-        <p>Hmm, minimaalista.</p>
-    <% } %>
+<div class="artist-widgets-list">
+<% if (tabData.widgets.length) {
+    for (const widget of tabData.widgets) { %>
+    <div class="widget <%- widget.type %>"><div>
+        <%- include('artist/wall-widget-' + widget.type,
+                    Object.assign({widget}, widget.data)); %>
     </div></div>
+    <% } %>
 <% } else { %>
-    <div id="widgets-designer-app"></div>
-    <script src="<%- staticBaseUrl %>preact.min.js"></script>
-    <script src="<%- widgetTmplsBundleBaseUrl %>widget-templates.js"></script>
-    <script src="<%- staticBaseUrl %>artistit.widget-designer.js"></script>
-    <script>(function() {
-        preact.render(preact.createElement(window.artistit.WidgetDesigner, {
-            widgets: <%- JSON.stringify(tabData.widgets) %>
-        }), document.getElementById('widgets-designer-app'));
-    }())</script>
+    <p>Hmm, minimaalista.</p>
 <% } %>
+</div>
 </section>
