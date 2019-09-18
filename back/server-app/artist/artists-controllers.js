@@ -26,11 +26,11 @@ class ArtistsControllers {
         // roles: authenticatedUsers
         app.get(baseUrl + 'artisti/uusi', ensureIsLoggedIn(),
             (a, b) => makeCtrl().newArtistView(a, b));
-        app.post(baseUrl + 'artisti', ensureIsLoggedIn(), ensureHasContentType(),
+        app.post(baseUrl + 'artisti/uusi', ensureIsLoggedIn(), ensureHasContentType(),
             (a, b) => makeCtrl().createArtist(a, b));
         app.get(baseUrl + 'artisti/muokkaa/:artistId', ensureIsLoggedIn(),
             (a, b) => makeCtrl().editArtistView(a, b));
-        app.put(baseUrl + 'artisti', ensureIsLoggedIn(), ensureHasContentType(),
+        app.post(baseUrl + 'artisti/muokkaa', ensureIsLoggedIn(), ensureHasContentType(),
             (a, b) => makeCtrl().updateArtist(a, b));
         // roles: all
         app.get(baseUrl + 'artisti/:artistId',
@@ -69,8 +69,8 @@ class ArtistsControllers {
                                   validationConstants));
     }
     /**
-     * POST /artisti: Vastaanottaa /artisti/uusi -sivun lomakedatan, validoi sen,
-     * ja insertoi tietokantaan.
+     * POST /artisti/uusi: Vastaanottaa /artisti/uusi -sivun lomakedatan,
+     * validoi sen, ja insertoi tietokantaan.
      */
     createArtist(req, res) {
         const errors = [];
@@ -103,7 +103,9 @@ class ArtistsControllers {
         this.fetchArtist(req, res, artist => {
             if (artist.userId == req.user.id) {
                 res.render('artist/artist-edit-view',
-                           Object.assign({artist, readTemplate}, validationConstants));
+                           Object.assign({artist, readTemplate,
+                                          errorCode: req.query.error},
+                                          validationConstants));
             } else {
                 log.warn('Muokattava artisti (' + req.body.artistId +
                          ') ei kuulunut kirjaantuneelle käyttäjälle (' +
@@ -113,8 +115,8 @@ class ArtistsControllers {
         });
     }
     /**
-     * PUT /artisti: Vastaanottaa /artisti/muokkaa -sivun lomakedatan, validoi sen,
-     * ja päivittää tietokantaan.
+     * POST /artisti/muokkaa: Vastaanottaa /artisti/muokkaa -sivun lomakedatan,
+     * validoi sen, ja päivittää tietokantaan.
      */
     updateArtist(req, res) {
         const errors = [];
@@ -124,8 +126,6 @@ class ArtistsControllers {
         if (!req.body.hasOwnProperty('tagline')) errors.push('tagline on pakollinen');
         if (!req.body.widgets) errors.push('widgets on pakollinen');
         else if (!isValidWidgetsJson(req.body.widgets)) errors.push('widgets ei kelpaa');
-        if (!req.body.hasOwnProperty('sneakySneaky') ||
-            req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;
@@ -136,12 +136,12 @@ class ArtistsControllers {
             tagline: req.body.tagline,
             widgets: req.body.widgets,
         })
-        .then(result => {
-            res.send(result.affectedRows.toString());
+        .then(() => {
+            res.redirect('/artisti/' + req.body.id);
         })
         .catch(err => {
             log.error('Artistin päivittäminen tietokantaan epäonnistui', err.stack);
-            res.status(500).send('-1');
+            res.redirect('/artisti/muokkaa/' + req.body.id + '?error=-1');
         });
     }
     /**

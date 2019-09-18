@@ -21,9 +21,9 @@ describe('artists-crud', () => {
     afterAll(() => {
         tctx.tearDown();
     });
-    it('POST /artisti validoi inputin', done => {
+    it('POST /artisti/uusi validoi inputin', done => {
         request(tctx.getApp())
-            .post('/artisti')
+            .post('/artisti/uusi')
             .send('widgets=not:json')
             .then(res => {
                 expect(res.status).toEqual(400);
@@ -39,11 +39,11 @@ describe('artists-crud', () => {
                 done();
             });
     });
-    it('POST /artisti insertoi uuden artistin tietokantaan', done => {
+    it('POST /artisti/uusi insertoi uuden artistin tietokantaan', done => {
         const testInput = {name: 'dos'};
         let actuallyRedirectedTo = '';
         request(tctx.getApp())
-            .post('/artisti')
+            .post('/artisti/uusi')
             .send('name=' + testInput.name +
                   '&widgets=[]')
             .then(res => {
@@ -84,10 +84,10 @@ describe('artists-crud', () => {
                 done();
             });
     });
-    it('PUT /artisti validoi inputin', done => {
+    it('POST /artisti/muokkaa validoi inputin', done => {
         request(tctx.getApp())
-            .put('/artisti')
-            .send('sneakySneaky=')
+            .put('/artisti/muokkaa')
+            .type('form')
             .then(res => {
                 expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
@@ -104,7 +104,7 @@ describe('artists-crud', () => {
                 done();
             });
     });
-    it('PUT /artisti päivittää tiedot tietokantaan', done => {
+    it('POST /artisti/muokkaa päivittää tiedot tietokantaan', done => {
         const a = {
             id: '-aaaaaaaaaaaaaaaaaaa',
             name: 'toinen',
@@ -128,17 +128,16 @@ describe('artists-crud', () => {
             .then(res => {
                 if (res.affectedRows < 1) throw new Error('Testidatan insertointi epäonnistui');
                 return request(tctx.getApp())
-                    .put('/artisti')
+                    .put('/artisti/muokkaa')
                     .send('name=' + testInput.name +
                           '&id=' + testInput.id +
                           '&tagline=' + testInput.tagline +
-                          '&widgets=' + testInput.widgets +
-                          '&sneakySneaky='
+                          '&widgets=' + testInput.widgets
                     );
             })
             .then(res => {
-                expect(res.status).toEqual(200);
-                expect(res.text).toEqual('1');
+                expect(res.status).toEqual(302);
+                expect(res.header.location).toEqual('/artisti/' + testInput.id);
                 return fetchArtistFromDb(tctx, testInput.name);
             })
             .then(rows => {

@@ -1,4 +1,3 @@
-import './artist-edit-view-tests.js';
 import './artist-songs-tab-tests.js';
 
 QUnit.config.autostart = false;
