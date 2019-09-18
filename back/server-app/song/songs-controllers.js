@@ -37,9 +37,10 @@ class SongsControllers {
      * GET /biisi/uusi/:artistId: Renderöi biisin lataus -sivun.
      */
     newSongView(req, res) {
-        let props = {artistId: req.params.artistId};
-        Object.assign(props, validationConstants);
-        res.render('song/song-upload-view', props);
+        res.render('song/song-upload-view',
+                   Object.assign({artistId: req.params.artistId,
+                                  errorCode: req.query.error},
+                                  validationConstants));
     }
     /**
      * POST /biisi: Vastaanottaa /biisi/uusi -sivun lomakedatan, validoi sen, ja
@@ -52,8 +53,6 @@ class SongsControllers {
         if (!req.body.genre) errors.push('genre on pakollinen');
         if (!req.body.artistId) errors.push('artistId on pakollinen');
         else if (!isValidFireId(req.body.artistId)) errors.push('artistId ei kelpaa');
-        if (!req.body.hasOwnProperty('sneakySneaky') ||
-            req.body.sneakySneaky.length) errors.push('oletko robotti?');
         if (errors.length) {
             res.status(400).send(errors.join('\n'));
             return;
@@ -74,12 +73,12 @@ class SongsControllers {
                                 ') didn\'t belong to req.user.id (' +
                                 req.user.id + ')!!');
             })
-            .then(result => {
-                res.send(result.insertId.toString());
+            .then(() => {
+                res.redirect('artisti/' + req.body.artistId + '?näytä=biisit');
             })
             .catch(err => {
-                log.error('Failed to upload song', err.stack);
-                res.status(500).send('-1');
+                log.error('Biisin lataus epäonnistui.', err.stack);
+                res.redirect('/biisi/uusi/' + req.body.artistId + '?error=-1');
             });
     }
     /**

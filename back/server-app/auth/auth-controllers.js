@@ -32,7 +32,7 @@ class AuthControllers {
                         cb(null, user);
                     })
                     .catch(err => {
-                        log.error('Failed to fetch user from db', err.stack);
+                        log.error('Käyttäjän haku tietokannasta epäonnistui.', err.stack);
                         cb(err, null);
                     });
             }

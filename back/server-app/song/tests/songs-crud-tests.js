@@ -46,7 +46,7 @@ describe('songs-crud', () => {
         request(tctx.getApp())
             .post('/biisi')
             .set('Content-Type', 'multipart/form-data')
-            .send('sneakySneaky=')
+            .send()
             .then(res => {
                 expect(res.status).toEqual(400);
                 const errors = res.text.split('\n');
@@ -81,6 +81,7 @@ describe('songs-crud', () => {
             .stub(songRepo.fs, 'unlink')
             .yields(null); // triggeröi unlinkin callback, ja passaa sille
                            // null (ei erroria)
+        let insertSongSpy = sinon.spy(songRepo, 'uploadAndInsertSong');
         request(tctx.getApp())
             .post('/biisi')
             .field('name', testInput.name)
@@ -89,9 +90,10 @@ describe('songs-crud', () => {
             .field('artistId', testInput.artistId)
             .field('sneakySneaky', '')
             .then(res => {
-                expect(res.status).toEqual(200);
-                expect(res.text.length).toEqual(20);
-                insertId = res.text;
+                expect(res.status).toEqual(302);
+                expect(decodeURIComponent(res.header.location))
+                    .toEqual('artisti/' + testInput.artistId + '?näytä=biisit');
+                insertId = insertSongSpy.firstCall.args[0].id;
                 const convertTargetFilePath = convertMp3Stub.firstCall.args[1];
                 expect(convertTargetFilePath).toEqual(`${dirPath}${insertId}.mp3`);
                 return tctx.getDb().getPool()
@@ -116,6 +118,7 @@ describe('songs-crud', () => {
             .finally(() => {
                 convertMp3Stub.restore();
                 unlinkOrigFileStub.restore();
+                insertSongSpy.restore();
                 done();
             });
     });

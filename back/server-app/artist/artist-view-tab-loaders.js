@@ -68,7 +68,7 @@ class ArtistViewTabLoaders {
                 then({songs});
             })
             .catch(err => {
-                log.error('Failed to fetch songs', err.stack);
+                log.error('Biisien haku tietokannasta epäonnistui.', err.stack);
                 then({songs: []});
             });
     }

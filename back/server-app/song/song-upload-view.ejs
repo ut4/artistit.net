@@ -1,6 +1,7 @@
 <%# lokaalit tässä tiedostossa: {
     artistId: string;
     maxSongNameLen: number;
+    errorCode: number;
 } %>
 <%- include('common/layout-header', {title: 'Uusi biisi'}); %>
 <header class="default-background">
@@ -8,15 +9,15 @@
     <p>Lataa uusi kappale artistit.netiin.</p>
 </header>
 <section class="main">
-    <form onSubmit="handleFormSubmit(event)">
+    <form action="<%- baseUrl %>biisi" method="POST" enctype="multipart/form-data">
         <div>
             <label for="i-name">Nimi<span>*</span></label>
-            <input id="i-name">
+            <input id="i-name" name="name">
             <div class="error"></div>
         </div>
         <div>
             <label for="i-file">Tiedosto<span>*</span></label>
-            <input id="i-file" type="file" accept=".mp3,.wav,.ogg,.flac,.weba,.webm">
+            <input id="i-file" type="file" accept=".mp3,.wav,.ogg,.flac,.weba,.webm" name="fileData">
             <div class="info">mp3|wav|ogg|flac|weba|webm, max (20Mb)</div>
             <div class="error"></div>
         </div>
@@ -27,17 +28,27 @@
         </div>
         <div>
             <label for="i-tags">Tagit</label>
-            <input id="i-tags">
+            <input id="i-tags" name="tags">
             <div class="error"></div>
         </div>
+        <input name="artistId" value="<%- artistId %>" type="hidden">
+        <input name="genre" value="Ambient" type="hidden">
         <%- include('common/form-buttons', {submitText: 'Lataa'}); %>
     </form>
 </section>
-<script>window.artistit.addPageScript(
-    <%- include('song-upload-view.js'); %>,
-    {
-        maxSongNameLen: <%- maxSongNameLen -%>,
-        artistId: '<%- artistId %>',
-    }
-)</script>
-<%- include('common/layout-footer'); %>
+<script>window.artistit.addPageScript(function() {
+    var inputs = [document.getElementById('i-name'),
+                  document.getElementById('i-file'),
+                  document.getElementById('i-genre'),
+                  document.getElementById('i-tags')];
+    var validator = new window.artistit.FormValidation(inputs);
+    validator.addCheckers(inputs[0], 'Nimi',
+        validator.notEmpty(),
+        validator.maxLen(<%- maxSongNameLen -%>));
+    validator.addCheckers(inputs[2], 'Genre',
+        validator.notEmpty());
+    validator.checkAll();
+})</script>
+<%- include('common/layout-footer', errorCode != '-1'
+    ? {}
+    : {toastMessage: {message: 'Biisin lataus epäonnistui.', level: 'error'}}); %>

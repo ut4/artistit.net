@@ -5,7 +5,7 @@
     errorCode: number;
 } %>
 <%- include('common/layout-header', {title: 'Uusi artisti'}); %>
-<form class="create-artist-view" method="POST" action="<%- baseUrl %>artisti">
+<form action="<%- baseUrl %>artisti" method="POST" class="create-artist-view">
     <header style="<%- `background-image:url('${staticBaseUrl}user-images/-LkbhF4iOa032wUATTzV')` %>">
         <div>
             <input id="i-name" name="name" class="head-input" placeholder="Nimi" autofocus>

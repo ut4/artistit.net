@@ -57,7 +57,8 @@ FormValidation.prototype.addCheckers = function(el, friendlyInputName) {
 FormValidation.prototype.checkAll = function(doShowErrors) {
     var self = this;
     for (var i = 0; i < self.checkers.length; ++i) {
-        self.checkSingle(i, doShowErrors === true);
+        if (self.checkers[i])
+            self.checkSingle(i, doShowErrors === true);
     }
     self.updateSubmitButton();
 };
