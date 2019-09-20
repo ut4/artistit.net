@@ -80,7 +80,6 @@ describe('songs-crud', () => {
             .attach('fileData', filePath)
             .field('genre', testInput.genre)
             .field('artistId', testInput.artistId)
-            .field('sneakySneaky', '')
             .then(res => {
                 expect(res.status).toEqual(302);
                 expect(decodeURIComponent(res.header.location))

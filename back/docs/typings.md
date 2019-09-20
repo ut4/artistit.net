@@ -98,16 +98,40 @@ interface Artistit {
     baseUrl: string;
     staticBaseUrl: string;
     addPageScript: (fn: (props: any) => any, props: any): void;
+    // -- Moduulit ----
+    FormValidation: FormValidation;
+    validators: {[name: string]: [(inputEl: HTMLInputElement): boolean, string];};
+    Player: Object;
+    PlayerEventsHandler: PlayerEventsHandler;
+    // -- Aliakset ----
     fetch: (url: string, settings?: Object): Promise;
     redirect: (to: string): void;
 }
 ```
 
-## window.toast
+## FormValidation
 
 ```typescript
-interface toast {
-    (message: string, level: string): void;
+interface FormValidation {
+    /**
+     * Esimerkki:
+     *
+     * var v = window.artistit.validators;
+     * new window.FormValidation([
+     *    ['inputin-id', 'Selkonimi', v.notEmpty(), v.maxLen(64), ...],
+     *    ...
+     * ])
+     * -- tai --
+     * new window.FormValidation([
+     *    [document.querySelector('.pw'), 'Salasana', [function (input) {
+     *                                                   return input.value != ''
+     *                                                 }, '%s vaaditaan'], ...],
+     *    ...
+     * ])
+     */
+    new (configs: Array<[string|HTMLInputElement, string, Function|boolean...]>,
+         submitButton?: HTMLElement);
+    checkAll(doShowErrors: boolean): void;
 }
 ```
 
@@ -129,6 +153,14 @@ interface PlayerEventsHandler {
      *                       false = älä lisää tykkäysmäärää.
      */
     onLike: (song: ServerApp.Song): Promise<boolean>;
+}
+```
+
+## window.toast
+
+```typescript
+interface toast {
+    (message: string, level: string): void;
 }
 ```
 

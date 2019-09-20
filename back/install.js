@@ -14,11 +14,12 @@ const {execSync} = require('child_process');
 const config = require('./config.js');
 
 const step = process.argv[2];
-const mysqlPath = 'E:/ProgramData/xampp/mysql/bin/mysql';
-const connectCmd = mysqlPath +
+const mysqlExePath = 'mysql';
+const connectCmd = mysqlExePath +
     ' -u' + config.dbUser +
     ' -p' + config.dbPassword +
-    ' -D' + config.dbDatabase;
+    ' -D' + config.dbDatabase +
+    ' --default-character-set=utf8';
 
 if (step == 'step1' || step == 'all') step1();
 if (step == 'step2' || step == 'all') step2();
