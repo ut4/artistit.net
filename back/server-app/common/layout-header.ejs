@@ -11,10 +11,10 @@
             addPageScript: function(fn, props) {
                 this.pageScripts.push([fn, props]);
             },
-            sessionStorage: window.sessionStorage,
             fetch: function(url, settings) { return fetch(url, settings); },
             redirect: function(to) { window.location.href = '<%- baseUrl %>' + to; },
             baseUrl: '<%- baseUrl %>',
+            staticBaseUrl: '<%- staticBaseUrl %>',
             ID_LEN: 20,
         };</script>
     </head>

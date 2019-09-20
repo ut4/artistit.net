@@ -11,6 +11,7 @@ const {makeHttpTestCtx} = require('../../tests-common/testing-env.js');
 const testData = require('../../tests-common/test-data.js');
 const config = require('../../../config.js');
 const songRepoModule = require('../songs-repository.js');
+const {insertSongs, deleteSongs} = require('./utils.js');
 
 const testSong = {id: '-sssssssssssssssssss', name: 'test', duration: 2,
                   artistId: testData.artist.id, genreId: 1};
@@ -20,24 +21,15 @@ describe('songs-crud', () => {
     beforeAll(done => {
         makeHttpTestCtx().then(ctx => {
             tctx = ctx;
-            return tctx.getDb().getPool()
-                .query(
-                    'insert into songs values (?,?,?,?,?)',
-                    Object.values(testSong)
-                );
+            return insertSongs(tctx, [testSong]);
         })
-        .then(res => {
-            if (res.affectedRows < 1)
-                throw new Error('Testibiisin insertointi epäonnistui');
+        .then(() => {
             done();
         });
     });
     afterAll(done => {
-        tctx.getDb().getPool()
-            .query('delete from songs where `id`=?', [testSong.id])
-            .then(res => {
-                if (res.affectedRows < 1)
-                    throw new Error('Testibiisin siivous epäonnistui');
+        deleteSongs(tctx, [testSong])
+            .then(() => {
                 done();
             });
         tctx.tearDown();

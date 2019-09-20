@@ -9,6 +9,7 @@ const request = require('supertest');
 const testUtils = require('../../tests-common/test-utils.js');
 const {makeHttpTestCtx} = require('../../tests-common/testing-env.js');
 const testData = require('../../tests-common/test-data.js');
+const {insertSongs, deleteSongs} = require('../../song/tests/utils.js');
 
 describe('artists-crud', () => {
     let tctx;
@@ -84,9 +85,44 @@ describe('artists-crud', () => {
                 done();
             });
     });
+    it('GET /artisti/:artistId?näytä=biisit renderöi biisilistan', done => {
+        const testSongs = [{id: '-zzsssssssssssssssss', name: 'a', duration: 1,
+                            artistId: testData.artist.id, genreId: 1},
+                           {id: '-yysssssssssssssssss', name: 'b', duration: 2,
+                            artistId: testData.artist.id, genreId: 1}];
+        insertSongs(tctx, testSongs)
+            .then(() =>
+                request(tctx.getApp())
+                    .get('/artisti/' + testData.artist.id + '?näytä=biisit')
+            )
+            .then(res => {
+                expect(res.status).toEqual(200);
+                const $ = testUtils.parseDocumentBody(res.text);
+                const songEls = $('article');
+                expect(songEls.length).toBeGreaterThanOrEqual(2);
+                verifyPageContainsSong(testSongs[0], 0);
+                verifyPageContainsSong(testSongs[1], 1);
+                //
+                function verifyPageContainsSong(song, i) {
+                    const el = $(songEls[i]);
+                    const divs = el.children('div');
+                    expect($(el.children('h2')[0]).text()).toEqual(song.name);
+                    expect($(divs[0]).text()).toEqual('Klikit: 0');
+                    expect($(divs[1]).text()).toEqual('Tykkäykset: 0');
+                }
+                return deleteSongs(tctx, testSongs);
+            })
+            .catch(err => {
+                console.error(err);
+                expect(1).toBe('Ei pitäisi heittää virhettä');
+            })
+            .finally(() => {
+                done();
+            });
+    });
     it('POST /artisti/muokkaa validoi inputin', done => {
         request(tctx.getApp())
-            .put('/artisti/muokkaa')
+            .post('/artisti/muokkaa')
             .type('form')
             .then(res => {
                 expect(res.status).toEqual(400);
@@ -128,7 +164,7 @@ describe('artists-crud', () => {
             .then(res => {
                 if (res.affectedRows < 1) throw new Error('Testidatan insertointi epäonnistui');
                 return request(tctx.getApp())
-                    .put('/artisti/muokkaa')
+                    .post('/artisti/muokkaa')
                     .send('name=' + testInput.name +
                           '&id=' + testInput.id +
                           '&tagline=' + testInput.tagline +

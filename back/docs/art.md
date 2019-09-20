@@ -54,30 +54,14 @@ esim. `<div>Hello <%= user.id %></div>`
 
 # Selainympäristö
 
+## Globaalit
+
+ks. [typings.md#Selainympäristö](typing.md#Selainympäristö)
+
 ## Testien ajaminen
 
 1. Käynnistä node-serveri "test"-flagillä `node server-app/main.js test`.
 2. Avaa file:///.../front/tests/index.html modernilla selaimella
-
-## globaalit
-
-```typescript
-interface artistit {
-    ID_LEN: number;
-    pageScripts: Array<Function>;
-    baseUrl: string;
-    sessionStorage: Storage;
-    addPageScript: (fn: (props: any) => any, props: any): void;
-    fetch: (url: string, settings?: Object): Promise;
-    redirect: (to: string): void;
-}
-```
-
-```typescript
-interface toast {
-    (message: string, level: string): void;
-}
-```
 
 ## Mahdollisesti polyfillattava
 

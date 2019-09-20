@@ -4,31 +4,36 @@
 } %>
 <section class="main artist-song-list">
     <% if (typeof user != 'undefined' && user.id == artist.userId) { %>
-        <a href="<%- `${baseUrl}biisi/uusi/${artist.id}` %>">Lataa biisi</a>
+        <a href="<%- `${baseUrl}biisi/uusi/${artist.id}` %>">Lataa uusi biisi</a>
     <% } %>
+    <div id="song-list-app">
     <div class="artist-song-list">
-    <% tabData.songs.forEach(song => {
-        var url = `${staticBaseUrl}songs/${artist.userId}/${song.id}.mp3`;
-        %>
-        <div class="song" <%- 'data-song-id="' + song.id + '"' +
-                              ' data-song-isLikedByCurrentUser="' + song.isLikedByCurrentUser + '"' +
-                              ' data-song-duration="' + song.duration + '"' %>>
+    <% for (const song of tabData.songs) { %>
+        <article class="song">
             <h2><%= song.name %></h2>
-            <span class="progress"></span>
-            <button class="play"><%- featherSvg('play') %></button>
-            <button class="like"><%- featherSvg('heart') %></button>
+            <p>Kuvaus.</p>
             <div>Klikit: <span class="clicks"><%- song.amountOfPlayClicks %></span></div>
             <div>Tykkäykset: <span class="likes"><%- song.amountOfLikes %></span></div>
-            <audio>
-                <source src="<%= url %>" type="audio/mpeg">
-                <p>Selaimesi ei tue HTML5 audiota. <a href="<%= url %>">Lataa</a> biisi sen sijaan?.</p>
-            </audio>
-        </div>
-    <% }) %>
+        </article>
+    <% } %>
+    </div>
     </div>
 </section>
+<script src="<%- staticBaseUrl %>preact.min.js"></script>
 <script src="<%- staticBaseUrl %>artistit.player.js"></script>
-<script>window.artistit.addPageScript(
-    <%- include('artist-view-tab-biisit.js'); %>,
-    {}
-)</script>
+<script>window.artistit.addPageScript(function() {
+    // Tyhjennä backendin renderöimä lista ...
+    let songListEl = document.getElementById('song-list-app');
+    songListEl.innerHTML = '';
+    // .. ja korvaa react-applikaatiolla
+    preact.render(preact.createElement(function() {
+        return preact.createElement('div', {class: 'artist-song-list'},
+            <%- JSON.stringify(tabData.songs) %>.map(function(song) {
+                return preact.createElement(window.artistit.Player, {
+                    song: song,
+                    eventsHandler: new window.artistit.PlayerEventsHandler(window.sessionStorage),
+                    baseUrl: '<%- staticBaseUrl + 'songs/' + artist.userId + '/' %>'
+                });
+            }));
+    }), songListEl);
+})</script>

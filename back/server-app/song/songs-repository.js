@@ -114,7 +114,7 @@ class SongsRepository {
                         ) + ' as isLikedByCurrentUser' +
                 ' from songs s' +
                 ' join genres g on (g.`id` = s.`genreId`)' +
-                ' where s.`artistId` = ? limit 10',
+                ' where s.`artistId` = ? order by s.`id` desc limit 10',
                 currentUserIdOrIpAddress
                     ? [currentUserIdOrIpAddress, artistId]
                     : [artistId]

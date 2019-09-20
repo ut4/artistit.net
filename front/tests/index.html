@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="./setup/qunit-2.9.2.css">
         <script>window.artistit = {
             baseUrl: '',
-            sessionStorage: {},
+            staticBaseUrl: '',
             ID_LEN: '-mockfireid'.length,
             fetch: () => {},
             redirect: () => {},
@@ -19,14 +19,12 @@
         <div id="render-container-el"></div>
         <script src="./setup/qunit-2.9.2.js"></script>
         <script src="./setup/sinon-1.17.6.min.js"></script>
-        <script src="./setup/ejs.js"></script>
+        <script src="../../static/ejs.js"></script>
         <script src="../../static/preact.min.js"></script>
         <script src="../../static/artistit.js"></script>
         <script src="../../static/artistit.player.js"></script>
-        <script src="http://localhost:3000/widget-templates.js"></script>
         <script src="../../static/artistit.widget-designer.js"></script>
         <script src="../../back/config.js"></script>
-        <script src="../artist-view-tab-biisit.js"></script>
         <script src="main.js" type="module"></script>
     </body>
 </html>

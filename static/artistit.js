@@ -1,9 +1,22 @@
 /*
- * Tässä tiedostossa: window.artistit.FormValidation, window.artistit.AsyncQueue,
- * window.toast.
+ * Tässä tiedostossa: window.artistit.featherSvg, window.artistit.FormValidation,
+ * window.artistit.AsyncQueue, window.toast.
  */
 
 /* eslint-disable strict */
+
+// artistit.featherSvg /////////////////////////////////////////////////////////
+/**
+ * @param {string} iconId ks. https://feathericons.com
+ * @param {boolean?} filled
+ * @returns {string}
+ */
+window.artistit.featherSvg = function(iconId, filled) {
+    return preact.createElement('svg', {className: 'feather' + (!filled ? '' : ' filled')},
+        preact.createElement('use', {'xlink:href': window.artistit.staticBaseUrl +
+                                                   'feather-sprite.svg#' + iconId})
+    );
+};
 
 // artistit.FormValidation /////////////////////////////////////////////////////
 (function() {
@@ -116,35 +129,35 @@ window.artistit.FormValidation = FormValidation;
 
 // artistit.AsyncQueue /////////////////////////////////////////////////////////
 (function() {
-    'use strict';
-    function AsyncQueue() {
-        this.queue = [];
-        this.queueIsProcessing = false;
+'use strict';
+function AsyncQueue() {
+    this.queue = [];
+    this.queueIsProcessing = false;
+}
+/**
+ * Lisää $fn:n taskijonoon, ja aloittaa jonon ajon mikäli se ei jo käynnissä.
+ */
+AsyncQueue.prototype.addTask = function(fn) {
+    var self = this;
+    self.queue.push(fn);
+    if (!self.queueIsProcessing) {
+        self.queueIsProcessing = true;
+        self.doOldestTask();
     }
-    /**
-     * Lisää $fn:n taskijonoon, ja aloittaa jonon ajon mikäli se ei jo käynnissä.
-     */
-    AsyncQueue.prototype.addTask = function(fn) {
-        var self = this;
-        self.queue.push(fn);
-        if (!self.queueIsProcessing) {
-            self.queueIsProcessing = true;
-            self.doOldestTask();
-        }
-    };
-    /**
-     * Käynnistää taskijonofunktioiden ajon yksi kerrallaan vanhimmasta uusim-
-     * paan niin kauan, kunnes jono on tyhjä.
-     */
-    AsyncQueue.prototype.doOldestTask = function() {
-        var self = this;
-        self.queue[0](function() {
-            self.queue.shift();
-            self.queueIsProcessing = self.queue.length > 0;
-            if (self.queueIsProcessing) self.doOldestTask();
-        });
-    };
-    window.artistit.AsyncQueue = AsyncQueue;
+};
+/**
+ * Käynnistää taskijonofunktioiden ajon yksi kerrallaan vanhimmasta uusim-
+ * paan niin kauan, kunnes jono on tyhjä.
+ */
+AsyncQueue.prototype.doOldestTask = function() {
+    var self = this;
+    self.queue[0](function() {
+        self.queue.shift();
+        self.queueIsProcessing = self.queue.length > 0;
+        if (self.queueIsProcessing) self.doOldestTask();
+    });
+};
+window.artistit.AsyncQueue = AsyncQueue;
 }());
 
 // window.toast ////////////////////////////////////////////////////////////////

@@ -89,44 +89,52 @@ interface Widget {
 
 # Selainympäristö
 
-## Player
+## window.artistit
 
 ```typescript
-interface Player {
-    song: Song;
-    new (rootEl: HTMLElement, events: PlayerEvents);
+interface Artistit {
+    ID_LEN: number;
+    pageScripts: Array<Function>;
+    baseUrl: string;
+    staticBaseUrl: string;
+    addPageScript: (fn: (props: any) => any, props: any): void;
+    fetch: (url: string, settings?: Object): Promise;
+    redirect: (to: string): void;
 }
 ```
 
-## Song
+## window.toast
 
 ```typescript
-interface Song {
-    id: string;
-    duration: number;
-    audioEl: HTMLAudioElement;
+interface toast {
+    (message: string, level: string): void;
 }
 ```
 
-## PlayerEvents
+## PlayerEventsHandler
 
 ```typescript
-interface PlayerEvents {
+interface PlayerEventsHandler {
+    new (sessionStorage: Storage);
     /**
      * Promisen palauttaessa true = lisää kuuntelumäärää yhdellä,
      *                       false = älä lisää kuuntelumäärää.
      */
-    onStart: (song: Song, player: Player): Promise<boolean>;
-    onEnd: (song: Song, player: Player): void;
-    onPause: (song: Song, player: Player): void;
-    onTimeUpdate: (song: Song, player: Player): void;
+    onStart: (song: ServerApp.Song): Promise<boolean>;
+    onEnd: (song: ServerApp.Song): void;
+    onPause: (song: ServerApp.Song): void;
+    onTimeUpdate: (song: ServerApp.Song): void;
     /**
      * Promisen palauttaessa true = lisää tykkäysmäärää yhdellä,
      *                       false = älä lisää tykkäysmäärää.
      */
-    onLike: (song: Song, player: Player): Promise<boolean>;
+    onLike: (song: ServerApp.Song): Promise<boolean>;
 }
 ```
+
+## Storage
+
+[mozilla docs](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
 
 ## ReactWidget
 

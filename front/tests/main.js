@@ -1,4 +1,4 @@
-import './artist-songs-tab-tests.js';
+import './player-tests.js';
 
 QUnit.config.autostart = false;
 QUnit.dump.maxDepth = 8; // default 5
