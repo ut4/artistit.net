@@ -15,5 +15,8 @@
     githubClientID: 'abc.cde...',
     githubClientSecret: '1234...',
     githubCallbackURL: '/url/foo/',
+    facebookClientID: 'abc...',
+    facebookClientSecret: '1234...',
+    facebookCallbackURL: '/url/foo/',
     demoUserId: '-abcdefghijklmnopqrs',
 }));

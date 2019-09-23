@@ -29,63 +29,64 @@ const testData = require('./test-data.js');
  * Wräpperi testeille; jokainen testi luo uuden instanssin tästä luokasta, ja
  * luokka hoitaa kaiken muun (luo vain yhden express-app:n ja SelfCleaningDb:n).
  */
-class HttpTestCtx {
-    constructor() {
-        HttpTestCtx.callCount += 1;
-        if (HttpTestCtx.timer) clearTimeout(HttpTestCtx.timer);
-        if (!HttpTestCtx.dbSingleton) {
-            HttpTestCtx.dbSingleton = makeDb();
+class TestCtx {
+    constructor(useHttp) {
+        TestCtx.callCount += 1;
+        if (TestCtx.timer) clearTimeout(TestCtx.timer);
+        if (!TestCtx.dbSingleton) {
+            TestCtx.dbSingleton = makeDb();
         }
-        if (!HttpTestCtx.appSingleton) {
-            HttpTestCtx.appSingleton = makeApp('test', config);
-            HttpTestCtx.serverSingleton = HttpTestCtx.appSingleton.listen(4000);
+        if (useHttp && !TestCtx.appSingleton) {
+            TestCtx.appSingleton = makeApp('test', config);
+            TestCtx.serverSingleton = TestCtx.appSingleton.listen(4000);
         }
     }
     tearDown() {
-        if (--HttpTestCtx.callCount <= 0) HttpTestCtx.timer = setTimeout(() => {
-            HttpTestCtx.dbSingleton.cleanTestData()
+        if (--TestCtx.callCount <= 0) TestCtx.timer = setTimeout(() => {
+            TestCtx.dbSingleton.cleanTestData()
                 .catch((err) => {
                     console.error('at tearDown', err);
                 })
                 .finally(() => {
-                    HttpTestCtx.serverSingleton.close();
+                    TestCtx.serverSingleton.close();
                     process.exit();
                 });
         }, 200);
         return Promise.resolve(null);
     }
     getApp() {
-        return HttpTestCtx.appSingleton;
+        return TestCtx.appSingleton;
     }
     getDb() {
-        return HttpTestCtx.dbSingleton;
+        return TestCtx.dbSingleton;
     }
 }
-HttpTestCtx.appSingleton = null;
-HttpTestCtx.serverSingleton = null;
-HttpTestCtx.dbSingleton = null;
-HttpTestCtx.callCount = 0;
-HttpTestCtx.timer = null;
+TestCtx.appSingleton = null;
+TestCtx.serverSingleton = null;
+TestCtx.dbSingleton = null;
+TestCtx.callCount = 0;
+TestCtx.timer = null;
 
 function insertTestData() {
     const a = testData.artist;
-    return HttpTestCtx.dbSingleton.getPool()
+    return TestCtx.dbSingleton.getPool()
         .query(
             'insert into artists values (?,?,?,?,?,?,?)',
             [a.id, a.name, a.tagline, a.coverPhoto, a.widgets, a.createdAt, a.userId]
         );
 }
 
-function makeHttpTestCtx() {
-    const isFirstCall = HttpTestCtx.dbSingleton == null;
-    const out = new HttpTestCtx(); // avaa kantayhteyden ja luo express-appin
-                                   // automaattisesti
+function makeTestCtx(useHttp) {
+    const isFirstCall = TestCtx.dbSingleton == null;
+    const out = new TestCtx(useHttp); // avaa kantayhteyden [ja luo express-appin
+                                      // (useHttp)] automaattisesti
     return (!isFirstCall ? Promise.resolve() : insertTestData())
         .then(() => out)
         .catch(err => {
-            console.error('at makeHttpTestCtx', err);
+            console.error('at makeTestCtx', err);
             out.tearDown();
         });
 }
 
-exports.makeHttpTestCtx = makeHttpTestCtx;
+exports.makeHttpTestCtx = () => makeTestCtx(true);
+exports.makeDbTestCtx = () => makeTestCtx(false);

@@ -3,10 +3,16 @@
     <h1>Tunnistautuminen</h1>
     <p>...</p>
 </header>
-<section class="sub-nav">
-    <a href="<%- baseUrl %>auth/github">
-        <%- featherSvg('github') %>
-        <span>Github</span>
-    </a>
+<section>
+    <div class="auth-providers-list">
+        <a href="<%- baseUrl %>auth/facebook">
+            <%- featherSvg('facebook') %>
+            <span>Facebook</span>
+        </a>
+        <a href="<%- baseUrl %>auth/github">
+            <%- featherSvg('github') %>
+            <span>Github</span>
+        </a>
+    </div>
 </a>
 <%- include('common/layout-footer'); %>

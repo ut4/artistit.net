@@ -4,8 +4,10 @@
 http {
     ...
     server {
-        listen       80;
-        server_name  domain.com;
+        listen               443 ssl;
+        server_name          domain.com;
+        ssl_certificate      cert.pem; # samassa kansiossa nginx.conf:n kanssa
+        ssl_certificate_key  key.pem;
         client_max_body_size 20m;
         ...
         location / {

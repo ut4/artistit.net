@@ -16,7 +16,7 @@ const {insertSongs, deleteSongs} = require('./utils.js');
 const testSong = {id: '-sssssssssssssssssss', name: 'test', duration: 2,
                   artistId: testData.artist.id, genreId: 1};
 
-describe('songs-crud', () => {
+describe('Songs CRUD', () => {
     let tctx;
     beforeAll(done => {
         makeHttpTestCtx().then(ctx => {

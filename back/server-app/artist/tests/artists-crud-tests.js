@@ -11,7 +11,7 @@ const {makeHttpTestCtx} = require('../../tests-common/testing-env.js');
 const testData = require('../../tests-common/test-data.js');
 const {insertSongs, deleteSongs} = require('../../song/tests/utils.js');
 
-describe('artists-crud', () => {
+describe('Artists CRUD', () => {
     let tctx;
     beforeAll(done => {
         makeHttpTestCtx().then(ctx => {

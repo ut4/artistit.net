@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS songs;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS artists;
+DROP TRIGGER IF EXISTS userDeleteTrg;
 DROP TABLE IF EXISTS connectedAuthAccounts;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS photos;
@@ -27,12 +28,19 @@ CREATE TABLE users (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE connectedAuthAccounts (
-    `provider` TINYINT NOT NULL,
+    `providerId` TINYINT NOT NULL,
     `identity` VARCHAR(128) NOT NULL,
     `userId` CHAR(20) NOT NULL,
     FOREIGN KEY (`userId`) REFERENCES users(`id`),
-    PRIMARY KEY (`provider`, `identity`)
+    PRIMARY KEY (`providerId`, `identity`)
 ) DEFAULT CHARSET = utf8mb4;
+
+DELIMITER //
+CREATE TRIGGER userDeleteTrg BEFORE DELETE ON users
+FOR EACH ROW BEGIN
+    DELETE FROM connectedAuthAccounts WHERE userId = OLD.id;
+END;//
+DELIMITER ;
 
 CREATE TABLE artists (
     `id` CHAR(20) NOT NULL,

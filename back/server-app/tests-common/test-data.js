@@ -5,10 +5,16 @@
  */
 
 const config = require('../../config.js');
+const {AuthProviders} = require('../auth/auth-user-repository.js');
 
 module.exports = {
     user: {
         id: config.demoUserId,
+    },
+    connectedAuthAccount: {
+        providerId: AuthProviders.GITHUB,
+        identity: '1234',
+        userId: config.demoUserId,
     },
     artist: {
         id: '-123456789abcdefghij',

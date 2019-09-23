@@ -4,7 +4,12 @@
  * Repository / DAO käyttäjä-datalle.
  */
 
-const {makeDb} = require('../common/db.js');
+const {makeDb, generatePushID} = require('../common/db.js');
+
+const AuthProviders = {
+    GITHUB: 0,
+    FACEBOOK: 1,
+};
 
 class AuthUserRepository {
     /**
@@ -14,36 +19,46 @@ class AuthUserRepository {
         this.db = db;
     }
     /**
-     * Note: olettaa, että argumentit (authProvider ja authProviderId) on jo
+     * Note: olettaa, että argumentit (providerId ja authProviderId) on jo
      * validoitu.
      *
-     * @param {number} authProvider katso AuthProviders @auth-controllers.js
-     * @param {string} authProviderId esim. Github profile.id
+     * @param {number} providerId esim. AuthProviders.GITHUB
+     * @param {string} providersUserId esim. Github profile.id
      * @returns {Promise<User|null}>}
      */
-    getUser(authProvider, authProviderId) {
+    getUser(providerId, providersUserId) {
         return this.db.getPool()
             .query(
                 'select u.`id` from users u' +
-                ' join connectedAuthAccounts ca on ca.`userId` = u.`id`' +
-                ' where ca.`provider` = ? and ca.identity = ?',
-                [authProvider, authProviderId]
+                ' join connectedAuthAccounts ca on (ca.`userId` = u.`id`)' +
+                ' where ca.`providerId` = ? and ca.identity = ?',
+                [providerId, providersUserId]
             ).then(rows =>
                 rows.length ? {id: rows[0].id} : null
             );
     }
     /**
-     * @param {number} authProvider
-     * @param {string} authProviderId
+     * ks. {@link AuthUserRepository#getUser}
      */
-    createUser(authProvider, authProviderId) {
-        return new Promise(r => {
-            r({id: 'genId()'});
-        });
-        // const id = genId();
-        //(`insert into users values (${id})` &&
-        //`insert into connectedAuthAccounts values (${authProvider}, ${authProviderId}, ${id})`)
+    createUser(providerId, providersUserId) {
+        const artistitUserId = generatePushID();
+        return this.db.getPool()
+            .query(
+                'insert into users values (?)',
+                [artistitUserId]
+            )
+            .then(res => {
+                if (res.affectedRows != 1) throw new Error('StateError');
+                return this.db.getPool()
+                    .query('insert into connectedAuthAccounts values (?,?,?)',
+                           [providerId, providersUserId, artistitUserId]);
+            })
+            .then(res => {
+                if (res.affectedRows != 1) throw new Error('StateError');
+                return {id: artistitUserId};
+            });
     }
 }
 
 exports.authUserRepository = new AuthUserRepository(makeDb());
+exports.AuthProviders = AuthProviders;

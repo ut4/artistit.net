@@ -2,6 +2,7 @@
   "spec_dir": "server-app",
   "spec_files": [
     "artist/tests/*.js",
+    "auth/tests/*.js",
     "forum/tests/*.js",
     "song/tests/*.js"
   ],
