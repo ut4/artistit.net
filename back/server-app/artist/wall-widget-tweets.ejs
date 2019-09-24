@@ -1,0 +1,27 @@
+<%# lokaalit tässä tiedostossa: {
+    tweets: Array<{
+        text: string;
+        media: Array<{imageUrl: string;}>;
+        user: {name: string; profileName: string; imageUrl: string;};
+        tweetedAt: Date;
+    }>;
+} %>
+<div class="tweets">
+<% for (const tweet of tweets) { %>
+    <div>
+        <div class="header">
+            <img src="<%- tweet.user.imageUrl %>" title="">
+            <h4><%= tweet.user.name %></h4>
+            <div>@<%= tweet.user.profileName %></div>
+        </div>
+        <div class="content">
+            <%- tweet.text + tweet.media.map(media =>
+                '<img src="' + media.imageUrl + '" title="">'
+            ) %>
+        </div>
+        <div class="footer">
+            <span><%- tweet.tweetedAt.toString() %></span>
+        </div>
+    </div>
+<% } %>
+</div class="tweets">

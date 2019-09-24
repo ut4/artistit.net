@@ -5,12 +5,12 @@
 <section class="main">
 <div class="artist-widgets-list">
 <% if (tabData.widgets.length) {
-    for (const widget of tabData.widgets) { %>
+    tabData.widgets.forEach((widget, widgetIndex) => { %>
     <div class="widget <%- widget.type %>"><div>
         <%- include('artist/wall-widget-' + widget.type,
-                    Object.assign({widget}, widget.data)); %>
+                    Object.assign({widget, artist, widgetIndex}, widget.data)); %>
     </div></div>
-    <% } %>
+    <% }) %>
 <% } else { %>
     <p>Hmm, minimaalista.</p>
 <% } %>

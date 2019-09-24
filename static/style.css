@@ -245,6 +245,7 @@ h1 .feather {
     margin-bottom: 24px;
 }
 
+/* <artistisivu> */
 .artist-widgets-list {
     overflow: hidden;
     position: relative;
@@ -271,6 +272,14 @@ h1 .feather {
 .slot {
     min-height: 45px;
 }
+.twitter-feed .widget-main {
+    overflow: hidden;
+}
+.twitter-feed iframe {
+    width: 100% !important;
+    margin-top: -57px !important;
+}
+/* </artistisivu> */
 
 /* -- app-forum.css --------------------------------------------------------- */
 .topic-list a {

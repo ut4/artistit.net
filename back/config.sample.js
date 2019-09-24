@@ -18,5 +18,8 @@
     facebookClientID: 'abc...',
     facebookClientSecret: '1234...',
     facebookCallbackURL: '/url/foo/',
+    twitterConsumerKey: 'abcd...',
+    twitterConsumerSecret: 'abcd...',
+    twitterCallbackURL: '/url/foo',
     demoUserId: '-abcdefghijklmnopqrs',
 }));

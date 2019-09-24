@@ -13,7 +13,7 @@ var initialWidgetProps = {
         infos: [{title: 'Jäsenet', text: 'Jäsen1, Jäsen2'},
                 {title: 'Vaikutteet', text: 'Yhtye1, Yhtye2'}]
     },
-    'twitter-feed': {tid: 0},
+    'twitter-feed': {userName: 'foo', useCustomImpl: false},
 };
 var friendlyWidgetNames = ['Infoboksi', 'Twitter-feed'];
 

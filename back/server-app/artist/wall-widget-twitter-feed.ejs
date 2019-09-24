@@ -1,12 +1,29 @@
 <%# lokaalit tässä tiedostossa: {
-    tid: number;
+    userName: string;
+    useCustomImpl: boolean;
+    artist: Artist;
+    widget: Widget;
+    widgetIndex: number;
 } %>
 <h3 class="icon-h3"><%- featherSvg('twitter') %>Twitter</h3>
-<div class="widget-main">
-    <div>Tweetit käyttäjältä <%- tid %></div>
+<div class="widget-main" id="twitter-feed-<%- widgetIndex %>">
+    <a class="twitter-timeline" data-width="600" data-height="800" data-dnt="true" data-theme="light" href="https://twitter.com/<%- userName %>">Tweetit käyttäjältä <%- userName %></a>
 </div>
-<script>(function() {
-    // window.artistit.fetch(' `${baseUrl}widget-data/tweets/${tid}` ')
-    //     .then(function(res) { return res.json(); })
-    //     .then(function(tweets) { tweets.forEach(/*appendToDom*/) })
-}());</script>
+<% if (!useCustomImpl) { %>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<% } else { %>
+    <script>(function() {
+        var status = 0;
+        window.artistit.fetch('<%- `${baseUrl}artisti/${artist.id}/render-widget/tweets/${encodeURIComponent(userName)}` %>', {method: 'POST'})
+            .then(function(res) {
+                status = res.status;
+                return res.text();
+            })
+            .then(function(html) {
+                document.getElementById('twitter-feed-<%- widgetIndex %>')
+                    .innerHTML = status == 200
+                        ? html
+                        : 'Jokin meni pieleen.';
+            });
+    }());</script>
+<% } %>
