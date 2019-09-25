@@ -1,6 +1,7 @@
 <%# lokaalit tässä tiedostossa: {
     maxArtistNameLen: number;
     maxTaglineLen: number;
+    widgetDefaults: WidgetDefaults;
     readTemplate: (name: string): string;
     errorCode: number;
 } %>
@@ -20,7 +21,8 @@
         <input id="i-widgets" name="widgets" type="hidden">
         <div class="error"></div>
         <%- include('artist/widget-designer',
-                    {widgets: null, readTemplate, widgetsInputId: 'i-widgets'}) %>
+                    {widgets: null, widgetsInputId: 'i-widgets', widgetDefaults,
+                     readTemplate}) %>
         <%- include('common/form-buttons', {submitText: 'Luo artistisivu'}); %>
     </section>
 </form>

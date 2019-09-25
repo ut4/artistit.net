@@ -5,7 +5,7 @@ const testSongs = [
 ];
 const PlayerEventsHandler = window.artistit.PlayerEventsHandler;
 
-QUnit.module('artist-songs-tab', () => {
+QUnit.module('artistit.Player', () => {
     QUnit.test('play/pause-napin klikkaus käynnistää ja pausettaa biisin', assert => {
         const done = assert.async();
         const mockInsertId = '23';

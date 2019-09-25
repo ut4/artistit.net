@@ -1,6 +1,7 @@
 /*
  * Tässä tiedostossa: window.artistit.featherSvg, window.artistit.FormValidation,
- * window.artistit.validators, window.artistit.AsyncQueue, window.toast.
+ * window.artistit.validators, window.artistit.AsyncQueue, window.artistit.utils,
+ * window.toast.
  */
 
 /* eslint-disable strict */
@@ -140,6 +141,16 @@ AsyncQueue.prototype.doOldestTask = function() {
 };
 window.artistit.AsyncQueue = AsyncQueue;
 }());
+
+// artistit.utils //////////////////////////////////////////////////////////////
+window.artistit.utils = {
+    fillInput: function(value, inputEl) {
+        inputEl.value = value;
+        var event = document.createEvent('HTMLEvents');
+        event.initEvent('input', false, true);
+        inputEl.dispatchEvent(event);
+    }
+};
 
 // window.toast ////////////////////////////////////////////////////////////////
 (function() {

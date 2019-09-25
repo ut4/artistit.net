@@ -1,37 +1,39 @@
 <%# lokaalit tässä tiedostossa: {
     widgets: Array<Widget>;
+    widgetDefaults: WidgetDefaults;
     readTemplate: (name: string): string;
-    widgetsInputId: string;
+    widgetsInputId: string; // parent-templaatissa esiintyvän input-elementin id,
+                            // johon päivitetään designerin output automaattisesti
 } %>
 <div id="widgets-designer-app"></div>
 <script src="<%- staticBaseUrl %>preact.min.js"></script>
 <script src="<%- staticBaseUrl %>ejs.js"></script>
 <script src="<%- staticBaseUrl %>artistit.widget-designer.js"></script>
-<script>preact.render(
-    preact.createElement(window.artistit.WidgetDesigner, {
-        widgets: <%- JSON.stringify(widgets) %>,
-        templates: <%- JSON.stringify(
-            ['info-box', 'twitter-feed'].reduce((obj, tn) => {
-                obj[tn] = encodeURIComponent(readTemplate('/wall-widget-' + tn));
-                return obj;
-            }, {})
-        ) %>,
-        ejsGlobals: Object.assign({
-            user: {},
-            baseUrl: '<%- baseUrl %>',
-            staticBaseUrl: '<%- staticBaseUrl %>',
-            featherSvg: (function () {
-                var staticBaseUrl = '<%- staticBaseUrl %>';
-                return <%- featherSvg %>;
-            }())
+<script>window.artistit.addPageScript(function() {
+    preact.render(
+        preact.createElement(window.artistit.WidgetDesigner, {
+            widgets: <%- JSON.stringify(widgets) %>,
+            widgetDefaults: <%- JSON.stringify(widgetDefaults) %>,
+            onUpdate: function(widgetsAsJson) {
+                window.artistit.utils.fillInput(widgetsAsJson,
+                                                document.getElementById('<%- widgetsInputId %>'));
+            },
+            templates: <%- JSON.stringify(
+                ['info-box', 'twitter-feed'].reduce((obj, tn) => {
+                    obj[tn] = encodeURIComponent(readTemplate('/wall-widget-' + tn));
+                    return obj;
+                }, {})
+            ) %>,
+            ejsGlobals: Object.assign({
+                user: {},
+                baseUrl: '<%- baseUrl %>',
+                staticBaseUrl: '<%- staticBaseUrl %>',
+                featherSvg: (function () {
+                    var staticBaseUrl = '<%- staticBaseUrl %>';
+                    return <%- featherSvg %>;
+                }())
+            })
         }),
-        onUpdate: function(widgetsAsJson) {
-            var el = document.getElementById('<%- widgetsInputId %>');
-            el.value = widgetsAsJson;
-            var e = document.createEvent('HTMLEvents');
-            e.initEvent('input', false, true);
-            el.dispatchEvent(e);
-        }
-    }),
-    document.getElementById('widgets-designer-app')
-)</script>
+        document.getElementById('widgets-designer-app')
+    )
+})</script>

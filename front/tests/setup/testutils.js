@@ -9,4 +9,6 @@ function renderIntoDocument(reactCmp, props) {
     return preact.render(preact.createElement(reactCmp, props), el);
 }
 
-export {renderIntoDocument};
+const fillInput = window.artistit.utils.fillInput;
+
+export {renderIntoDocument, fillInput};

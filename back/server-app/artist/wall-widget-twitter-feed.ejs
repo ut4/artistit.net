@@ -5,10 +5,7 @@
     widget: Widget;
     widgetIndex: number;
 } %>
-<h3 class="icon-h3"><%- featherSvg('twitter') %>Twitter</h3>
-<div class="widget-main" id="twitter-feed-<%- widgetIndex %>">
-    <a class="twitter-timeline" data-width="600" data-height="800" data-dnt="true" data-theme="light" href="https://twitter.com/<%- userName %>">Tweetit käyttäjältä <%- userName %></a>
-</div>
+<a class="twitter-timeline" data-width="600" data-height="800" data-dnt="true" data-theme="light" href="https://twitter.com/<%- userName %>">Tweetit käyttäjältä <%- userName %></a>
 <% if (!useCustomImpl) { %>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <% } else { %>

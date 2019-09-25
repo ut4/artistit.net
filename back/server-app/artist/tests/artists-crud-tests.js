@@ -72,10 +72,21 @@ describe('Artists CRUD', () => {
             .get('/artisti/' + testData.artist.id)
             .then(res => {
                 expect(res.status).toEqual(200);
-                const n = testData.artist.name;
                 const $ = testUtils.parseDocumentBody(res.text);
-                expect($('h1').text()).toEqual(n);
-                expect($('.artist-widgets-list').length).toEqual(1);
+                const widgetEls = $('.widget');
+                const actualWidgets = testData.artist.widgets;
+                expect(widgetEls.length).toEqual(actualWidgets.length);
+                const infoBoxWidgetEl = $(widgetEls[0]);
+                const twitterWidgetgetEl = $(widgetEls[1]);
+                // ks. artist.widgets @tests-common/test-data.js
+                expect($(infoBoxWidgetEl.find('h3')[0]).text())
+                    .toEqual('Meistä');
+                expect($(infoBoxWidgetEl.find('.widget-main')[0]).text().trim())
+                    .toEqual('Jäsenet: Foo');
+                expect($(twitterWidgetgetEl.find('h3')[0]).text())
+                    .toEqual('Twitter');
+                expect($(twitterWidgetgetEl.find('.widget-main')[0]).text().trim())
+                    .toEqual('Tweetit käyttäjältä ' + actualWidgets[1].data.userName);
             })
             .catch(err => {
                 console.error(err);

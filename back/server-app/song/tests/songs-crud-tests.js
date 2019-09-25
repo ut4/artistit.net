@@ -30,9 +30,9 @@ describe('Songs CRUD', () => {
     afterAll(done => {
         deleteSongs(tctx, [testSong])
             .then(() => {
+                tctx.tearDown();
                 done();
             });
-        tctx.tearDown();
     });
     it('POST /biisi validoi inputin', done => {
         request(tctx.getApp())

@@ -16,6 +16,10 @@ const validationConstants = {
     maxArtistNameLen: 128,
     maxTaglineLen: 512,
 };
+const widgetDefaults = {
+    'info-box': {icon: 'info', title: 'Meistä'},
+    'twitter-feed': {icon: 'twitter', title: 'Twitter'},
+};
 const readTemplate = name => ejs.fileLoader(__dirname + name + '.ejs',
                                             {encoding: 'utf-8'});
 
@@ -56,7 +60,7 @@ class ArtistsControllers {
             this.tabLoader.loadDataFor(req.query['näytä'], artist, req,
                 (tabData, tabName) => {
                     res.render('artist/artist-index-view',
-                               {artist, tabName, tabData});
+                               {artist, tabName, tabData, widgetDefaults});
                 });
         });
     }
@@ -65,7 +69,8 @@ class ArtistsControllers {
      */
     newArtistView(req, res) {
         res.render('artist/artist-create-view',
-                   Object.assign({readTemplate, errorCode: req.query.error},
+                   Object.assign({widgetDefaults, readTemplate,
+                                  errorCode: req.query.error},
                                   validationConstants));
     }
     /**
@@ -103,7 +108,7 @@ class ArtistsControllers {
         this.fetchArtist(req, res, artist => {
             if (artist.userId == req.user.id) {
                 res.render('artist/artist-edit-view',
-                           Object.assign({artist, readTemplate,
+                           Object.assign({artist, widgetDefaults, readTemplate,
                                           errorCode: req.query.error},
                                           validationConstants));
             } else {

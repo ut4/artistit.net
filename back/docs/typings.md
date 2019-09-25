@@ -87,6 +87,14 @@ interface Widget {
 }
 ```
 
+## WidgetDefaults
+
+```typescript
+interface WidgetDefaults {
+    [widgetName: string]: {icon: string; title: string;};
+}
+```
+
 # Selainympäristö
 
 ## window.artistit
@@ -103,6 +111,7 @@ interface Artistit {
     validators: {[name: string]: [(inputEl: HTMLInputElement): boolean, string];};
     Player: Object;
     PlayerEventsHandler: PlayerEventsHandler;
+    utils: {fillInput: (value: string; inputEl: HTMLElement): any;};
     // -- Aliakset ----
     fetch: (url: string, settings?: Object): Promise;
     redirect: (to: string): void;
@@ -173,5 +182,15 @@ interface toast {
 ```typescript
 interface ReactWidget {
     setEditModeIsOn(isIt: boolean): any;
+}
+```
+
+## WidgetConfigFormProps
+
+```typescript
+interface WidgetConfigFormProps {
+    widget: Widget;
+    onSave: (newConfig: Object) => any;
+    onCancel: () => any;
 }
 ```

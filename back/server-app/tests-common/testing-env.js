@@ -72,7 +72,8 @@ function insertTestData() {
     return TestCtx.dbSingleton.getPool()
         .query(
             'insert into artists values (?,?,?,?,?,?,?)',
-            [a.id, a.name, a.tagline, a.coverPhoto, a.widgets, a.createdAt, a.userId]
+            [a.id, a.name, a.tagline, a.coverPhoto, JSON.stringify(a.widgets),
+             a.createdAt, a.userId]
         );
 }
 
