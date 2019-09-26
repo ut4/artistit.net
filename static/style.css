@@ -43,12 +43,13 @@ a:hover {
     text-decoration: underline;
 }
 .icon-h3 {
-    border-bottom: 3px solid #54cfff;
-    font: normal 22px/46px "Fira sans heavy";
-    padding-bottom: 2px;
+    font: normal 20px/43px "Fira sans heavy";
+    padding: 0 0 2px 20px;
 }
 .icon-h3 .feather {
     margin: 0 8px -6px 0;
+    width: 24px;
+    height: 24px;
 }
 .feather {
     width: 26px;
@@ -69,19 +70,35 @@ a:hover {
     cursor: pointer;
 }
 .icon-button.filled {
-    background-color: #ed8247;
-    border-radius: 2px;
-    padding: 3px 5px 4px 10px;
-    line-height: 18px;
+    background-color: rgb(138, 118, 110);
+    border-radius: 15px;
+    padding: 5px 2px 5px 5px;
 }
 .icon-button.filled .feather {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     float: left;
-    margin-right: 6px;
+    margin-right: 3px;
 }
 input[name="sneakySneaky"] {
     display: none;
+}
+.popup-dialog {
+    position: absolute;
+    right: -7px;
+    padding: 10px;
+    min-width: 102px;
+    background-color: rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.6);
+    top: 33px;
+}
+.popup-dialog h3 {
+    margin-top: 2px;
+}
+.popup-dialog.light {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.02);
 }
 
 table {
@@ -147,16 +164,7 @@ footer > div { margin: 0 20px; }
 .user-menu > button .feather {
     float: right;
 }
-.user-menu .links {
-    position: absolute;
-    right: -7px;
-    padding: 10px;
-    min-width: 102px;
-    background-color: rgba(0,0,0,0.2);
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.6);
-    top: 33px;
-}
-.user-menu.collapsed .links {
+.user-menu.collapsed .popup-dialog {
     display: none;
 }
 .user-menu a {
@@ -209,12 +217,7 @@ footer a {
     top: -24px;
 }
 .sub-nav a {
-    background-color: #f5f5f5;
-    color: #333;
     padding: 10px 20px;
-}
-.sub-nav a.current {
-    background-color: #ffffff;
 }
 
 /* -- app-main.css ---------------------------------------------------------- */
@@ -251,6 +254,9 @@ h1 .feather {
     position: relative;
     min-height: 54px;
 }
+.artist-widgets-list.with-header-buttons {
+    padding-top: 30px;
+}
 .artist-widgets-list > div {
     width: 50%;
     float: left;
@@ -260,14 +266,37 @@ h1 .feather {
     position: relative;
     margin: 8px;
 }
+.artist-widgets-list > div:first-of-type > div,
+.artist-widgets-list > div:nth-of-type(3n) > div {
+    margin-left: 0;
+}
+.artist-widgets-list > div:nth-of-type(2n) > div {
+    margin-right: 2px; /* 2px = shadow */
+}
+.artist-widgets-list > div > div > h3 {
+    margin-top: 0;
+}
+.artist-widgets-list > div > div > div {
+    margin: -21px 0 0 0;
+    padding: 20px;
+}
 .artist-widgets-list .icon-button {
-    right: 12px;
+    right: 16px;
     position: absolute;
-    top: 9px;
+    top: 14px;
     z-index: 1;
+}
+.artist-widgets-list .icon-button:first-of-type { /* Järjestä widgettejä */
+    right: 52px;
+}
+.artist-widgets-list .empty .icon-button { /* Lisää widgetti */
+    position: static;
+    float: left;
+    margin-top: 13px;
 }
 .artist-widgets-list > .icon-button {
     left: 0;
+    top: 0;
 }
 .slot {
     min-height: 45px;
@@ -287,9 +316,6 @@ h1 .feather {
     line-height: 16px;
 }
 .topic-list tbody tr:first-of-type a {
-    font-family: "Fira sans medium";
-    font-size: 18px;
-    line-height: 18px;
     color: #445860;
 }
 .topic-list tbody tr:first-of-type td {
@@ -298,3 +324,32 @@ h1 .feather {
 .topic-list tbody tr:last-of-type td {
     padding-bottom: 12px;
 }
+
+
+/* -- theme-light.css ------------------------------------------------------- */
+/* <main-app> */
+.theme-light .icon-h3 {
+    border-left: 1px solid #ddd;
+    background: linear-gradient(to left, #fff, #f5f5f5);
+}
+.theme-light .sub-nav a {
+    background-color: #f5f5f5;
+    color: #333;
+}
+.theme-light .sub-nav a.current {
+    background-color: #ffffff;
+}
+.theme-light .artist-widgets-list > div > div {
+    box-shadow: 1px 0px 2px rgba(0,0,0,0.1);
+}
+.theme-light .artist-widgets-list > div > div > div {
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+/* </main-app> */
+
+/* <forum> */
+.theme-light .topic-list tbody tr:first-of-type a {
+    color: #445860;
+}
+/* </forum> */

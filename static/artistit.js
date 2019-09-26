@@ -94,9 +94,10 @@ function makeChecker(config) {
 }
 //
 window.artistit.validators = {
-    notEmpty: function() {
+    notEmpty: function(emptyVal) {
+        if (!emptyVal) emptyVal = '';
         return [function(input) {
-            return input.value != '';
+            return input.value != emptyVal;
         }, '%s vaaditaan'];
     },
     maxLen: function(len) {

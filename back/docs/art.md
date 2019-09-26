@@ -62,8 +62,7 @@ ks. [typings.md#Selainympäristö](typing.md#Selainympäristö)
 
 ## Testien ajaminen
 
-1. Käynnistä node-serveri "test"-flagillä `node server-app/main.js test`.
-2. Avaa file:///.../front/tests/index.html modernilla selaimella
+Avaa file:///.../front/tests/index.html modernilla selaimella.
 
 ## Mahdollisesti polyfillattava
 

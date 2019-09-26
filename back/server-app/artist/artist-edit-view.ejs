@@ -22,7 +22,6 @@
     </header>
     <section class="main">
         <input id="i-widgets" name="widgets" type="hidden">
-        <div class="error"></div>
         <input name="id" value="<%- artist.id %>" type="hidden">
         <%- include('artist/widget-designer',
                     {widgets: JSON.parse(artist.widgets), widgetsInputId: 'i-widgets',
@@ -37,7 +36,6 @@
     new artistit.FormValidation([
         ['i-name', 'Nimi', v.notEmpty(), v.maxLen(<%- maxArtistNameLen %>)],
         ['i-tagline', 'Tagline', v.maxLen(<%- maxTaglineLen %>)],
-        ['i-widgets', 'Widgets', v.notEmpty()],
     ]);
 })</script>
 <%- include('common/layout-footer', errorCode != '-1'

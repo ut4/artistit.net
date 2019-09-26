@@ -62,10 +62,13 @@ WidgetDesigner.prototype.getWidgetsAsJson = function() {
  */
 WidgetDesigner.prototype.render = function() {
     var self = this;
-    return $el('div', {class: 'artist-widgets-list'},
-        $el('button', {class: 'icon-button filled', title: 'Järjestä widgettejä'},
-            featherSvg('layout'), 'Järjestä'),
-        self.state.widgets.map(function(widget, i) {
+    var showLayoutButton = self.state.widgets.length > 1;
+    return $el('div', {class: 'artist-widgets-list' +
+                              (showLayoutButton ? ' with-header-buttons' : '')},
+        showLayoutButton && $el('button', {class: 'icon-button filled',
+                                           title: 'Järjestä widgettejä'},
+                                featherSvg('layout'), 'Järjestä'),
+        self.state.widgets.length ? self.state.widgets.map(function(widget, i) {
             return $el(Slot, {widget: widget,
                               widgetIndex: i,
                               template: self.templates[widget.type],
@@ -73,8 +76,14 @@ WidgetDesigner.prototype.render = function() {
                                   self.state.widgets[i] = widget;
                                   self.setState({widgets: self.state.widgets});
                                   self.emitUpdate();
+                              },
+                              onWidgetDeleted: function(widget) {
+                                  var widgets = self.state.widgets;
+                                  widgets.splice(widgets.indexOf(widget), 1);
+                                  self.setState({widgets: widgets});
+                                  self.emitUpdate();
                               }});
-        }),
+        }) : $el('p', null, 'Hmm, minimaalista.'),
         $el(EmptySlot, {onNewWidgetSelected: function(widgetType) {
                             self.addNewWidget(widgetType);
                             self.emitUpdate();
@@ -122,8 +131,16 @@ Slot.prototype.render = function() {
                        title: 'Muokkaa widgettiä',
                        type: 'button'},
             featherSvg('edit-3')),
+         $el('button', {onClick: function() { self.setState({deleteDialogIsOpen: true}); },
+                        class: 'icon-button filled',
+                        title: 'Poista widgetti',
+                        type: 'button'},
+             featherSvg('x')),
         $el('div', {class: 'widget'},
             $el('h3', {class: 'icon-h3'}, featherSvg(defs.icon), defs.title),
+            !self.state.deleteDialogIsOpen
+                ? null
+                : renderDeleteDialog(self),
             !self.state.configFormIsOpen
                 ? renderDefaultState(self)
                 : renderEditState(self)
@@ -149,6 +166,20 @@ function renderEditState(self) {
              onCancel: function() {
                  self.setState({configFormIsOpen: false});
              } })
+    );
+}
+function renderDeleteDialog(self) {
+    return $el('div', {class: 'popup-dialog light'},
+        $el('h3', null, 'Poista widgetti?'),
+        $el('button', {onClick: function () {
+                           self.props.onWidgetDeleted(self.props.widget);
+                       },
+                       type: 'button'},
+            'Poista'),
+        $el('a', {onClick: function () {
+                      self.setState({deleteDialogIsOpen: false});
+                  }},
+            'Peruuta')
     );
 }
 /**

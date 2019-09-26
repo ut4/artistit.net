@@ -20,7 +20,7 @@ const renderTwitterFeedWidget = userName => 'Mockoutput ' + userName;
 QUnit.module('artistit.WidgetDesigner', () => {
     QUnit.test('renderöi widgetit', assert => {
         const el = renderIntoDocument(window.artistit.WidgetDesigner, {
-            widgets: testWidgets,
+            widgets: testWidgets.slice(0),
             widgetDefaults,
             onUpdate: () => {},
             ejsGlobals: mockEjsGlobals,
@@ -59,7 +59,77 @@ QUnit.module('artistit.WidgetDesigner', () => {
             );
         }
     });
-    QUnit.test('avaa twitter-feed widgetin muokkauslomakkeen ja vastaanottaa siltä dataa', assert => {
+    QUnit.test('poista-napista voi poistaa widgetin', async assert => {
+        const onWidgetsDesignerChangeCbSpy = sinon.spy();
+        const done = assert.async();
+        const el = renderIntoDocument(window.artistit.WidgetDesigner, {
+            widgets: testWidgets.slice(0),
+            widgetDefaults,
+            onUpdate: onWidgetsDesignerChangeCbSpy,
+            ejsGlobals: mockEjsGlobals,
+            templates: Object.assign({}, mockWidgetTemplates),
+        });
+        ////////////////////////////////////////////////////////////////////////
+        const s = setup();
+        await clickTwitterWidgetSlotDeleteButton();
+              verifyOpenedDeleteConfirmationPopup();
+        await clickCancelDeleteButton();
+              verifyClosedDeleteConfirmationPopup();
+        await clickTwitterWidgetSlotDeleteButton();
+        await clickConfirmDeleteButton();
+              verifyDeletedWidgetUpdatedDOMAndNotifiedOverallChanges();
+        done();
+        ////////////////////////////////////////////////////////////////////////
+        function setup() {
+            const slots = el.querySelectorAll('.slot');
+            const renderedWidgetEls = el.querySelectorAll('.widget');
+            return {
+                twitterWidgetSlotDeleteButton: slots[1].querySelectorAll('button')[1],
+                twitterWidgetTitle: renderedWidgetEls[1].querySelector('h3').innerText,
+                twitterWidgetEl: renderedWidgetEls[1],
+                confirmationDialogEl: null,
+                widgetDesignerCmp: el._component,
+                renderedWidgetEls,
+            };
+        }
+        function clickTwitterWidgetSlotDeleteButton() {
+            s.twitterWidgetSlotDeleteButton.click();
+            return waitForPreactRender();
+        }
+        function verifyOpenedDeleteConfirmationPopup() {
+            s.confirmationDialogEl = s.twitterWidgetEl.querySelector('.popup-dialog');
+            assert.ok(!!s.confirmationDialogEl, 'Pitäisi avata popup-dialog');
+        }
+        function clickCancelDeleteButton() {
+            const cancelDeleteLink = s.confirmationDialogEl.querySelector('a');
+            cancelDeleteLink.click();
+            return waitForPreactRender();
+        }
+        function verifyClosedDeleteConfirmationPopup() {
+            s.confirmationDialogEl = s.twitterWidgetEl.querySelector('.popup-dialog');
+            assert.ok(!s.confirmationDialogEl, 'Pitäisi sulkea popup-dialog');
+            assert.equal(el.querySelectorAll('.populated').length,
+                         testWidgets.length,
+                         'Ei pitäisi poistaa widgettiä');
+        }
+        function clickConfirmDeleteButton() {
+            s.confirmationDialogEl = s.twitterWidgetEl.querySelector('.popup-dialog');
+            const confirmButton = s.confirmationDialogEl.querySelector('button');
+            confirmButton.click();
+            return waitForPreactRender();
+        }
+        function verifyDeletedWidgetUpdatedDOMAndNotifiedOverallChanges() {
+            const call = onWidgetsDesignerChangeCbSpy.getCall(1);
+            assert.ok(!!call, 'Pitäisi notifikoida muutoksesta');
+            assert.equal(call.args[0], s.widgetDesignerCmp.getWidgetsAsJson());
+            assert.equal(el.querySelectorAll('.populated').length,
+                         testWidgets.length - 1,
+                         'Pitäisi poistaa widgetti');
+            assert.notEqual(s.renderedWidgetEls[0].querySelector('h3').innerText,
+                            s.twitterWidgetTitle);
+        }
+    });
+    QUnit.test('twitter-feed widgetin muokkausnapista voi konfiguroida widgettiä', async assert => {
         const onWidgetsDesignerChangeCbSpy = sinon.spy();
         const done = assert.async();
         const el = renderIntoDocument(window.artistit.WidgetDesigner, {
@@ -72,13 +142,11 @@ QUnit.module('artistit.WidgetDesigner', () => {
         const newUserName = 'uusiTwitterUserName';
         ////////////////////////////////////////////////////////////////////////
         const s = setup();
-        clickTwitterWidgetSlotEditButton().then(() => {
-            verifyOpenedTwitterWidgetForm();
-            return fillInAndSubmitTheForm();
-        }).then(() => {
-            verifyUpdatedDOMAndNotifiedOverallChanges();
-            done();
-        });
+        await clickTwitterWidgetSlotEditButton();
+              verifyOpenedTwitterWidgetForm();
+        await fillInAndSubmitTheForm();
+              verifyUpdatedDOMAndNotifiedOverallChanges();
+        done();
         ////////////////////////////////////////////////////////////////////////
         function setup() {
             const slots = el.querySelectorAll('.slot');
@@ -92,7 +160,7 @@ QUnit.module('artistit.WidgetDesigner', () => {
         }
         function clickTwitterWidgetSlotEditButton() {
             s.twitterWidgetSlotEditButton.click();
-            return Promise.resolve();
+            return waitForPreactRender();
         }
         function verifyOpenedTwitterWidgetForm() {
             const form = s.twitterWidgetForm;
@@ -103,12 +171,13 @@ QUnit.module('artistit.WidgetDesigner', () => {
         function fillInAndSubmitTheForm() {
             fillInput(newUserName, s.twitterWidgetForm.userNameInput);
             s.twitterWidgetForm.submitButton.click();
-            return Promise.resolve();
+            return waitForPreactRender();
         }
         function verifyUpdatedDOMAndNotifiedOverallChanges() {
-            const call = onWidgetsDesignerChangeCbSpy.firstCall;
+            const call = onWidgetsDesignerChangeCbSpy.getCall(1);
             assert.ok(!!call, 'Pitäisi notifikoida muutoksesta');
-            assert.ok(call.args[0], s.widgetDesignerCmp.getWidgetsAsJson());
+            const widgetsAsJson = call.args[0];
+            assert.equal(JSON.parse(widgetsAsJson).length, testWidgets.length - 1);
             const twitterWidgetContentEl = el.querySelector('.widget-main');
             assert.equal(twitterWidgetContentEl.innerText,
                          renderTwitterFeedWidget(newUserName),
@@ -116,3 +185,7 @@ QUnit.module('artistit.WidgetDesigner', () => {
         }
     });
 });
+
+function waitForPreactRender() {
+    return Promise.resolve(); // if it's stupid but it works it's not stupid :D
+}
