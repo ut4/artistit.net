@@ -2,7 +2,7 @@
     artist: Artist;
     maxArtistNameLen: number;
     maxTaglineLen: number;
-    widgetDefaults: WidgetDefaults;
+    widgetProtos: WidgetProtos;
     readTemplate: (name: string): string;
     errorCode: number;
 } %>
@@ -25,7 +25,7 @@
         <input name="id" value="<%- artist.id %>" type="hidden">
         <%- include('artist/widget-designer',
                     {widgets: JSON.parse(artist.widgets), widgetsInputId: 'i-widgets',
-                     widgetDefaults, readTemplate}) %>
+                     widgetProtos, readTemplate}) %>
         <%- include('common/form-buttons',
                     {submitText: 'Tallenna',
                      gotoOnCancel: 'artisti/' + artist.id}); %>

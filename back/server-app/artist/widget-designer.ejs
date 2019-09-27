@@ -1,6 +1,6 @@
 <%# lokaalit tässä tiedostossa: {
     widgets: Array<Widget>;
-    widgetDefaults: WidgetDefaults;
+    widgetProtos: WidgetProtos;
     readTemplate: (name: string): string;
     widgetsInputId: string; // parent-templaatissa esiintyvän input-elementin id,
                             // johon päivitetään designerin output automaattisesti
@@ -13,7 +13,7 @@
     preact.render(
         preact.createElement(window.artistit.WidgetDesigner, {
             widgets: <%- JSON.stringify(widgets) %>,
-            widgetDefaults: <%- JSON.stringify(widgetDefaults) %>,
+            widgetProtos: <%- JSON.stringify(widgetProtos) %>,
             onUpdate: function(widgetsAsJson) {
                 window.artistit.utils.fillInput(widgetsAsJson,
                                                 document.getElementById('<%- widgetsInputId %>'));
@@ -24,7 +24,7 @@
                     return obj;
                 }, {})
             ) %>,
-            ejsGlobals: Object.assign({
+            ejsGlobals: {
                 user: {},
                 baseUrl: '<%- baseUrl %>',
                 staticBaseUrl: '<%- staticBaseUrl %>',
@@ -32,7 +32,7 @@
                     var staticBaseUrl = '<%- staticBaseUrl %>';
                     return <%- featherSvg %>;
                 }())
-            })
+            }
         }),
         document.getElementById('widgets-designer-app')
     )

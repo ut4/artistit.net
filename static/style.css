@@ -42,7 +42,7 @@ a {
 a:hover {
     text-decoration: underline;
 }
-.icon-h3 {
+.icon-h3, .icon-h3 input {
     font: normal 20px/43px "Fira sans heavy";
     padding: 0 0 2px 20px;
 }
@@ -243,6 +243,10 @@ h1 .feather {
     background: transparent;
     color: #fff;
 }
+.head-input.light {
+    color: #333;
+    border-color: #666;
+}
 .tagline-input {
     font: normal 14px/14px "Fira sans light";
     margin-bottom: 24px;
@@ -275,6 +279,10 @@ h1 .feather {
 }
 .artist-widgets-list > div > div > h3 {
     margin-top: 0;
+}
+.artist-widgets-list > div > div > h3 > input {
+    padding: 0 0 0 2px;
+    margin-bottom: 6px;
 }
 .artist-widgets-list > div > div > div {
     margin: -21px 0 0 0;

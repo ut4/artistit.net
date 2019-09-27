@@ -87,11 +87,17 @@ interface Widget {
 }
 ```
 
-## WidgetDefaults
+## WidgetProtos
 
 ```typescript
-interface WidgetDefaults {
-    [widgetName: string]: {icon: string; title: string;};
+interface WidgetProtos {
+    [widgetName: string]: {
+        icon: string;
+        title: string;
+        friendlyName: string;
+        description: string;
+        data: Object;
+    };
 }
 ```
 

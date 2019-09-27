@@ -10,18 +10,21 @@ const mockEjsGlobals = {
 const mockWidgetTemplates = {
     'hello': encodeURIComponent('Hello <%- prop %>'),
     'twitter-feed': encodeURIComponent('Mockoutput <%- userName %>'),
+    'info-box': encodeURIComponent('<%- JSON.stringify(infos) %>'),
 };
-const widgetDefaults = {
+const widgetProtos = {
     'hello': {icon: 'feather', title: 'Hello widget'},
+    'info-box': {icon: 'info', title: 'Tässä infoa'},
     'twitter-feed': {icon: 'twitter', title: 'Twitter'},
 };
+const renderInfoBoxWidget = infos => JSON.stringify(infos);
 const renderTwitterFeedWidget = userName => 'Mockoutput ' + userName;
 
 QUnit.module('artistit.WidgetDesigner', () => {
     QUnit.test('renderöi widgetit', assert => {
         const el = renderIntoDocument(window.artistit.WidgetDesigner, {
             widgets: testWidgets.slice(0),
-            widgetDefaults,
+            widgetProtos,
             onUpdate: () => {},
             ejsGlobals: mockEjsGlobals,
             templates: Object.assign({}, mockWidgetTemplates),
@@ -43,7 +46,7 @@ QUnit.module('artistit.WidgetDesigner', () => {
             const mainEl2 = s.renderedWidgetEls[1].querySelector('.widget-main');
             assert.equal(
                 titleEl1.innerText,
-                widgetDefaults['hello'].title
+                widgetProtos['hello'].title
             );
             assert.equal(
                 mainEl1.innerText,
@@ -51,7 +54,7 @@ QUnit.module('artistit.WidgetDesigner', () => {
             );
             assert.equal(
                 titleEl2.innerText,
-                widgetDefaults['twitter-feed'].title
+                widgetProtos['twitter-feed'].title
             );
             assert.equal(
                 mainEl2.innerText,
@@ -64,7 +67,7 @@ QUnit.module('artistit.WidgetDesigner', () => {
         const done = assert.async();
         const el = renderIntoDocument(window.artistit.WidgetDesigner, {
             widgets: testWidgets.slice(0),
-            widgetDefaults,
+            widgetProtos,
             onUpdate: onWidgetsDesignerChangeCbSpy,
             ejsGlobals: mockEjsGlobals,
             templates: Object.assign({}, mockWidgetTemplates),
@@ -121,7 +124,8 @@ QUnit.module('artistit.WidgetDesigner', () => {
         function verifyDeletedWidgetUpdatedDOMAndNotifiedOverallChanges() {
             const call = onWidgetsDesignerChangeCbSpy.getCall(1);
             assert.ok(!!call, 'Pitäisi notifikoida muutoksesta');
-            assert.equal(call.args[0], s.widgetDesignerCmp.getWidgetsAsJson());
+            const widgetsAsJson = call.args[0];
+            assert.equal(JSON.parse(widgetsAsJson).length, testWidgets.length - 1);
             assert.equal(el.querySelectorAll('.populated').length,
                          testWidgets.length - 1,
                          'Pitäisi poistaa widgetti');
@@ -129,12 +133,73 @@ QUnit.module('artistit.WidgetDesigner', () => {
                             s.twitterWidgetTitle);
         }
     });
-    QUnit.test('twitter-feed widgetin muokkausnapista voi konfiguroida widgettiä', async assert => {
+    QUnit.test('info-box -widgetin muokkausnapista voi konfiguroida widgettiä', async assert => {
+        const onWidgetsDesignerChangeCbSpy = sinon.spy();
+        const done = assert.async();
+        const el = renderIntoDocument(window.artistit.WidgetDesigner, {
+            widgets: [{type: 'info-box',
+                       data: {infos: [{title:'Jäsenet',text:'Hermanni'}]}}],
+            widgetProtos,
+            onUpdate: onWidgetsDesignerChangeCbSpy,
+            ejsGlobals: mockEjsGlobals,
+            templates: Object.assign({}, mockWidgetTemplates),
+        });
+        const newInfo0Title = 'Laitteet';
+        const newInfo0Text = 'Macbook, DAW';
+        ////////////////////////////////////////////////////////////////////////
+        const s = setup();
+        await clickInfoBoxWidgetSlotEditButton();
+              verifyOpenedInfoBoxWidgetForm();
+        await fillInAndSubmitTheForm();
+              verifyUpdatedDOMAndNotifiedOverallChanges();
+        done();
+        ////////////////////////////////////////////////////////////////////////
+        function setup() {
+            const slots = el.querySelectorAll('.slot');
+            return {
+                infoBoxWidgetSlotEditButton: slots[0].querySelector('button'),
+                infoBoxWidgetForm: {firstInfoTitleInput: null,
+                                    firstInfoTextInput: null,
+                                    submitButton: null},
+                widgetDesignerCmp: el._component,
+            };
+        }
+        function clickInfoBoxWidgetSlotEditButton() {
+            s.infoBoxWidgetSlotEditButton.click();
+            return waitForPreactRender();
+        }
+        function verifyOpenedInfoBoxWidgetForm() {
+            const form = s.infoBoxWidgetForm;
+            const infoBoxWidgetEl = el.querySelector('.widget-main');
+            const inputs = infoBoxWidgetEl.querySelectorAll('input');
+            form.firstInfoTitleInput = inputs[0];
+            form.firstInfoTextInput = inputs[1];
+            assert.ok(!!form.firstInfoTitleInput, 'Pitäisi avata lomake, jossa input');
+            form.submitButton = infoBoxWidgetEl.querySelector('button');
+        }
+        function fillInAndSubmitTheForm() {
+            fillInput(newInfo0Title, s.infoBoxWidgetForm.firstInfoTitleInput);
+            fillInput(newInfo0Text, s.infoBoxWidgetForm.firstInfoTextInput);
+            s.infoBoxWidgetForm.submitButton.click();
+            return waitForPreactRender();
+        }
+        function verifyUpdatedDOMAndNotifiedOverallChanges() {
+            const call = onWidgetsDesignerChangeCbSpy.getCall(1);
+            assert.ok(!!call, 'Pitäisi notifikoida muutoksesta');
+            assert.equal(call.args[0], s.widgetDesignerCmp.getWidgetsAsJson());
+            const infoBoxWidgetContentEl = el.querySelector('.widget-main');
+            const expectedInfos = [{title:newInfo0Title,text:newInfo0Text}];
+            assert.equal(infoBoxWidgetContentEl.innerText,
+                         renderInfoBoxWidget(expectedInfos),
+                         'Pitäisi uudelleenrenderöidä DOM');
+        }
+    });
+    QUnit.test('twitter-feed -widgetin muokkausnapista voi konfiguroida widgettiä', async assert => {
         const onWidgetsDesignerChangeCbSpy = sinon.spy();
         const done = assert.async();
         const el = renderIntoDocument(window.artistit.WidgetDesigner, {
             widgets: [testWidgets[1]],
-            widgetDefaults,
+            widgetProtos,
             onUpdate: onWidgetsDesignerChangeCbSpy,
             ejsGlobals: mockEjsGlobals,
             templates: Object.assign({}, mockWidgetTemplates),
@@ -150,10 +215,8 @@ QUnit.module('artistit.WidgetDesigner', () => {
         ////////////////////////////////////////////////////////////////////////
         function setup() {
             const slots = el.querySelectorAll('.slot');
-            const renderedWidgetEls = el.querySelectorAll('.widget');
             return {
                 twitterWidgetSlotEditButton: slots[0].querySelector('button'),
-                twitterWidgetEl: renderedWidgetEls[0],
                 twitterWidgetForm: {userNameInput: null, submitButton: null},
                 widgetDesignerCmp: el._component,
             };
@@ -164,8 +227,9 @@ QUnit.module('artistit.WidgetDesigner', () => {
         }
         function verifyOpenedTwitterWidgetForm() {
             const form = s.twitterWidgetForm;
-            form.userNameInput = s.twitterWidgetEl.querySelector('input');
-            form.submitButton = s.twitterWidgetEl.querySelector('button');
+            const twitterWidgetEl = el.querySelector('.widget-main');
+            form.userNameInput = twitterWidgetEl.querySelector('input');
+            form.submitButton = twitterWidgetEl.querySelector('button');
             assert.ok(!!form.userNameInput, 'Pitäisi avata lomake, jossa input');
         }
         function fillInAndSubmitTheForm() {
@@ -176,8 +240,7 @@ QUnit.module('artistit.WidgetDesigner', () => {
         function verifyUpdatedDOMAndNotifiedOverallChanges() {
             const call = onWidgetsDesignerChangeCbSpy.getCall(1);
             assert.ok(!!call, 'Pitäisi notifikoida muutoksesta');
-            const widgetsAsJson = call.args[0];
-            assert.equal(JSON.parse(widgetsAsJson).length, testWidgets.length - 1);
+            assert.equal(call.args[0], s.widgetDesignerCmp.getWidgetsAsJson());
             const twitterWidgetContentEl = el.querySelector('.widget-main');
             assert.equal(twitterWidgetContentEl.innerText,
                          renderTwitterFeedWidget(newUserName),

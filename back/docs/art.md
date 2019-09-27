@@ -68,3 +68,4 @@ Avaa file:///.../front/tests/index.html modernilla selaimella.
 
 - [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
 - [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)

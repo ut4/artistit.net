@@ -16,9 +16,24 @@ const validationConstants = {
     maxArtistNameLen: 128,
     maxTaglineLen: 512,
 };
-const widgetDefaults = {
-    'info-box': {icon: 'info', title: 'Meistä'},
-    'twitter-feed': {icon: 'twitter', title: 'Twitter'},
+const widgetProtos = {
+    'info-box': {
+        icon: 'info',
+        title: 'Meistä',
+        friendlyName: 'Infoboksi',
+        description: 'Kerro lyhyesti projektistasi / bändistäsi.',
+        data: {
+            infos: [{title: 'Jäsenet', text: 'Jäsen1, Jäsen2'},
+                    {title: 'Vaikutteet', text: 'Yhtye1, Yhtye2'}]
+        }
+    },
+    'twitter-feed': {
+        icon: 'twitter',
+        title: 'Twitter',
+        friendlyName: 'Twitter-feed',
+        description: 'Näytä artistisi twitter-aikajana.',
+        data: {userName: 'foo', useCustomImpl: false}
+    },
 };
 const readTemplate = name => ejs.fileLoader(__dirname + name + '.ejs',
                                             {encoding: 'utf-8'});
@@ -60,7 +75,7 @@ class ArtistsControllers {
             this.tabLoader.loadDataFor(req.query['näytä'], artist, req,
                 (tabData, tabName) => {
                     res.render('artist/artist-index-view',
-                               {artist, tabName, tabData, widgetDefaults});
+                               {artist, tabName, tabData, widgetProtos});
                 });
         });
     }
@@ -69,7 +84,7 @@ class ArtistsControllers {
      */
     newArtistView(req, res) {
         res.render('artist/artist-create-view',
-                   Object.assign({widgetDefaults, readTemplate,
+                   Object.assign({widgetProtos, readTemplate,
                                   errorCode: req.query.error},
                                   validationConstants));
     }
@@ -108,7 +123,7 @@ class ArtistsControllers {
         this.fetchArtist(req, res, artist => {
             if (artist.userId == req.user.id) {
                 res.render('artist/artist-edit-view',
-                           Object.assign({artist, widgetDefaults, readTemplate,
+                           Object.assign({artist, widgetProtos, readTemplate,
                                           errorCode: req.query.error},
                                           validationConstants));
             } else {

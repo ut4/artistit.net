@@ -1,14 +1,14 @@
 <%# lokaalit tässä tiedostossa: {
     artist: Artist;
     tabData: {widgets: Array<Widget>;};
-    widgetDefaults: WidgetDefaults;
+    widgetProtos: WidgetProtos;
 } %>
 <section class="main">
 <div class="artist-widgets-list">
 <% if (tabData.widgets.length) {
     tabData.widgets.forEach((widget, widgetIndex) => { %>
     <div class="widget <%- widget.type %>"><div>
-        <h3 class="icon-h3"><%- featherSvg(widget.icon || widgetDefaults[widget.type].icon) %><%= widget.title || widgetDefaults[widget.type].title %></h3>
+        <h3 class="icon-h3"><%- featherSvg(widget.icon || widgetProtos[widget.type].icon) %><%= widget.title || widgetProtos[widget.type].title %></h3>
         <div class="widget-main" id="<%- widget.type + '-' + widgetIndex %>">
         <%- include('artist/wall-widget-' + widget.type,
                     Object.assign({widget, artist, widgetIndex}, widget.data)); %>
